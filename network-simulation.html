@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>CompTIA Core 2 — Network Config Sim</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: Arial, sans-serif; background: #0d1b2a; color: #fff; font-size: 13px; overflow-x: hidden; }
+
+/* TOP BAR */
+.topbar {
+  background: #003580; padding: 10px 20px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.topbar h1 { font-size: 14px; font-weight: bold; }
+.topbar p  { font-size: 11px; color: #b0c8ff; margin-top: 2px; }
+.btn { padding: 7px 16px; border: none; border-radius: 4px; font-size: 12px; font-weight: bold; cursor: pointer; }
+.btn-green { background: #16a34a; color: white; }
+.btn-green:hover { background: #15803d; }
+.btn-gray  { background: #ccc; color: #333; margin-left: 8px; }
+.btn-gray:hover { background: #bbb; }
+
+/* SCENARIO */
+.scenario {
+  background: #1a2a4a; border-bottom: 2px solid #2255aa;
+  padding: 10px 20px; font-size: 12px; color: #c8d8ff; line-height: 1.6;
+}
+.scenario strong { color: #ffd700; }
+
+/* PAGE */
+.page { padding: 14px 20px; display: flex; flex-direction: column; gap: 14px; }
+
+/* STEP BOXES */
+.step-box { background: #1a2a4a; border: 2px solid #2255aa; border-radius: 8px; overflow: hidden; }
+.step-title { background: #2255aa; color: #fff; padding: 7px 14px; font-size: 12px; font-weight: bold; }
+.step-body  { padding: 14px; }
+
+/* ── DEVICE TRAY ── */
+.device-tray { display: flex; gap: 16px; flex-wrap: wrap; align-items: flex-start; }
+.hint-text { color: #94a3b8; font-size: 11px; margin-top: 10px; line-height: 1.5; }
+
+.device-card {
+  background: #f97316; border: 3px solid #fb923c;
+  border-radius: 10px; padding: 12px 18px;
+  display: flex; flex-direction: column; align-items: center; gap: 5px;
+  cursor: pointer; transition: transform 0.15s, box-shadow 0.15s, opacity 0.15s;
+  min-width: 110px; -webkit-user-select: none; user-select: none;
+}
+.device-card:hover:not(.placed) {
+  transform: scale(1.06); box-shadow: 0 6px 20px rgba(249,115,22,0.5);
+}
+.device-card.selected-to-place {
+  border-color: #fde047; box-shadow: 0 0 0 4px #fde047;
+  transform: scale(1.08);
+}
+.device-card.placed { opacity: 0.3; cursor: not-allowed; }
+.device-card.dragging { opacity: 0.4; }
+.device-card .icon  { font-size: 36px; pointer-events: none; }
+.device-card .name  { font-size: 13px; font-weight: bold; color: white; pointer-events: none; }
+.device-card .hint  { font-size: 10px; color: rgba(255,255,255,0.85); text-align: center; pointer-events: none; }
+
+/* ── NETWORK DIAGRAM ── */
+.net-diagram {
+  background: #1565c0; border-radius: 10px; padding: 16px;
+}
+
+/* internet */
+.internet-row { display: flex; justify-content: center; margin-bottom: 8px; }
+.cloud-circle {
+  width: 68px; height: 68px; border-radius: 50%;
+  background: #64b5f6; border: 3px solid #90caf9;
+  display: flex; align-items: center; justify-content: center; font-size: 28px;
+}
+.cloud-label { font-size: 11px; font-weight: bold; color: #fff; text-align: center; margin-top: 4px; }
+.connector-v { width: 3px; height: 24px; background: #f97316; margin: 0 auto; }
+
+/* columns */
+.zones-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+.zone-col  { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+
+.zone-header {
+  background: #f97316; color: white; width: 100%; text-align: center;
+  padding: 5px; border-radius: 5px; font-size: 12px; font-weight: bold;
+}
+
+.device-circle {
+  width: 96px; height: 96px; border-radius: 50%;
+  background: #0d47a1; border: 3px solid #42a5f5;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;
+}
+.device-circle .icon { font-size: 28px; }
+.device-circle .name { font-size: 10px; color: #fff; font-weight: bold; }
+
+/* config cards */
+.config-card { background: white; border-radius: 6px; overflow: hidden; width: 100%; border: 3px solid #42a5f5; }
+.config-card-header { background: #f97316; color: white; padding: 4px 8px; font-size: 11px; font-weight: bold; }
+.config-card-body   { padding: 6px; display: flex; flex-direction: column; gap: 4px; }
+
+select {
+  width: 100%; border: 2px solid #bbb; border-radius: 4px;
+  padding: 5px 6px; font-size: 12px; background: white; color: #000;
+  cursor: pointer; font-weight: 500;
+  -webkit-appearance: auto; appearance: auto;
+}
+select:focus { outline: 2px solid #003580; }
+select.correct { background: #dcfce7 !important; border-color: #16a34a !important; color: #166534 !important; font-weight: bold; }
+select.wrong   { background: #fee2e2 !important; border-color: #dc2626 !important; color: #991b1b !important; font-weight: bold; }
+
+/* DROP ZONES */
+.drop-zone-wrapper { width: 100%; display: flex; flex-direction: column; align-items: center; gap: 5px; }
+.drop-zone-label {
+  background: #7c3aed; color: white; width: 100%; text-align: center;
+  padding: 4px; border-radius: 4px; font-size: 11px; font-weight: bold;
+}
+.drop-zone {
+  width: 96px; height: 96px; border-radius: 50%;
+  border: 3px dashed #a78bfa; background: rgba(124,58,237,0.15);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  cursor: pointer; transition: all 0.15s; position: relative;
+}
+.drop-zone:hover { background: rgba(124,58,237,0.3); border-color: #c4b5fd; }
+.drop-zone.drag-over {
+  background: rgba(253,224,71,0.3) !important;
+  border-color: #fde047 !important; border-style: solid !important;
+  transform: scale(1.08);
+}
+.drop-zone.ready-to-place {
+  border-color: #fde047; border-style: solid;
+  background: rgba(253,224,71,0.2);
+  animation: pulse 0.8s infinite alternate;
+}
+@keyframes pulse { from { box-shadow: 0 0 0 0 rgba(253,224,71,0.4); } to { box-shadow: 0 0 0 8px rgba(253,224,71,0); } }
+.drop-zone.correct { border-color: #16a34a !important; border-style: solid !important; background: rgba(22,163,74,0.2) !important; }
+.drop-zone.wrong   { border-color: #dc2626 !important; border-style: solid !important; background: rgba(220,38,38,0.2) !important; }
+
+.empty-text { font-size: 10px; color: rgba(255,255,255,0.55); text-align: center; line-height: 1.4; pointer-events: none; }
+.placed-in-zone {
+  display: flex; flex-direction: column; align-items: center; gap: 2px; pointer-events: none;
+}
+.placed-in-zone .icon  { font-size: 26px; }
+.placed-in-zone .name  { font-size: 9px; color: #fff; font-weight: bold; text-align: center; }
+.placed-in-zone .rmv   { font-size: 9px; color: rgba(255,255,255,0.55); pointer-events: none; }
+
+.zone-bottom-label { font-size: 11px; color: #b0d0ff; font-weight: bold; }
+
+/* ── FEEDBACK ── */
+.feedback-panel { background: #1a2a4a; border: 2px solid #2255aa; border-radius: 8px; padding: 16px; display: none; }
+.feedback-panel.show { display: block; }
+.feedback-panel h3 { color: #ffd700; margin-bottom: 10px; font-size: 14px; }
+.score-big { font-size: 26px; font-weight: bold; margin-bottom: 12px; }
+.fb-row { display: flex; align-items: flex-start; gap: 10px; padding: 8px 10px; border-radius: 6px; margin-bottom: 6px; }
+.fb-row.ok  { background: rgba(22,163,74,0.15);  border-left: 4px solid #16a34a; }
+.fb-row.bad { background: rgba(220,38,38,0.15);   border-left: 4px solid #dc2626; }
+.fb-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+.fb-text strong { display: block; font-size: 12px; margin-bottom: 2px; }
+.fb-text .explain { font-size: 11px; color: #94a3b8; }
+.fb-text .correct-ans { color: #4ade80; font-weight: bold; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div>
+    <h1>CompTIA A+ Core 2 — Network Configuration Simulation</h1>
+    <p>Works in Chrome, Firefox, and Safari on PC and Mac</p>
+  </div>
+  <div>
+    <button class="btn btn-green" onclick="checkAnswers()">✔ Check All Answers</button>
+    <button class="btn btn-gray"  onclick="resetAll()">↺ Reset All</button>
+  </div>
+</div>
+
+<div class="scenario">
+  <strong>SIMULATION:</strong> You are configuring a home network for a customer who needs to
+  <strong>access the Windows PC remotely</strong> and needs <strong>all chat and optional functions on the game console</strong>.<br>
+  <strong>Step 1:</strong> Click a device card to select it (it will glow yellow), then click a purple drop zone to place it.
+  You can also drag and drop. Click a placed device to remove it.
+  <strong>Step 2:</strong> Use the dropdowns to configure each network device. Hit <strong>Check All Answers</strong> when done.
+</div>
+
+<div class="page">
+
+  <!-- STEP 1 -->
+  <div class="step-box">
+    <div class="step-title">STEP 1 — Click a device to select it, then click a zone below to place it (or drag and drop)</div>
+    <div class="step-body">
+      <div class="device-tray">
+        <div class="device-card" id="dev-pc"
+             draggable="true"
+             ondragstart="dragStart(event,'pc')"
+             onclick="clickSelect('pc')">
+          <span class="icon">🖥️</span>
+          <span class="name">PC</span>
+          <span class="hint">Needs remote access</span>
+        </div>
+        <div class="device-card" id="dev-console"
+             draggable="true"
+             ondragstart="dragStart(event,'console')"
+             onclick="clickSelect('console')">
+          <span class="icon">🎮</span>
+          <span class="name">Game Console</span>
+          <span class="hint">Needs chat &amp; WiFi</span>
+        </div>
+        <div style="color:#94a3b8; font-size:11px; line-height:1.6; align-self:center;">
+          <strong style="color:#fde047;">How to place devices:</strong><br>
+          • <strong>Click</strong> a device card → it glows yellow → <strong>click</strong> a purple zone<br>
+          • OR <strong>drag</strong> the device and <strong>drop</strong> it on a purple zone<br>
+          • Click a placed device in a zone to remove it
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 2: NETWORK DIAGRAM -->
+  <div class="step-box">
+    <div class="step-title">STEP 2 — Configure each network device using the dropdowns below</div>
+    <div class="step-body" style="padding:0;">
+      <div class="net-diagram">
+
+        <!-- INTERNET -->
+        <div class="internet-row">
+          <div style="display:flex;flex-direction:column;align-items:center;">
+            <div class="cloud-circle">☁️</div>
+            <div class="cloud-label">Internet</div>
+          </div>
+        </div>
+        <div class="connector-v" style="margin-bottom:10px;"></div>
+
+        <!-- THREE ZONES -->
+        <div class="zones-row">
+
+          <!-- LEFT: Wireless AP -->
+          <div class="zone-col">
+            <div class="zone-header">LAN — Wireless AP</div>
+            <div class="device-circle">
+              <span class="icon">📡</span>
+              <span class="name">Wireless AP</span>
+            </div>
+            <div class="config-card">
+              <div class="config-card-header">Configure Wireless AP</div>
+              <div class="config-card-body">
+                <select id="ap-ip" onchange="liveCheck('ap-ip','192.168.10.1')">
+                  <option value="">▼ Select LAN IP</option>
+                  <option>169.254.17.1</option>
+                  <option>224.0.0.1</option>
+                  <option>50.90.254.1</option>
+                  <option>127.1.0.1</option>
+                  <option>192.168.10.1</option>
+                  <option>10.100.0.1</option>
+                </select>
+                <select id="ap-enc" onchange="liveCheck('ap-enc','WPA2 PSK')">
+                  <option value="">▼ Select Encryption</option>
+                  <option>TLS 1.2</option>
+                  <option>WPA2 PSK</option>
+                  <option>L2TP IPSec</option>
+                  <option>WPA2 Enterprise</option>
+                </select>
+              </div>
+            </div>
+            <div class="connector-v" style="height:14px;"></div>
+            <div class="drop-zone-wrapper">
+              <div class="drop-zone-label">📥 Place Device Here</div>
+              <div class="drop-zone" id="zone-ap"
+                   ondragover="dragOver(event)"
+                   ondragleave="dragLeave(event)"
+                   ondrop="dropEvent(event,'zone-ap')"
+                   onclick="clickPlace('zone-ap')">
+                <span class="empty-text">Click or<br>drop device<br>here</span>
+              </div>
+            </div>
+            <div class="zone-bottom-label">LAN Zone</div>
+          </div>
+
+          <!-- CENTER: Router -->
+          <div class="zone-col">
+            <div class="zone-header">Router</div>
+            <div class="device-circle">
+              <span class="icon">🔌</span>
+              <span class="name">Router</span>
+            </div>
+            <div class="config-card">
+              <div class="config-card-header">Configure Router</div>
+              <div class="config-card-body">
+                <select id="router-ip" onchange="liveCheck('router-ip','50.90.254.1')">
+                  <option value="">▼ Select LAN IP</option>
+                  <option>169.254.17.1</option>
+                  <option>224.0.0.1</option>
+                  <option>50.90.254.1</option>
+                  <option>127.1.0.1</option>
+                  <option>192.168.10.1</option>
+                  <option>10.100.0.1</option>
+                </select>
+                <select id="router-port" onchange="liveCheck('router-port','Allow TCP Any 3389')">
+                  <option value="">▼ Select Port Forward Rule</option>
+                  <option>Allow TCP Any 3347</option>
+                  <option>Allow TCP Any 3306</option>
+                  <option>Allow TCP Any 23</option>
+                  <option>Allow TCP Any 25</option>
+                  <option>Allow TCP Any 3389</option>
+                </select>
+              </div>
+            </div>
+            <div class="connector-v" style="height:14px;"></div>
+            <div class="device-circle">
+              <span class="icon">🔌</span>
+              <span class="name">Router</span>
+            </div>
+            <div class="zone-bottom-label">Router LAN Side</div>
+          </div>
+
+          <!-- RIGHT: Firewall -->
+          <div class="zone-col">
+            <div class="zone-header">Screened Subnet — Firewall</div>
+            <div class="device-circle">
+              <span class="icon">🧱</span>
+              <span class="name">Firewall</span>
+            </div>
+            <div class="config-card">
+              <div class="config-card-header">Configure Firewall</div>
+              <div class="config-card-body">
+                <select id="fw-ip" onchange="liveCheck('fw-ip','10.100.0.1')">
+                  <option value="">▼ Select LAN IP</option>
+                  <option>169.254.17.1</option>
+                  <option>224.0.0.1</option>
+                  <option>50.90.254.1</option>
+                  <option>127.1.0.1</option>
+                  <option>192.168.10.1</option>
+                  <option>10.100.0.1</option>
+                </select>
+              </div>
+            </div>
+            <div class="connector-v" style="height:14px;"></div>
+            <div class="drop-zone-wrapper">
+              <div class="drop-zone-label">📥 Place Device Here</div>
+              <div class="drop-zone" id="zone-pc"
+                   ondragover="dragOver(event)"
+                   ondragleave="dragLeave(event)"
+                   ondrop="dropEvent(event,'zone-pc')"
+                   onclick="clickPlace('zone-pc')">
+                <span class="empty-text">Click or<br>drop device<br>here</span>
+              </div>
+            </div>
+            <div class="zone-bottom-label">Screened Subnet</div>
+          </div>
+
+        </div><!-- end zones-row -->
+      </div><!-- end net-diagram -->
+    </div>
+  </div>
+
+  <!-- FEEDBACK -->
+  <div class="feedback-panel" id="feedbackPanel">
+    <h3>📋 Results</h3>
+    <div class="score-big" id="scoreBig"></div>
+    <div id="feedbackItems"></div>
+  </div>
+
+</div>
+
+<script>
+const ANSWERS = {
+  'ap-ip':      '192.168.10.1',
+  'ap-enc':     'WPA2 PSK',
+  'router-ip':  '50.90.254.1',
+  'router-port':'Allow TCP Any 3389',
+  'fw-ip':      '10.100.0.1',
+  'zone-ap':    'pc',
+  'zone-pc':    'console',
+};
+const LABELS = {
+  'ap-ip':      'Wireless AP — LAN IP',
+  'ap-enc':     'Wireless AP — Encryption Type',
+  'router-ip':  'Router — LAN IP',
+  'router-port':'Router — Port Forward Rule',
+  'fw-ip':      'Firewall — LAN IP',
+  'zone-ap':    'Device Placed in Wireless AP Zone',
+  'zone-pc':    'Device Placed in Firewall Zone',
+};
+const EXPLAIN = {
+  'ap-ip':      '192.168.10.1 is the private LAN IP for the Wireless AP on this home network.',
+  'ap-enc':     'WPA2 PSK allows the game console to connect wirelessly and use all chat and optional services.',
+  'router-ip':  '50.90.254.1 is the router LAN IP used in this network configuration.',
+  'router-port':'TCP 3389 is the RDP (Remote Desktop Protocol) port — required so the customer can access the Windows PC remotely from the internet.',
+  'fw-ip':      '10.100.0.1 is the screened subnet IP assigned to the firewall interface.',
+  'zone-ap':    'The PC connects to the Wireless AP on the LAN for local network access and remote desktop connectivity.',
+  'zone-pc':    'The Game Console sits behind the firewall in the screened subnet to securely enable all chat and optional online services.',
+};
+const ICONS  = { pc:'🖥️', console:'🎮' };
+const DNAMES = { pc:'PC', console:'Game Console' };
+
+let dragging   = null;   // device being dragged
+let selected   = null;   // device selected via click
+let placements = {};     // zoneId -> deviceId
+
+// ── LIVE CHECK dropdowns ───────────────────────────────────────────
+function liveCheck(elId, correctVal) {
+  const sel = document.getElementById(elId);
+  if (!sel.value) { sel.className = ''; return; }
+  sel.className = sel.value === correctVal ? 'correct' : 'wrong';
+}
+
+// ── CLICK TO SELECT ────────────────────────────────────────────────
+function clickSelect(deviceId) {
+  const el = document.getElementById('dev-' + deviceId);
+  if (el.classList.contains('placed')) return;
+
+  // Deselect if already selected
+  if (selected === deviceId) {
+    el.classList.remove('selected-to-place');
+    selected = null;
+    clearPulse();
+    return;
+  }
+
+  // Deselect previous
+  if (selected) {
+    document.getElementById('dev-' + selected).classList.remove('selected-to-place');
+  }
+  selected = deviceId;
+  el.classList.add('selected-to-place');
+  // Pulse all empty drop zones
+  pulseZones();
+}
+
+function pulseZones() {
+  ['zone-ap','zone-pc'].forEach(zoneId => {
+    if (!placements[zoneId]) {
+      document.getElementById(zoneId).classList.add('ready-to-place');
+    }
+  });
+}
+
+function clearPulse() {
+  ['zone-ap','zone-pc'].forEach(zoneId => {
+    document.getElementById(zoneId).classList.remove('ready-to-place');
+  });
+}
+
+// ── CLICK TO PLACE ─────────────────────────────────────────────────
+function clickPlace(zoneId) {
+  const zone = document.getElementById(zoneId);
+
+  // If a device is selected, place it
+  if (selected) {
+    if (placements[zoneId]) returnToTray(placements[zoneId]);
+    placeDevice(zoneId, selected);
+    document.getElementById('dev-' + selected).classList.remove('selected-to-place');
+    selected = null;
+    clearPulse();
+    return;
+  }
+
+  // If zone has a device and nothing selected, remove it
+  if (placements[zoneId]) {
+    removeDevice(zoneId);
+  }
+}
+
+// ── DRAG & DROP ────────────────────────────────────────────────────
+function dragStart(e, deviceId) {
+  const el = document.getElementById('dev-' + deviceId);
+  if (el.classList.contains('placed')) { e.preventDefault(); return; }
+  dragging = deviceId;
+  // Clear any click-selection
+  if (selected) {
+    document.getElementById('dev-' + selected).classList.remove('selected-to-place');
+    selected = null;
+    clearPulse();
+  }
+  setTimeout(() => el.classList.add('dragging'), 0);
+  e.dataTransfer.effectAllowed = 'move';
+  e.dataTransfer.setData('text/plain', deviceId);
+}
+
+function dragOver(e) {
+  e.preventDefault();
+  e.stopPropagation();
+  e.currentTarget.classList.add('drag-over');
+  return false;
+}
+
+function dragLeave(e) {
+  e.currentTarget.classList.remove('drag-over');
+}
+
+function dropEvent(e, zoneId) {
+  e.preventDefault();
+  e.stopPropagation();
+  const zone = document.getElementById(zoneId);
+  zone.classList.remove('drag-over');
+
+  const deviceId = dragging || e.dataTransfer.getData('text/plain');
+  if (!deviceId) return;
+
+  if (placements[zoneId]) returnToTray(placements[zoneId]);
+  placeDevice(zoneId, deviceId);
+
+  const srcEl = document.getElementById('dev-' + deviceId);
+  srcEl.classList.remove('dragging');
+  dragging = null;
+}
+
+// ── SHARED PLACE / REMOVE ──────────────────────────────────────────
+function placeDevice(zoneId, deviceId) {
+  placements[zoneId] = deviceId;
+
+  const zone = document.getElementById(zoneId);
+  zone.classList.remove('ready-to-place','drag-over');
+  zone.innerHTML = `
+    <div class="placed-in-zone">
+      <span class="icon">${ICONS[deviceId]}</span>
+      <span class="name">${DNAMES[deviceId]}</span>
+      <span class="rmv">click to remove</span>
+    </div>`;
+
+  // Immediate feedback
+  zone.classList.remove('correct','wrong');
+  zone.classList.add(deviceId === ANSWERS[zoneId] ? 'correct' : 'wrong');
+
+  // Mark card as placed
+  const card = document.getElementById('dev-' + deviceId);
+  card.classList.add('placed');
+  card.draggable = false;
+}
+
+function removeDevice(zoneId) {
+  const deviceId = placements[zoneId];
+  if (!deviceId) return;
+  returnToTray(deviceId);
+  delete placements[zoneId];
+  const zone = document.getElementById(zoneId);
+  zone.innerHTML = '<span class="empty-text">Click or<br>drop device<br>here</span>';
+  zone.classList.remove('correct','wrong','ready-to-place');
+}
+
+function returnToTray(deviceId) {
+  const el = document.getElementById('dev-' + deviceId);
+  el.classList.remove('placed','dragging','selected-to-place');
+  el.draggable = true;
+}
+
+// ── CHECK ALL ──────────────────────────────────────────────────────
+function checkAnswers() {
+  // Force re-grade all dropdowns
+  ['ap-ip','ap-enc','router-ip','router-port','fw-ip'].forEach(id => {
+    liveCheck(id, ANSWERS[id]);
+  });
+
+  // Re-grade zones
+  ['zone-ap','zone-pc'].forEach(zoneId => {
+    const zone = document.getElementById(zoneId);
+    zone.classList.remove('correct','wrong');
+    if (placements[zoneId]) {
+      zone.classList.add(placements[zoneId] === ANSWERS[zoneId] ? 'correct' : 'wrong');
+    }
+  });
+
+  // Build feedback
+  const allKeys = ['ap-ip','ap-enc','router-ip','router-port','fw-ip','zone-ap','zone-pc'];
+  let correct = 0, html = '';
+
+  allKeys.forEach(key => {
+    let chosen, ansDisplay;
+    if (key.startsWith('zone-')) {
+      chosen     = placements[key] ? DNAMES[placements[key]] : '(not placed)';
+      ansDisplay = DNAMES[ANSWERS[key]];
+    } else {
+      chosen     = document.getElementById(key).value || '(not selected)';
+      ansDisplay = ANSWERS[key];
+    }
+    const ok = key.startsWith('zone-')
+      ? placements[key] === ANSWERS[key]
+      : document.getElementById(key).value === ANSWERS[key];
+
+    if (ok) correct++;
+    html += `
+      <div class="fb-row ${ok ? 'ok' : 'bad'}">
+        <span class="fb-icon">${ok ? '✅' : '❌'}</span>
+        <div class="fb-text">
+          <strong>${LABELS[key]}</strong>
+          ${ok
+            ? `<span class="explain">${EXPLAIN[key]}</span>`
+            : `Your answer: <em>${chosen}</em> → Correct: <span class="correct-ans">${ansDisplay}</span><br>
+               <span class="explain">${EXPLAIN[key]}</span>`}
+        </div>
+      </div>`;
+  });
+
+  const scoreEl = document.getElementById('scoreBig');
+  scoreEl.textContent = `Score: ${correct} / ${allKeys.length}`;
+  scoreEl.style.color = correct === allKeys.length ? '#4ade80' : correct >= 5 ? '#fbbf24' : '#f87171';
+  document.getElementById('feedbackItems').innerHTML = html;
+  const panel = document.getElementById('feedbackPanel');
+  panel.classList.add('show');
+  panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// ── RESET ──────────────────────────────────────────────────────────
+function resetAll() {
+  ['ap-ip','ap-enc','router-ip','router-port','fw-ip'].forEach(id => {
+    const el = document.getElementById(id);
+    el.value = ''; el.className = '';
+  });
+  if (selected) {
+    document.getElementById('dev-' + selected).classList.remove('selected-to-place');
+    selected = null;
+  }
+  clearPulse();
+  Object.keys(placements).forEach(zoneId => removeDevice(zoneId));
+  placements = {};
+  dragging = null;
+  document.getElementById('feedbackPanel').classList.remove('show');
+}
+</script>
+<script src="footer.js"></script>
+</body>
+</html>

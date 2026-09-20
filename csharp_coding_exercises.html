@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>C# Coding Exercises — Real Compiler</title>
+<style>
+  :root {
+    --sage: #9CAF88;
+    --sage-dark: #7E9670;
+    --card-bg: #FFFFFF;
+    --text-dark: #2B3A2B;
+    --text-muted: #5A6B57;
+    --accent: #4C6B3E;
+
+    --vs-bg: #1E1E1E;
+    --vs-gutter-text: #6E7681;
+    --vs-titlebar: #2D2D30;
+    --vs-console-bg: #0C0C0C;
+    --vs-green: #3FB950;
+    --vs-green-dark: #2C9C42;
+    --vs-text: #D4D4D4;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background-color: var(--sage);
+    color: var(--text-dark);
+    padding-bottom: 80px;
+  }
+  header.top-bar {
+    position: sticky; top: 0; z-index: 100;
+    background-color: var(--sage-dark); color: #fff;
+    padding: 14px 24px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  }
+  header.top-bar h1 { font-size: 1.1rem; margin: 0; font-weight: 600; }
+  .score-panel { display: flex; flex-wrap: wrap; gap: 18px; font-size: 0.95rem; font-weight: 500; align-items: center; }
+  .score-panel .value { font-weight: 700; }
+  .conn-status { font-size: 0.8rem; padding: 3px 10px; border-radius: 12px; font-weight: 700; }
+  .conn-status.checking { background: #E9E2A0; color: #5A4E00; }
+  .conn-status.ok { background: #DCF3DC; color: #1B5E20; }
+  .conn-status.fail { background: #FBDEDE; color: #8E1B1B; }
+
+  main { max-width: 880px; margin: 0 auto; padding: 24px 16px; }
+
+  .intro { background-color: var(--card-bg); border-radius: 12px; padding: 20px 24px; margin-bottom: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.12); }
+  .intro h2 { margin-top: 0; color: var(--accent); }
+  .intro p { color: var(--text-muted); font-size: 0.92rem; line-height: 1.55; }
+  .intro .warn-box { margin-top: 10px; background: #FFF7E0; border-left: 4px solid #C9A227; padding: 10px 14px; border-radius: 6px; font-size: 0.85rem; color: #6b5a00; }
+
+  .exercise-card { background-color: var(--card-bg); border-radius: 12px; padding: 22px 22px 24px; margin-bottom: 22px; box-shadow: 0 2px 8px rgba(0,0,0,0.12); }
+  .ex-num { display: inline-block; background-color: var(--accent); color: #fff; font-size: 0.8rem; font-weight: 700; padding: 3px 10px; border-radius: 20px; margin-bottom: 10px; }
+  .ex-topic { display: inline-block; font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: var(--accent); margin-left: 8px; }
+  .ex-prompt { font-size: 1.0rem; font-weight: 600; margin: 6px 0 16px 0; line-height: 1.45; }
+
+  .vs-window { border-radius: 8px; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,0.35); border: 1px solid #111; }
+  .vs-titlebar {
+    background: var(--vs-titlebar); color: #ccc; font-size: 0.78rem; padding: 7px 14px;
+    display: flex; align-items: center; justify-content: space-between;
+    font-family: Consolas, "Courier New", monospace; border-bottom: 1px solid #111;
+  }
+  .vs-toolbar { display: flex; align-items: center; gap: 8px; }
+
+  .run-btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--vs-green-dark); color: #fff; border: none; border-radius: 4px;
+    padding: 5px 14px 5px 10px; font-size: 0.8rem; font-weight: 700; cursor: pointer;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  }
+  .run-btn:hover { background: var(--vs-green); }
+  .run-btn:disabled { background: #4a4a4a; color: #999; cursor: not-allowed; }
+
+  .debug-btn {
+    background: transparent; color: #ccc; border: 1px solid #555; border-radius: 4px;
+    padding: 5px 12px; font-size: 0.78rem; font-weight: 600; cursor: pointer;
+  }
+  .debug-btn:hover { background: #3a3a3d; }
+
+  .vs-editor-body { display: flex; background: var(--vs-bg); min-height: 140px; }
+  .vs-gutter {
+    background: var(--vs-bg); color: var(--vs-gutter-text);
+    font-family: Consolas, "Courier New", monospace; font-size: 0.9rem; line-height: 1.6;
+    text-align: right; padding: 10px 8px 10px 0; user-select: none;
+    width: 40px; flex-shrink: 0;
+  }
+  .vs-code-area { flex: 1; }
+  textarea.code-input {
+    display: block;
+    width: 100%;
+    min-height: 140px;
+    background: var(--vs-bg);
+    color: var(--vs-text);
+    border: none;
+    outline: none;
+    resize: vertical;
+    font-family: Consolas, "Courier New", monospace;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    padding: 10px 12px 10px 4px;
+  }
+  textarea.code-input::placeholder { color: #5A6058; }
+
+  .vs-statusbar { background: var(--sage-dark); color: #eef3ea; font-size: 0.72rem; padding: 4px 12px; font-family: Consolas, "Courier New", monospace; }
+
+  .run-status { margin-top: 8px; font-size: 0.85rem; color: var(--text-muted); font-style: italic; }
+
+  .console-window { margin-top: 14px; border-radius: 8px; overflow: hidden; border: 1px solid #111; display: none; }
+  .console-window.show { display: block; }
+  .console-tabs { background: var(--vs-titlebar); display: flex; font-family: Consolas, "Courier New", monospace; font-size: 0.75rem; }
+  .console-tab { padding: 7px 16px; color: #999; }
+  .console-tab.active { color: #fff; border-bottom: 2px solid var(--vs-green); background: rgba(255,255,255,0.03); }
+  .console-body {
+    background: var(--vs-console-bg); padding: 12px 16px;
+    font-family: Consolas, "Courier New", monospace; font-size: 0.85rem; line-height: 1.6;
+    white-space: pre-wrap; word-break: break-word;
+  }
+  .console-body .status-line { font-weight: 700; margin-bottom: 6px; }
+  .console-body.correct .status-line { color: var(--vs-green); }
+  .console-body.incorrect .status-line { color: #F14C4C; }
+  .console-body .out-block { color: #ccc; }
+  .console-body .out-label { color: #6E7681; }
+
+  .debug-panel { margin-top: 10px; border-radius: 8px; overflow: hidden; border: 1px solid #111; display: none; }
+  .debug-panel.show { display: block; }
+  .debug-tabs { background: var(--vs-titlebar); font-family: Consolas, "Courier New", monospace; font-size: 0.75rem; padding: 7px 16px; color: #fff; border-bottom: 2px solid #C9A227; }
+  .debug-body { background: #16160f; padding: 12px 16px; color: #ddd; font-size: 0.88rem; line-height: 1.6; }
+  .debug-body pre { background: rgba(255,255,255,0.06); padding: 8px 10px; border-radius: 6px; font-family: Consolas, "Courier New", monospace; font-size: 0.85rem; color: #d4d4d4; white-space: pre-wrap; margin-top: 8px; }
+</style>
+</head>
+<body>
+
+<header class="top-bar">
+  <h1>C# Coding Exercises</h1>
+  <div class="score-panel">
+    <span>Exercises Passed: <span class="value" id="passedCount">0</span>/<span id="totalCount">0</span></span>
+    <span id="connStatus" class="conn-status checking">Connecting to compiler…</span>
+  </div>
+</header>
+
+<main>
+  <div class="intro">
+    <h2>Write Real C# — Compiled and Run For Real</h2>
+    <p>This matches what you'd actually see in a real Visual Studio console project (modern top-level statements) — no <code>using System;</code>, no <code>class Program</code>, no <code>Main()</code> wrapper visible. Click into the editor at line 1 and just write your code directly, exactly like the real thing. Click <strong>&#9654; Run</strong> to send it to a real C# compiler.</p>
+    <div class="warn-box">This uses a free public compiler service — it requires an internet connection and may occasionally be slow, rate-limited, or briefly unavailable since it's not a paid/dedicated service.</div>
+  </div>
+
+  <div id="exerciseContainer"></div>
+</main>
+
+<script>
+const EXERCISES = [
+  {
+    topic: "Basics",
+    prompt: "Write one line of code that displays exactly: Hello Crazy World",
+    placeholder: 'Console.WriteLine("Hello Crazy World");',
+    expected: "Hello Crazy World",
+    solution: 'Console.WriteLine("Hello Crazy World");',
+    solutionNote: "Console.WriteLine prints text to the console and moves to a new line afterward. The text inside the double quotes must match exactly, including capitalization."
+  },
+  {
+    topic: "Basics — Variables & Interpolation",
+    prompt: "Declare an int variable named age set to 30, then print: Your age is 30 — using string interpolation.",
+    placeholder: 'int age = 30;\nConsole.WriteLine($"Your age is {age}");',
+    expected: "Your age is 30",
+    solution: 'int age = 30;\nConsole.WriteLine($"Your age is {age}");',
+    solutionNote: "The $ before the opening quote enables string interpolation, letting {age} be replaced with the variable's actual value inside the printed text."
+  },
+  {
+    topic: "Fundamentals — Arrays & foreach",
+    prompt: "Create an int array containing 4, 8, and 15 (in that order), then print each number on its own line using a foreach loop.",
+    placeholder: 'int[] nums = { 4, 8, 15 };\nforeach (int n in nums)\n{\n    Console.WriteLine(n);\n}',
+    expected: "4\n8\n15",
+    solution: 'int[] nums = { 4, 8, 15 };\nforeach (int n in nums)\n{\n    Console.WriteLine(n);\n}',
+    solutionNote: "foreach automatically walks through every element of the array in order, without needing to track an index manually."
+  },
+  {
+    topic: "Logic — If / Else",
+    prompt: "Given int x = 7, print Positive if x is greater than 0, otherwise print Not Positive.",
+    placeholder: 'int x = 7;\nif (x > 0)\n{\n    Console.WriteLine("Positive");\n}\nelse\n{\n    Console.WriteLine("Not Positive");\n}',
+    expected: "Positive",
+    solution: 'int x = 7;\nif (x > 0)\n{\n    Console.WriteLine("Positive");\n}\nelse\n{\n    Console.WriteLine("Not Positive");\n}',
+    solutionNote: "Since x (7) is greater than 0, the if branch runs and prints \"Positive\" -- the else branch is skipped entirely."
+  },
+  {
+    topic: "Logic — Loops",
+    prompt: "Print the numbers 1 through 5, each on its own line, using a for loop.",
+    placeholder: 'for (int i = 1; i <= 5; i++)\n{\n    Console.WriteLine(i);\n}',
+    expected: "1\n2\n3\n4\n5",
+    solution: 'for (int i = 1; i <= 5; i++)\n{\n    Console.WriteLine(i);\n}',
+    solutionNote: "The loop starts at i=1, keeps running while i<=5, and increments i by 1 each pass -- printing 1,2,3,4,5 in order."
+  },
+  {
+    topic: "Variables — Casting & Conversion",
+    prompt: "Convert the double value 9.75 into an int using a cast, then print the result.",
+    placeholder: 'double d = 9.75;\nint i = (int)d;\nConsole.WriteLine(i);',
+    expected: "9",
+    solution: 'double d = 9.75;\nint i = (int)d;\nConsole.WriteLine(i);',
+    solutionNote: "Casting a double to an int truncates (cuts off) the decimal portion rather than rounding -- 9.75 becomes 9, not 10."
+  },
+  {
+    topic: "Methods — Parameters & Return Values",
+    prompt: "Write a method named AddNumbers that takes two ints and returns their sum. Call it with 4 and 60, then print the result.",
+    placeholder: 'int AddNumbers(int a, int b)\n{\n    return a + b;\n}\nConsole.WriteLine(AddNumbers(4, 60));',
+    expected: "64",
+    solution: 'int AddNumbers(int a, int b)\n{\n    return a + b;\n}\nConsole.WriteLine(AddNumbers(4, 60));',
+    solutionNote: "C# allows a local method to be defined right here, at the top level. AddNumbers takes two int parameters and returns their sum via the return keyword."
+  },
+  {
+    topic: "Debugging — Exception Handling",
+    prompt: "Inside a try block, attempt to divide 10 by 0. Catch the DivideByZeroException and print: Cannot divide by zero",
+    placeholder: 'try\n{\n    int result = 10 / 0;\n    Console.WriteLine(result);\n}\ncatch (DivideByZeroException)\n{\n    Console.WriteLine("Cannot divide by zero");\n}',
+    expected: "Cannot divide by zero",
+    solution: 'try\n{\n    int result = 10 / 0;\n    Console.WriteLine(result);\n}\ncatch (DivideByZeroException)\n{\n    Console.WriteLine("Cannot divide by zero");\n}',
+    solutionNote: "Dividing an int by zero throws a DivideByZeroException at runtime. The catch block intercepts it before the program crashes, printing the message instead."
+  },
+];
+
+const JUDGE0_BASE = "https://ce.judge0.com";
+let LANGUAGE_ID = null;
+
+const container = document.getElementById("exerciseContainer");
+const passedCountEl = document.getElementById("passedCount");
+const totalCountEl = document.getElementById("totalCount");
+const connStatusEl = document.getElementById("connStatus");
+totalCountEl.textContent = EXERCISES.length;
+const passedSet = new Set();
+
+function escapeHtml(text) {
+  return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+function formatInline(text) {
+  return escapeHtml(text).replace(/`([^`]+)`/g, "<code>$1</code>");
+}
+function escapeAttr(text) {
+  return escapeHtml(text).replace(/"/g, "&quot;");
+}
+function updatePassedScore() { passedCountEl.textContent = passedSet.size; }
+
+// Wrapping is invisible to the user -- exactly like how real top-level
+// statements compile down to a hidden Main() under the hood.
+function buildFullSource(userSnippet) {
+  return "using System;\n\nclass Program\n{\n    static void Main()\n    {\n" + userSnippet + "\n    }\n}\n";
+}
+
+function renderGutter(gutterEl, lineCount) {
+  var n = Math.max(lineCount, 6);
+  var html = "";
+  for (var i = 1; i <= n; i++) html += i + "<br>";
+  gutterEl.innerHTML = html;
+}
+
+async function detectLanguageId() {
+  try {
+    const res = await fetch(JUDGE0_BASE + "/languages");
+    if (!res.ok) throw new Error("Bad response " + res.status);
+    const langs = await res.json();
+    const mono = langs.find(l => /C#.*Mono/i.test(l.name));
+    const anyCsharp = langs.find(l => /^C#/i.test(l.name));
+    LANGUAGE_ID = (mono || anyCsharp || {}).id;
+    if (!LANGUAGE_ID) throw new Error("No C# runtime found");
+    connStatusEl.textContent = "Compiler connected";
+    connStatusEl.className = "conn-status ok";
+    document.querySelectorAll(".run-btn").forEach(b => b.disabled = false);
+  } catch (err) {
+    connStatusEl.textContent = "Compiler unavailable";
+    connStatusEl.className = "conn-status fail";
+    document.querySelectorAll(".run-status").forEach(el => {
+      el.textContent = "Could not reach the compiler service. Check your internet connection, or the free demo service may be temporarily down/rate-limited.";
+    });
+  }
+}
+
+async function runExercise(idx, card) {
+  const ex = EXERCISES[idx];
+  const textarea = card.querySelector(".code-input");
+  const runBtn = card.querySelector(".run-btn");
+  const statusEl = card.querySelector(".run-status");
+  const consoleWindow = card.querySelector(".console-window");
+  const consoleBody = card.querySelector(".console-body");
+
+  if (!LANGUAGE_ID) { statusEl.textContent = "Compiler not connected yet."; return; }
+  if (!textarea.value.trim()) { statusEl.textContent = "Type your code in the editor first."; return; }
+
+  runBtn.disabled = true;
+  statusEl.textContent = "Compiling and running…";
+  consoleWindow.classList.remove("show");
+  consoleBody.className = "console-body";
+
+  const fullSource = buildFullSource(textarea.value);
+
+  try {
+    const res = await fetch(JUDGE0_BASE + "/submissions?base64_encoded=false&wait=true", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ source_code: fullSource, language_id: LANGUAGE_ID, stdin: "" })
+    });
+    if (!res.ok) throw new Error("HTTP " + res.status);
+    const data = await res.json();
+
+    statusEl.textContent = "";
+    runBtn.disabled = false;
+    consoleWindow.classList.add("show");
+
+    const compileErr = (data.compile_output || "").trim();
+    const runtimeErr = (data.stderr || "").trim();
+    const stdout = (data.stdout || "").trim();
+
+    if (compileErr) {
+      consoleBody.classList.add("incorrect");
+      consoleBody.innerHTML = '<div class="status-line">Build Failed</div><span class="out-label">Compiler output:</span>\n<div class="out-block">' + escapeHtml(compileErr) + '</div>';
+      return;
+    }
+    if (runtimeErr) {
+      consoleBody.classList.add("incorrect");
+      consoleBody.innerHTML = '<div class="status-line">Unhandled Exception</div><span class="out-label">Runtime error:</span>\n<div class="out-block">' + escapeHtml(runtimeErr) + '</div>';
+      return;
+    }
+    if (stdout === ex.expected.trim()) {
+      consoleBody.classList.add("correct");
+      consoleBody.innerHTML = '<div class="status-line">Correct — program exited with code 0</div><span class="out-label">Output:</span>\n<div class="out-block">' + escapeHtml(stdout) + '</div>';
+      passedSet.add(idx);
+      updatePassedScore();
+    } else {
+      consoleBody.classList.add("incorrect");
+      consoleBody.innerHTML = '<div class="status-line">Incorrect Output</div><span class="out-label">Your output:</span>\n<div class="out-block">' + escapeHtml(stdout || "(nothing printed)") + '</div>\n<span class="out-label">Expected:</span>\n<div class="out-block">' + escapeHtml(ex.expected) + '</div>';
+    }
+  } catch (err) {
+    runBtn.disabled = false;
+    statusEl.textContent = "";
+    consoleWindow.classList.add("show");
+    consoleBody.classList.add("incorrect");
+    consoleBody.innerHTML = '<div class="status-line">Connection Error</div><div class="out-block">Could not reach the compiler service. Check your internet connection and try again.</div>';
+  }
+}
+
+function buildExercises() {
+  EXERCISES.forEach((ex, idx) => {
+    const card = document.createElement("div");
+    card.className = "exercise-card";
+
+    const numBadge = document.createElement("div");
+    numBadge.innerHTML = '<span class="ex-num">Exercise ' + (idx + 1) + '</span><span class="ex-topic">' + escapeHtml(ex.topic) + '</span>';
+    card.appendChild(numBadge);
+
+    const promptEl = document.createElement("p");
+    promptEl.className = "ex-prompt";
+    promptEl.innerHTML = formatInline(ex.prompt);
+    card.appendChild(promptEl);
+
+    const vsWindow = document.createElement("div");
+    vsWindow.className = "vs-window";
+    vsWindow.innerHTML =
+      '<div class="vs-titlebar">' +
+        '<span>Program.cs</span>' +
+        '<div class="vs-toolbar">' +
+          '<button class="run-btn" disabled>&#9654; Run</button>' +
+          '<button class="debug-btn">Debug</button>' +
+        '</div>' +
+      '</div>' +
+      '<div class="vs-editor-body">' +
+        '<div class="vs-gutter">1</div>' +
+        '<div class="vs-code-area">' +
+          '<textarea class="code-input" spellcheck="false" placeholder="' + escapeAttr(ex.placeholder.split("\n")[0]) + '"></textarea>' +
+        '</div>' +
+      '</div>' +
+      '<div class="vs-statusbar">C#  |  .NET  |  UTF-8</div>';
+    card.appendChild(vsWindow);
+
+    const statusEl = document.createElement("div");
+    statusEl.className = "run-status";
+    card.appendChild(statusEl);
+
+    const consoleWindow = document.createElement("div");
+    consoleWindow.className = "console-window";
+    consoleWindow.innerHTML =
+      '<div class="console-tabs"><div class="console-tab active">Output</div></div>' +
+      '<div class="console-body"></div>';
+    card.appendChild(consoleWindow);
+
+    const debugPanel = document.createElement("div");
+    debugPanel.className = "debug-panel";
+    debugPanel.innerHTML =
+      '<div class="debug-tabs">Debug — Working Solution</div>' +
+      '<div class="debug-body">' + formatInline(ex.solutionNote) + '<pre>' + escapeHtml(ex.solution) + '</pre></div>';
+    card.appendChild(debugPanel);
+
+    container.appendChild(card);
+
+    const textarea = vsWindow.querySelector(".code-input");
+    const gutter = vsWindow.querySelector(".vs-gutter");
+    const runBtn = vsWindow.querySelector(".run-btn");
+    const debugBtn = vsWindow.querySelector(".debug-btn");
+
+    textarea.addEventListener("input", () => {
+      renderGutter(gutter, textarea.value.split("\n").length);
+    });
+    textarea.addEventListener("keydown", (e) => {
+      if (e.key === "Tab") {
+        e.preventDefault();
+        const start = textarea.selectionStart, end = textarea.selectionEnd;
+        textarea.value = textarea.value.slice(0, start) + "    " + textarea.value.slice(end);
+        textarea.selectionStart = textarea.selectionEnd = start + 4;
+      }
+    });
+
+    runBtn.addEventListener("click", () => runExercise(idx, card));
+    debugBtn.addEventListener("click", () => {
+      debugPanel.classList.toggle("show");
+      debugBtn.textContent = debugPanel.classList.contains("show") ? "Hide Debug" : "Debug";
+    });
+  });
+}
+
+buildExercises();
+detectLanguageId();
+</script>
+
+</body>
+</html>

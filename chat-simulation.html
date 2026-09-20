@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>CompTIA Core 2 — Chat Troubleshooting Simulation</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: Arial, sans-serif; background: #1a1a2e; color: #fff; font-size: 13px; }
+
+/* TOP BAR */
+.topbar {
+  background: #003580; padding: 10px 20px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.topbar h1 { font-size: 14px; font-weight: bold; }
+.topbar p  { font-size: 11px; color: #b0c8ff; margin-top: 2px; }
+.btn { padding: 7px 16px; border: none; border-radius: 4px; font-size: 12px; font-weight: bold; cursor: pointer; }
+.btn-gray { background: #ccc; color: #333; }
+.btn-gray:hover { background: #bbb; }
+
+/* SCENARIO */
+.scenario {
+  background: #1a2a4a; border-bottom: 2px solid #2255aa;
+  padding: 8px 20px; font-size: 12px; color: #c8d8ff; line-height: 1.5;
+}
+.scenario strong { color: #ffd700; }
+
+/* MAIN LAYOUT */
+.main {
+  display: flex; height: calc(100vh - 95px);
+}
+
+/* CHAT WINDOW */
+.chat-window {
+  flex: 1; display: flex; flex-direction: column;
+  background: #2a2a3a; border-right: 2px solid #3a3a5a;
+}
+.chat-header {
+  background: #1a1a2e; border-bottom: 1px solid #3a3a5a;
+  padding: 8px 14px; font-size: 12px; color: #94a3b8;
+  display: flex; align-items: center; gap: 8px;
+}
+.online-dot { width: 8px; height: 8px; border-radius: 50%; background: #22c55e; }
+.chat-messages {
+  flex: 1; overflow-y: auto; padding: 16px 14px;
+  display: flex; flex-direction: column; gap: 10px;
+}
+
+/* BUBBLES */
+.msg-row {
+  display: flex; align-items: flex-end; gap: 8px;
+  animation: fadeIn 0.3s ease;
+}
+@keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+.msg-row.user { flex-direction: row; }
+.msg-row.tech { flex-direction: row-reverse; }
+
+.avatar {
+  width: 32px; height: 32px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; flex-shrink: 0;
+}
+.avatar.user-av { background: #4a5568; }
+.avatar.tech-av { background: #2255aa; }
+
+.bubble {
+  max-width: 65%; padding: 9px 13px; border-radius: 16px;
+  font-size: 12px; line-height: 1.5; position: relative;
+}
+.bubble.user { background: #3db562; color: white; border-bottom-left-radius: 4px; }
+.bubble.tech  { background: #4a5568; color: white; border-bottom-right-radius: 4px; }
+
+/* Settings card inside bubble */
+.settings-card {
+  background: white; color: #000; border-radius: 8px;
+  overflow: hidden; margin-top: 6px; min-width: 240px;
+  border: 2px solid #e2e8f0;
+}
+.settings-card-header {
+  background: #f1f5f9; padding: 5px 10px;
+  font-size: 10px; font-weight: bold; color: #64748b;
+  text-transform: uppercase; letter-spacing: 0.05em;
+  border-bottom: 1px solid #e2e8f0;
+}
+.settings-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 7px 10px; border-bottom: 1px solid #f1f5f9;
+  font-size: 12px;
+}
+.settings-row:last-child { border-bottom: none; }
+.settings-label { color: #374151; font-weight: 500; }
+.settings-value { color: #6b7280; display: flex; align-items: center; gap: 4px; }
+.settings-value.wrong { color: #dc2626; font-weight: bold; }
+.settings-value .arrow { color: #9ca3af; font-size: 10px; }
+
+/* Typing indicator */
+.typing { display: flex; align-items: center; gap: 4px; padding: 8px 12px; }
+.typing span {
+  width: 7px; height: 7px; border-radius: 50%; background: #94a3b8;
+  animation: bounce 1s infinite;
+}
+.typing span:nth-child(2) { animation-delay: 0.15s; }
+.typing span:nth-child(3) { animation-delay: 0.3s; }
+@keyframes bounce { 0%,60%,100% { transform: translateY(0); } 30% { transform: translateY(-5px); } }
+
+/* RESPONSE PANEL */
+.response-panel {
+  width: 320px; background: #1a2a4a;
+  display: flex; flex-direction: column;
+  border-left: 2px solid #2255aa;
+}
+.response-header {
+  background: #2255aa; padding: 8px 14px;
+  font-size: 12px; font-weight: bold; color: #fff;
+  border-bottom: 1px solid #3a6aee;
+}
+.response-body { flex: 1; overflow-y: auto; padding: 12px; }
+.response-prompt {
+  background: #0f1f3a; border-radius: 6px;
+  padding: 10px 12px; margin-bottom: 10px;
+  font-size: 12px; color: #94a3b8; line-height: 1.5;
+  border-left: 3px solid #3b6fff;
+}
+.response-prompt strong { color: #ffd700; display: block; margin-bottom: 4px; }
+
+.choice-btn {
+  width: 100%; text-align: left;
+  background: #0f1f3a; border: 2px solid #2a3a6a;
+  color: #c8d8ff; border-radius: 6px;
+  padding: 9px 12px; margin-bottom: 7px;
+  font-size: 12px; line-height: 1.4; cursor: pointer;
+  transition: all 0.15s;
+}
+.choice-btn:hover:not(:disabled) { background: #1a3a6a; border-color: #4466cc; color: #fff; }
+.choice-btn.correct { background: #0f2a1a; border-color: #16a34a; color: #4ade80; font-weight: bold; }
+.choice-btn.wrong   { background: #2a0f0f; border-color: #dc2626; color: #f87171; }
+.choice-btn:disabled { cursor: default; }
+
+.feedback-msg {
+  border-radius: 6px; padding: 8px 12px; margin-bottom: 10px;
+  font-size: 12px; line-height: 1.5; display: none;
+}
+.feedback-msg.show { display: block; }
+.feedback-msg.correct { background: #0f2a1a; border: 1px solid #16a34a; color: #4ade80; }
+.feedback-msg.wrong   { background: #2a0f0f; border: 1px solid #dc2626; color: #f87171; }
+
+.btn-next {
+  width: 100%; background: #2255aa; color: white;
+  border: none; border-radius: 6px; padding: 9px;
+  font-size: 13px; font-weight: bold; cursor: pointer;
+  margin-top: 4px; display: none; transition: background 0.15s;
+}
+.btn-next.show { display: block; }
+.btn-next:hover { background: #3366cc; }
+
+/* SCORE BAR */
+.score-bar {
+  background: #0f1f3a; border-top: 1px solid #2a3a6a;
+  padding: 8px 12px; display: flex; gap: 16px; align-items: center;
+}
+.score-item { font-size: 11px; }
+.score-item span { font-weight: bold; font-size: 14px; }
+.score-item.c span { color: #4ade80; }
+.score-item.w span { color: #f87171; }
+
+/* COMPLETE BANNER */
+.complete-banner {
+  background: #0f2a1a; border: 2px solid #16a34a;
+  border-radius: 8px; padding: 16px; text-align: center;
+  display: none; margin-bottom: 10px;
+}
+.complete-banner.show { display: block; }
+.complete-banner h3 { color: #4ade80; font-size: 16px; margin-bottom: 6px; }
+.complete-banner p  { color: #86efac; font-size: 12px; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div>
+    <h1>CompTIA A+ Core 2 — Chat Troubleshooting Simulation</h1>
+    <p>Play the role of the technician — select the correct response at each step</p>
+  </div>
+  <button class="btn btn-gray" onclick="resetSim()">↺ Reset</button>
+</div>
+
+<div class="scenario">
+  <strong>SCENARIO:</strong> A user contacts the help desk reporting their email is down on their phone.
+  You are the technician. Read each message and <strong>select the correct technician response</strong> from the panel on the right.
+</div>
+
+<div class="main">
+
+  <!-- CHAT -->
+  <div class="chat-window">
+    <div class="chat-header">
+      <div class="online-dot"></div>
+      Help Desk Chat — Active Session
+    </div>
+    <div class="chat-messages" id="chatMessages">
+      <!-- messages injected here -->
+    </div>
+  </div>
+
+  <!-- RESPONSE PANEL -->
+  <div class="response-panel">
+    <div class="response-header">🖊 Your Response as Technician</div>
+    <div class="response-body" id="responseBody">
+      <div class="response-prompt">
+        <strong>Instructions</strong>
+        Read the conversation on the left. Select the best technician response from the choices below.
+      </div>
+    </div>
+    <div class="score-bar">
+      <div class="score-item c">Correct: <span id="scoreC">0</span></div>
+      <div class="score-item w">Wrong: <span id="scoreW">0</span></div>
+      <div style="font-size:11px;color:#64748b;margin-left:auto;" id="stepIndicator">Step 0 of 4</div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ── SCENARIO DATA ──────────────────────────────────────────────────
+// Each step:
+//   messages: array of chat bubbles to ADD at this step
+//   prompt:   question shown to student
+//   choices:  [{text, correct, feedback}]
+
+const scenario = [
+  // STEP 0 — first user message appears, student picks opening response
+  {
+    messages: [
+      { from: 'user', text: 'Email is currently down!' }
+    ],
+    prompt: 'The user has opened a chat. What is your first response as the technician?',
+    choices: [
+      {
+        text: 'Good afternoon, I will be happy to assist you with your email.',
+        correct: true,
+        feedback: '✅ Correct! A professional, polite greeting acknowledges the issue and sets a helpful tone.'
+      },
+      {
+        text: 'Have you tried restarting your device?',
+        correct: false,
+        feedback: '❌ Not quite. You should greet the user professionally before jumping to troubleshooting steps.'
+      },
+      {
+        text: 'Email outages are handled by a different department.',
+        correct: false,
+        feedback: '❌ Incorrect. Do not redirect without first gathering information about the issue.'
+      },
+      {
+        text: 'What is your employee ID number?',
+        correct: false,
+        feedback: '❌ Incorrect. Leading with an ID request is not the appropriate first response to a reported outage.'
+      }
+    ]
+  },
+
+  // STEP 1 — user explains urgency, student asks about device
+  {
+    messages: [
+      { from: 'tech', text: 'Good afternoon, I will be happy to assist you with your email.' },
+      { from: 'user', text: 'This needs to be fixed ASAP as I am unable to access urgent emails through my phone.' }
+    ],
+    prompt: 'The user says they cannot access email on their phone. What do you ask next?',
+    choices: [
+      {
+        text: 'I will be glad to help, but first I need to know what type of device you are using.',
+        correct: true,
+        feedback: '✅ Correct! Identifying the device type is essential before troubleshooting email settings.'
+      },
+      {
+        text: 'Please submit a formal ticket and we will respond within 48 hours.',
+        correct: false,
+        feedback: '❌ Incorrect. The user indicated urgency — dismissing them to a ticket queue is not appropriate here.'
+      },
+      {
+        text: 'Your email password may have expired.',
+        correct: false,
+        feedback: '❌ Incorrect. Do not assume the cause before gathering device information.'
+      },
+      {
+        text: 'Is your Wi-Fi turned on?',
+        correct: false,
+        feedback: '❌ Incorrect. You need to identify the device type first before troubleshooting connectivity.'
+      }
+    ]
+  },
+
+  // STEP 2 — user identifies device, student asks to see settings
+  {
+    messages: [
+      { from: 'tech', text: 'I will be glad to help, but first I need to know what type of device you are using.' },
+      { from: 'user', text: 'I recently received a phone from Telecom.' }
+    ],
+    prompt: 'The user says they have a Telecom phone. What is the best next step?',
+    choices: [
+      {
+        text: "Let's take a look at your phone settings.",
+        correct: true,
+        feedback: '✅ Correct! Asking the user to share their settings lets you identify the misconfiguration directly.'
+      },
+      {
+        text: 'Telecom phones are not supported by our help desk.',
+        correct: false,
+        feedback: '❌ Incorrect. Do not turn the user away without investigating the issue.'
+      },
+      {
+        text: 'You need to contact Telecom support instead.',
+        correct: false,
+        feedback: '❌ Incorrect. The email configuration issue is something you can troubleshoot regardless of the phone brand.'
+      },
+      {
+        text: 'Please uninstall and reinstall your email app.',
+        correct: false,
+        feedback: '❌ Incorrect. Do not recommend drastic steps before reviewing the current configuration.'
+      }
+    ]
+  },
+
+  // STEP 3 — user shares settings screenshot, student identifies the fix
+  {
+    messages: [
+      { from: 'tech', text: "Let's take a look at your phone settings." },
+      {
+        from: 'user',
+        text: 'I updated my phone last night to the latest update, here is a screenshot of my settings.',
+        card: {
+          header: 'INCOMING SERVER',
+          rows: [
+            { label: 'Protocol',       value: 'IMAP',      wrong: false },
+            { label: 'Security',       value: 'SSL',       wrong: false },
+            { label: 'Server Address', value: '10.0.200.1',wrong: false },
+            { label: 'Port',           value: '100',       wrong: true  },
+          ]
+        }
+      }
+    ],
+    prompt: 'You can see the user\'s incoming mail settings. The Port is set to 100. What is the correct response?',
+    choices: [
+      {
+        text: 'Please change the port number on your mail settings to 993.',
+        correct: true,
+        feedback: '✅ Correct! IMAP with SSL uses port 993. Port 100 is incorrect and is causing the email failure.'
+      },
+      {
+        text: 'Your protocol should be POP3, not IMAP.',
+        correct: false,
+        feedback: '❌ Incorrect. IMAP is the correct protocol. The issue is the port number, not the protocol.'
+      },
+      {
+        text: 'The SSL security setting is causing the problem. Disable it.',
+        correct: false,
+        feedback: '❌ Incorrect. SSL is correct for secure IMAP. The port (100) is the only misconfiguration.'
+      },
+      {
+        text: 'Change the server address to 192.168.1.1.',
+        correct: false,
+        feedback: '❌ Incorrect. The server address is not the issue. The port number needs to be changed to 993.'
+      }
+    ]
+  }
+];
+
+// ── STATE ──────────────────────────────────────────────────────────
+let currentStep = 0;
+let scoreC = 0, scoreW = 0;
+let answered = false;
+let lastAnswerCorrect = false;
+
+// ── INIT ───────────────────────────────────────────────────────────
+function init() {
+  document.getElementById('chatMessages').innerHTML = '';
+  currentStep = 0; scoreC = 0; scoreW = 0; answered = false; lastAnswerCorrect = false;
+  updateScore();
+  showStep(0);
+}
+
+function showStep(stepIdx) {
+  document.getElementById('stepIndicator').textContent = `Step ${stepIdx + 1} of ${scenario.length}`;
+  answered = false;
+
+  // Add messages for this step
+  // If the previous step was answered correctly, the tech response bubble
+  // was already appended by selectChoice — skip it to avoid duplicates.
+  let msgs = scenario[stepIdx].messages;
+  if (stepIdx > 0 && lastAnswerCorrect && msgs.length > 0 && msgs[0].from === 'tech') {
+    msgs = msgs.slice(1);
+  }
+  msgs.forEach((m, i) => {
+    setTimeout(() => addMessage(m), i * 400);
+  });
+
+  // Show choices after messages appear
+  setTimeout(() => renderChoices(stepIdx), msgs.length * 400 + 200);
+}
+
+function addMessage(msg) {
+  const container = document.getElementById('chatMessages');
+
+  const row = document.createElement('div');
+  row.className = `msg-row ${msg.from}`;
+
+  const av = document.createElement('div');
+  av.className = `avatar ${msg.from === 'user' ? 'user-av' : 'tech-av'}`;
+  av.textContent = msg.from === 'user' ? '👤' : '🎧';
+
+  const bubble = document.createElement('div');
+  bubble.className = `bubble ${msg.from}`;
+  bubble.textContent = msg.text;
+
+  // Settings card
+  if (msg.card) {
+    const card = document.createElement('div');
+    card.className = 'settings-card';
+    card.innerHTML = `<div class="settings-card-header">${msg.card.header}</div>` +
+      msg.card.rows.map(r => `
+        <div class="settings-row">
+          <span class="settings-label">${r.label}</span>
+          <span class="settings-value ${r.wrong ? 'wrong' : ''}">
+            ${r.value} <span class="arrow">›</span>
+            ${r.wrong ? '<span style="font-size:10px;color:#dc2626;margin-left:4px;">⚠ Wrong port</span>' : ''}
+          </span>
+        </div>`).join('');
+    bubble.appendChild(card);
+  }
+
+  row.appendChild(av);
+  row.appendChild(bubble);
+  container.appendChild(row);
+  container.scrollTop = container.scrollHeight;
+}
+
+function renderChoices(stepIdx) {
+  const step = scenario[stepIdx];
+  const body = document.getElementById('responseBody');
+
+  body.innerHTML = `
+    <div class="complete-banner" id="completeBanner"></div>
+    <div class="response-prompt">
+      <strong>Your turn — Step ${stepIdx + 1} of ${scenario.length}</strong>
+      ${step.prompt}
+    </div>
+    <div id="choicesList"></div>
+    <div class="feedback-msg" id="feedbackMsg"></div>
+    <button class="btn-next" id="btnNext" onclick="nextStep()">
+      ${stepIdx < scenario.length - 1 ? 'Next →' : 'See Final Score'}
+    </button>`;
+
+  const list = document.getElementById('choicesList');
+  // Shuffle choices so correct answer isn't always in same position
+  const shuffled = step.choices
+    .map((c, i) => ({ ...c, origIdx: i }))
+    .sort(() => Math.random() - 0.5);
+
+  shuffled.forEach((c, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'choice-btn';
+    btn.textContent = c.text;
+    btn.onclick = () => selectChoice(c.origIdx, stepIdx);
+    list.appendChild(btn);
+  });
+}
+
+function selectChoice(choiceIdx, stepIdx) {
+  if (answered) return;
+  answered = true;
+
+  const step     = scenario[stepIdx];
+  const choice   = step.choices[choiceIdx];
+  const buttons  = document.querySelectorAll('.choice-btn');
+  const feedback = document.getElementById('feedbackMsg');
+  const btnNext  = document.getElementById('btnNext');
+
+  // Color all buttons — match button text to choices
+  buttons.forEach((btn) => {
+    btn.disabled = true;
+    const match = step.choices.find(c => c.text === btn.textContent);
+    if (match && match.correct) btn.classList.add('correct');
+    else if (btn.textContent === choice.text && !choice.correct) btn.classList.add('wrong');
+  });
+
+  // Feedback
+  feedback.textContent = choice.feedback;
+  feedback.className   = `feedback-msg show ${choice.correct ? 'correct' : 'wrong'}`;
+
+  // Score
+  if (choice.correct) scoreC++;
+  else scoreW++;
+  updateScore();
+
+  // Track whether this answer was correct so the next step
+  // can skip the duplicate tech message if it was already shown.
+  lastAnswerCorrect = choice.correct;
+
+  // If correct, add tech bubble to chat
+  if (choice.correct) {
+    setTimeout(() => {
+      addMessage({ from: 'tech', text: choice.text });
+      // Add user thanks on last step
+      if (stepIdx === scenario.length - 1) {
+        setTimeout(() => {
+          addMessage({ from: 'user', text: 'Thanks for helping.' });
+        }, 600);
+      }
+    }, 300);
+  }
+
+  btnNext.classList.add('show');
+}
+
+function nextStep() {
+  currentStep++;
+  if (currentStep >= scenario.length) {
+    showComplete();
+    return;
+  }
+  showStep(currentStep);
+}
+
+function showComplete() {
+  const body = document.getElementById('responseBody');
+  const total = scenario.length;
+  const pct   = Math.round((scoreC / total) * 100);
+  body.innerHTML = `
+    <div class="complete-banner show">
+      <h3>${pct === 100 ? '🎉 Perfect Score!' : pct >= 75 ? '✅ Good Job!' : '📚 Keep Practicing'}</h3>
+      <p style="font-size:16px;font-weight:bold;color:#fff;margin:8px 0;">${scoreC} / ${total} Correct (${pct}%)</p>
+      <p>The key issue was Port 100 → should be <strong style="color:#4ade80;">993</strong> (Secure IMAP over SSL).</p>
+    </div>
+    <div style="margin-top:12px;">
+      <div style="background:#0f1f3a;border-radius:6px;padding:12px;font-size:12px;color:#94a3b8;line-height:1.6;">
+        <strong style="color:#ffd700;display:block;margin-bottom:6px;">📖 Key Facts to Remember</strong>
+        • IMAP (Secure) = Port <strong style="color:#4ade80;">993</strong> with SSL<br>
+        • IMAP (Standard) = Port 143<br>
+        • POP3 (Secure) = Port 995<br>
+        • SMTP (Secure) = Port 465 or 587<br>
+        • Always identify the <strong style="color:#ffd700;">device type</strong> before troubleshooting<br>
+        • Check <strong style="color:#ffd700;">port numbers</strong> when email fails after an update
+      </div>
+    </div>
+    <button class="btn-next show" style="margin-top:10px;" onclick="resetSim()">↺ Try Again</button>`;
+}
+
+function updateScore() {
+  document.getElementById('scoreC').textContent = scoreC;
+  document.getElementById('scoreW').textContent = scoreW;
+}
+
+function resetSim() {
+  scoreC = 0; scoreW = 0;
+  init();
+}
+
+// Start
+init();
+</script>
+<script src="footer.js"></script>
+</body>
+</html>

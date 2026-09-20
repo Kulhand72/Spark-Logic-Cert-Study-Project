@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>CompTIA Core 2 — Helpdesk Ticket Simulation</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: Arial, sans-serif; background: #1a1a2e; color: #fff; font-size: 13px; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+
+/* TOP BAR */
+.topbar {
+  background: #003580; padding: 8px 16px;
+  display: flex; align-items: center; justify-content: space-between;
+  flex-shrink: 0;
+}
+.topbar h1 { font-size: 14px; font-weight: bold; }
+.topbar p  { font-size: 11px; color: #b0c8ff; margin-top: 1px; }
+.btn { padding: 6px 14px; border: none; border-radius: 4px; font-size: 12px; font-weight: bold; cursor: pointer; }
+.btn-gray  { background: #ccc; color: #333; }
+.btn-gray:hover { background: #bbb; }
+
+/* SCENARIO */
+.scenario {
+  background: #1a2a4a; border-bottom: 2px solid #2255aa;
+  padding: 7px 16px; font-size: 12px; color: #c8d8ff; line-height: 1.5; flex-shrink: 0;
+}
+.scenario strong { color: #ffd700; }
+
+/* MAIN */
+.main { display: flex; flex: 1; overflow: hidden; }
+
+/* ── LEFT SIDEBAR ── */
+.sidebar {
+  width: 150px; background: #111827; border-right: 1px solid #2a3a5a;
+  display: flex; flex-direction: column; flex-shrink: 0; overflow-y: auto;
+}
+.sidebar-icon-row {
+  display: flex; flex-direction: column; align-items: center;
+  padding: 12px 0; gap: 16px; border-bottom: 1px solid #2a3a5a;
+}
+.sidebar-icon {
+  width: 36px; height: 36px; border-radius: 6px;
+  background: #1e293b; display: flex; align-items: center; justify-content: center;
+  font-size: 16px; cursor: pointer; transition: background 0.15s;
+}
+.sidebar-icon:hover { background: #2e3f5a; }
+.sidebar-icon.active { background: #2255aa; }
+
+.sidebar-section { padding: 12px 14px; }
+.sidebar-section h4 { font-size: 10px; color: #64748b; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px; }
+.status-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 3px 0; font-size: 12px; color: #94a3b8;
+}
+.status-row .count {
+  background: #1e293b; border-radius: 10px;
+  padding: 1px 7px; font-size: 11px; font-weight: bold; color: #c8d8ff;
+  min-width: 22px; text-align: center;
+}
+.status-row .count.green { background: #166534; color: #4ade80; }
+.status-row .count.red   { background: #7f1d1d; color: #f87171; }
+
+/* ── TICKET LIST ── */
+.ticket-list {
+  width: 280px; background: #1e293b; border-right: 1px solid #2a3a5a;
+  display: flex; flex-direction: column; flex-shrink: 0;
+}
+.ticket-list-header {
+  background: #1a2a4a; border-bottom: 1px solid #2a3a5a;
+  padding: 10px 14px;
+}
+.ticket-list-header h3 { font-size: 13px; font-weight: bold; color: #fff; }
+.ticket-cols {
+  display: grid; grid-template-columns: 1fr 90px 70px;
+  padding: 6px 14px; border-bottom: 1px solid #2a3a5a;
+  font-size: 11px; color: #64748b; font-weight: bold;
+}
+.ticket-items { flex: 1; overflow-y: auto; }
+
+.ticket-item {
+  padding: 10px 14px; border-bottom: 1px solid #2a3a5a;
+  cursor: pointer; transition: background 0.1s;
+  display: grid; grid-template-columns: 1fr 90px 70px;
+  align-items: center; gap: 4px;
+}
+.ticket-item:hover { background: #273548; }
+.ticket-item.active { background: #1e3a6a; border-left: 3px solid #3b6fff; }
+.ticket-item.closed { opacity: 0.5; }
+.ticket-subject { font-size: 12px; color: #e2e8f0; line-height: 1.3; }
+.ticket-id      { font-size: 10px; color: #64748b; margin-top: 2px; }
+.ticket-date    { font-size: 11px; color: #94a3b8; }
+.priority-badge {
+  padding: 2px 8px; border-radius: 3px;
+  font-size: 10px; font-weight: bold; text-align: center;
+}
+.priority-badge.high { background: #dc2626; color: white; }
+.priority-badge.low  { background: #374151; color: #9ca3af; }
+.priority-badge.closed-badge { background: #166534; color: #4ade80; }
+
+/* ── DETAILS PANEL ── */
+.details-panel {
+  flex: 1; background: #f8fafc; color: #111; overflow-y: auto;
+  display: flex; flex-direction: column;
+}
+.details-empty {
+  flex: 1; display: flex; align-items: center; justify-content: center;
+  color: #94a3b8; font-size: 14px;
+}
+.details-content { padding: 16px; flex: 1; }
+
+.detail-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 14px; }
+.ticket-num { font-size: 16px; font-weight: bold; color: #111; }
+.ticket-status-badge {
+  padding: 3px 10px; border-radius: 4px;
+  font-size: 12px; font-weight: bold;
+  background: #dbeafe; color: #1e40af;
+}
+.ticket-status-badge.open   { background: #dbeafe; color: #1e40af; }
+.ticket-status-badge.closed { background: #dcfce7; color: #166534; }
+
+.detail-grid {
+  display: grid; grid-template-columns: 120px 1fr;
+  gap: 5px 10px; margin-bottom: 14px;
+  background: #f1f5f9; border-radius: 6px; padding: 10px 12px;
+  font-size: 12px;
+}
+.detail-label { color: #64748b; font-weight: 500; }
+.detail-value { color: #111; }
+
+.detail-section { margin-bottom: 12px; }
+.detail-section-label {
+  font-size: 11px; color: #64748b; font-weight: bold;
+  text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 4px;
+}
+.detail-section-value { font-size: 12px; color: #111; line-height: 1.5; }
+.attachment-link { color: #2255aa; text-decoration: underline; cursor: pointer; font-size: 12px; }
+
+/* DROPDOWNS */
+.dropdown-section { margin-bottom: 10px; }
+.dropdown-label { font-size: 12px; font-weight: bold; color: #374151; margin-bottom: 4px; }
+select {
+  width: 100%; border: 2px solid #cbd5e1; border-radius: 4px;
+  padding: 6px 8px; font-size: 12px; background: white; color: #111;
+  cursor: pointer; -webkit-appearance: auto; appearance: auto;
+}
+select:focus { outline: 2px solid #2255aa; }
+select.correct { background: #dcfce7 !important; border-color: #16a34a !important; color: #166534 !important; font-weight: bold; }
+select.wrong   { background: #fee2e2 !important; border-color: #dc2626 !important; color: #991b1b !important; font-weight: bold; }
+
+.btn-close {
+  background: #2255aa; color: white; border: none;
+  padding: 8px 20px; border-radius: 4px; font-size: 13px;
+  font-weight: bold; cursor: pointer; margin-top: 8px; width: 100%;
+  transition: background 0.15s;
+}
+.btn-close:hover { background: #1a4a99; }
+.btn-close:disabled { background: #94a3b8; cursor: default; }
+
+.feedback-row {
+  background: #fef3c7; border: 1px solid #d97706;
+  border-radius: 4px; padding: 7px 10px;
+  font-size: 11px; color: #92400e; margin-bottom: 8px;
+  display: none; line-height: 1.5;
+}
+.feedback-row.show { display: block; }
+.feedback-row.all-correct { background: #dcfce7; border-color: #16a34a; color: #166534; }
+
+/* CLOSED OVERLAY */
+.closed-overlay {
+  background: #dcfce7; border: 2px solid #16a34a;
+  border-radius: 8px; padding: 16px; text-align: center; margin: 16px;
+}
+.closed-overlay h3 { color: #166534; font-size: 16px; margin-bottom: 6px; }
+.closed-overlay p  { color: #166534; font-size: 12px; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div>
+    <h1>CompTIA A+ Core 2 — Helpdesk Ticket Queue Simulation</h1>
+    <p>Welcome to your first day at Fictional Company, LLC. Work the tickets in your queue.</p>
+  </div>
+  <button class="btn btn-gray" onclick="resetAll()">↺ Reset All</button>
+</div>
+
+<div class="scenario">
+  <strong>INSTRUCTIONS:</strong> Click a ticket to view details. Select the correct
+  <strong>Issue</strong>, <strong>Resolution</strong>, and <strong>Verify/Resolve</strong> from the dropdowns.
+  Each dropdown turns green when correct and red when wrong. Click <strong>Close Ticket</strong> when all three are correct.
+</div>
+
+<div class="main">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sidebar-icon-row">
+      <div class="sidebar-icon active">📋</div>
+      <div class="sidebar-icon">📊</div>
+      <div class="sidebar-icon">⚙️</div>
+    </div>
+    <div class="sidebar-section">
+      <h4>Statuses</h4>
+      <div class="status-row">New     <span class="count" id="cnt-new">0</span></div>
+      <div class="status-row">Open    <span class="count" id="cnt-open">2</span></div>
+      <div class="status-row">On Hold <span class="count" id="cnt-hold">0</span></div>
+      <div class="status-row">Mgr Review <span class="count" id="cnt-mgr">0</span></div>
+      <div class="status-row">Approved/Closed <span class="count green" id="cnt-closed">0</span></div>
+    </div>
+    <div class="sidebar-section">
+      <h4>Priorities</h4>
+      <div class="status-row">Low    <span class="count" id="cnt-low">1</span></div>
+      <div class="status-row">Medium <span class="count" id="cnt-med">0</span></div>
+      <div class="status-row">High   <span class="count red" id="cnt-high">1</span></div>
+    </div>
+  </div>
+
+  <!-- TICKET LIST -->
+  <div class="ticket-list">
+    <div class="ticket-list-header"><h3>Tickets</h3></div>
+    <div class="ticket-cols">
+      <span>Subject</span><span>Date</span><span>Priority</span>
+    </div>
+    <div class="ticket-items" id="ticketItems"></div>
+  </div>
+
+  <!-- DETAILS -->
+  <div class="details-panel" id="detailsPanel">
+    <div class="details-empty">← Select a ticket to view details</div>
+  </div>
+
+</div>
+
+<script>
+const tickets = [
+  {
+    id: '#8675309',
+    subject: 'PC is failing to boot. Screen is displaying error message, see attachment',
+    shortSubject: 'PC is failing to boot. Screen i...',
+    date: '10/1/2022',
+    priority: 'high',
+    status: 'open',
+    assignedTo: 'helpdesk@fictional.com',
+    assignedDate: '7/13/2022',
+    category: 'Technical / Bug Reports',
+    attachment: 'bootmgr_not_found.png',
+    issueOptions: [
+      'Select Issue',
+      'Corrupt OS',
+      'Hardware Failure',
+      'Network Misconfiguration',
+      'Driver Conflict',
+      'User Error',
+    ],
+    resolutionOptions: [
+      'Select Resolution',
+      'Windows Recovery Environment (WinRE)',
+      'Reinstall Network Driver',
+      'Replace Hard Drive',
+      'Update BIOS',
+      'Reimage System',
+    ],
+    verifyOptions: [
+      'Select Verify/Resolve',
+      'bootrec',
+      'ipconfig',
+      'net use',
+      'sfc /scannow',
+      'chkdsk',
+    ],
+    correctIssue:      'Corrupt OS',
+    correctResolution: 'Windows Recovery Environment (WinRE)',
+    correctVerify:     'bootrec',
+    explanation: 'A PC failing to boot with an error message pointing to bootmgr indicates a Corrupt OS. The Windows Recovery Environment (WinRE) is used to repair the boot process. The bootrec command (specifically bootrec /fixmbr and bootrec /fixboot) repairs the Master Boot Record and boot sector.',
+  },
+  {
+    id: '#8675310',
+    subject: 'Unable to access Z: on my computer, but I can manually enter the location in the window',
+    shortSubject: 'Unable to access Z: on my co...',
+    date: '10/1/2022',
+    priority: 'low',
+    status: 'open',
+    assignedTo: 'helpdesk@fictional.com',
+    assignedDate: '7/13/2022',
+    category: 'Technical / Bug Reports',
+    attachment: 'File_Explorer.jpg',
+    issueOptions: [
+      'Select Issue',
+      'User cannot access shared resources',
+      'Corrupt OS',
+      'Hardware Failure',
+      'Virus / Malware',
+      'Printer Offline',
+    ],
+    resolutionOptions: [
+      'Select Resolution',
+      'Remap network drive',
+      'Reinstall OS',
+      'Replace NIC',
+      'Run Antivirus Scan',
+      'Restart Print Spooler',
+    ],
+    verifyOptions: [
+      'Select Verify/Resolve',
+      'net use',
+      'bootrec',
+      'ipconfig /all',
+      'ping',
+      'tracert',
+    ],
+    correctIssue:      'User cannot access shared resources',
+    correctResolution: 'Remap network drive',
+    correctVerify:     'net use',
+    explanation: 'The user can manually type the UNC path but the mapped Z: drive is missing — this is a shared resource access issue. The fix is to remap the network drive. The net use command maps network drives and can verify/restore the connection (e.g. net use Z: \\\\server\\share).',
+  },
+];
+
+let closedTickets = new Set();
+let activeTicket  = null;
+
+// ── BUILD TICKET LIST ──────────────────────────────────────────────
+function buildTicketList() {
+  const container = document.getElementById('ticketItems');
+  container.innerHTML = '';
+  tickets.forEach(t => {
+    const div = document.createElement('div');
+    const closed = closedTickets.has(t.id);
+    div.className = `ticket-item${activeTicket === t.id ? ' active' : ''}${closed ? ' closed' : ''}`;
+    div.onclick = () => openTicket(t.id);
+    div.innerHTML = `
+      <div>
+        <div class="ticket-subject">${t.shortSubject}</div>
+        <div class="ticket-id">${t.id}</div>
+      </div>
+      <div class="ticket-date">${t.date}</div>
+      <div>
+        ${closed
+          ? '<span class="priority-badge closed-badge">Closed</span>'
+          : `<span class="priority-badge ${t.priority}">${t.priority.charAt(0).toUpperCase()+t.priority.slice(1)}</span>`}
+      </div>`;
+    container.appendChild(div);
+  });
+  updateSidebar();
+}
+
+// ── OPEN TICKET ────────────────────────────────────────────────────
+function openTicket(ticketId) {
+  activeTicket = ticketId;
+  buildTicketList();
+  const t = tickets.find(x => x.id === ticketId);
+  const closed = closedTickets.has(ticketId);
+  const panel = document.getElementById('detailsPanel');
+
+  if (closed) {
+    panel.innerHTML = `
+      <div class="closed-overlay">
+        <h3>✅ Ticket ${t.id} — Closed</h3>
+        <p>This ticket has been successfully resolved and closed.</p>
+        <p style="margin-top:8px;font-size:11px;">${t.explanation}</p>
+      </div>`;
+    return;
+  }
+
+  // Shuffle options (keep correct answer in the list but randomize order)
+  const shuffleOptions = (opts) => {
+    const first = opts[0]; // "Select ..." placeholder
+    const rest  = opts.slice(1).sort(() => Math.random() - 0.5);
+    return [first, ...rest];
+  };
+
+  const issueOpts = shuffleOptions(t.issueOptions);
+  const resOpts   = shuffleOptions(t.resolutionOptions);
+  const verOpts   = shuffleOptions(t.verifyOptions);
+
+  panel.innerHTML = `
+    <div class="details-content">
+      <div class="detail-top">
+        <span class="ticket-num">${t.id}</span>
+        <span class="ticket-status-badge open">Open</span>
+      </div>
+
+      <div class="detail-grid">
+        <span class="detail-label">Priority</span>      <span class="detail-value" style="text-transform:capitalize;">${t.priority}</span>
+        <span class="detail-label">Category</span>      <span class="detail-value">${t.category}</span>
+        <span class="detail-label">Assigned To</span>   <span class="detail-value">${t.assignedTo}</span>
+        <span class="detail-label">Assigned Date</span> <span class="detail-value">${t.assignedDate}</span>
+      </div>
+
+      <div class="detail-section">
+        <div class="detail-section-label">Subject</div>
+        <div class="detail-section-value">${t.subject}</div>
+      </div>
+
+      <div class="detail-section">
+        <div class="detail-section-label">Attachments</div>
+        <span class="attachment-link">📎 ${t.attachment}</span>
+      </div>
+
+      <hr style="border:none;border-top:1px solid #e2e8f0;margin:12px 0;">
+
+      <div class="dropdown-section">
+        <div class="dropdown-label">Issue</div>
+        <select id="sel-issue-${t.id}" onchange="liveCheck('${t.id}','issue')">
+          ${issueOpts.map(o => `<option value="${o==='Select Issue'?'':o}">${o}</option>`).join('')}
+        </select>
+      </div>
+
+      <div class="dropdown-section">
+        <div class="dropdown-label">Resolution</div>
+        <select id="sel-res-${t.id}" onchange="liveCheck('${t.id}','resolution')">
+          ${resOpts.map(o => `<option value="${o==='Select Resolution'?'':o}">${o}</option>`).join('')}
+        </select>
+      </div>
+
+      <div class="dropdown-section">
+        <div class="dropdown-label">Verify/Resolve</div>
+        <select id="sel-ver-${t.id}" onchange="liveCheck('${t.id}','verify')">
+          ${verOpts.map(o => `<option value="${o==='Select Verify/Resolve'?'':o}">${o}</option>`).join('')}
+        </select>
+      </div>
+
+      <div class="feedback-row" id="feedback-${t.id}"></div>
+
+      <button class="btn-close" id="btn-close-${t.id}" onclick="closeTicket('${t.id}')" disabled>
+        Close Ticket
+      </button>
+    </div>`;
+}
+
+// ── LIVE CHECK ─────────────────────────────────────────────────────
+function liveCheck(ticketId, field) {
+  const t = tickets.find(x => x.id === ticketId);
+  const issueEl = document.getElementById(`sel-issue-${ticketId}`);
+  const resEl   = document.getElementById(`sel-res-${ticketId}`);
+  const verEl   = document.getElementById(`sel-ver-${ticketId}`);
+  const fbEl    = document.getElementById(`feedback-${ticketId}`);
+  const btnEl   = document.getElementById(`btn-close-${ticketId}`);
+
+  const gradeSelect = (el, correct) => {
+    if (!el.value) { el.className = ''; return false; }
+    const ok = el.value === correct;
+    el.className = ok ? 'correct' : 'wrong';
+    return ok;
+  };
+
+  const iOk = gradeSelect(issueEl, t.correctIssue);
+  const rOk = gradeSelect(resEl,   t.correctResolution);
+  const vOk = gradeSelect(verEl,   t.correctVerify);
+
+  const allDone   = issueEl.value && resEl.value && verEl.value;
+  const allCorrect = iOk && rOk && vOk;
+
+  if (allDone && allCorrect) {
+    fbEl.className = 'feedback-row show all-correct';
+    fbEl.innerHTML = `✅ All correct! You can now close this ticket.<br><em style="font-size:11px;">${t.explanation}</em>`;
+    btnEl.disabled = false;
+  } else if (allDone && !allCorrect) {
+    const wrongs = [];
+    if (!iOk) wrongs.push(`Issue should be <strong>${t.correctIssue}</strong>`);
+    if (!rOk) wrongs.push(`Resolution should be <strong>${t.correctResolution}</strong>`);
+    if (!vOk) wrongs.push(`Verify/Resolve should be <strong>${t.correctVerify}</strong>`);
+    fbEl.className = 'feedback-row show';
+    fbEl.innerHTML = '❌ ' + wrongs.join(' &nbsp;|&nbsp; ');
+    btnEl.disabled = true;
+  } else {
+    fbEl.className = 'feedback-row';
+    btnEl.disabled = true;
+  }
+}
+
+// ── CLOSE TICKET ───────────────────────────────────────────────────
+function closeTicket(ticketId) {
+  closedTickets.add(ticketId);
+  buildTicketList();
+  openTicket(ticketId);
+  updateSidebar();
+
+  // Check if all done
+  if (closedTickets.size === tickets.length) {
+    setTimeout(() => {
+      document.getElementById('detailsPanel').innerHTML = `
+        <div class="closed-overlay" style="margin:20px;">
+          <h3>🎉 All Tickets Resolved!</h3>
+          <p style="font-size:14px;margin:8px 0;">Score: ${tickets.length} / ${tickets.length} tickets correctly closed</p>
+          <p>Great work! You've completed your helpdesk queue.</p>
+          <button onclick="resetAll()" style="margin-top:12px;padding:8px 20px;background:#2255aa;color:white;border:none;border-radius:4px;font-size:13px;font-weight:bold;cursor:pointer;">↺ Reset Queue</button>
+        </div>`;
+    }, 400);
+  }
+}
+
+// ── SIDEBAR COUNTS ─────────────────────────────────────────────────
+function updateSidebar() {
+  const open   = tickets.length - closedTickets.size;
+  const closed = closedTickets.size;
+  document.getElementById('cnt-open').textContent   = open;
+  document.getElementById('cnt-closed').textContent = closed;
+  // Priority counts (only open tickets)
+  const openTickets = tickets.filter(t => !closedTickets.has(t.id));
+  document.getElementById('cnt-high').textContent = openTickets.filter(t => t.priority === 'high').length;
+  document.getElementById('cnt-low').textContent  = openTickets.filter(t => t.priority === 'low').length;
+  document.getElementById('cnt-med').textContent  = openTickets.filter(t => t.priority === 'medium').length;
+}
+
+// ── RESET ──────────────────────────────────────────────────────────
+function resetAll() {
+  closedTickets.clear();
+  activeTicket = null;
+  buildTicketList();
+  document.getElementById('detailsPanel').innerHTML = '<div class="details-empty">← Select a ticket to view details</div>';
+  updateSidebar();
+}
+
+// Init
+buildTicketList();
+</script>
+<script src="footer.js"></script>
+</body>
+</html>

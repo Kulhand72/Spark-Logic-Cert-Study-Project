@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>C# Bonus Topics Quiz — 60 Questions (Not on the Exam)</title>
+<style>
+  :root {
+    --sage: #9CAF88;
+    --sage-dark: #7E9670;
+    --card-bg: #FFFFFF;
+    --text-dark: #2B3A2B;
+    --text-muted: #5A6B57;
+    --correct-bg: #DCF3DC;
+    --correct-border: #2E7D32;
+    --correct-text: #1B5E20;
+    --incorrect-bg: #FBDEDE;
+    --incorrect-border: #C62828;
+    --incorrect-text: #8E1B1B;
+    --accent: #4C6B3E;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background-color: var(--sage);
+    color: var(--text-dark);
+    padding-bottom: 80px;
+  }
+
+  header.top-bar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background-color: var(--sage-dark);
+    color: #fff;
+    padding: 14px 24px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  }
+
+  header.top-bar h1 {
+    font-size: 1.1rem;
+    margin: 0;
+    font-weight: 600;
+  }
+
+  .score-panel {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 18px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    align-items: center;
+  }
+
+  .score-panel span.value {
+    font-weight: 700;
+  }
+
+  .score-panel .correct-stat .value { color: #DFF3DF; }
+  .score-panel .incorrect-stat .value { color: #FADADA; }
+  .score-panel .live-score {
+    background-color: rgba(255,255,255,0.15);
+    padding: 4px 12px;
+    border-radius: 20px;
+  }
+  .score-panel .live-score .value { color: #fff; }
+
+  main {
+    max-width: 820px;
+    margin: 0 auto;
+    padding: 24px 16px;
+  }
+
+  .course-header {
+    background-color: var(--sage-dark);
+    color: #fff;
+    padding: 12px 20px;
+    border-radius: 10px;
+    margin: 36px 0 18px 0;
+    font-size: 1.15rem;
+    font-weight: 700;
+  }
+
+  .course-header:first-of-type {
+    margin-top: 0;
+  }
+
+  .question-card {
+    background-color: var(--card-bg);
+    border-radius: 12px;
+    padding: 20px 22px;
+    margin-bottom: 18px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+  }
+
+  .q-num {
+    display: inline-block;
+    background-color: var(--accent);
+    color: #fff;
+    font-size: 0.8rem;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 20px;
+    margin-bottom: 10px;
+  }
+
+  .q-text {
+    font-size: 1.02rem;
+    font-weight: 600;
+    margin: 0 0 14px 0;
+    line-height: 1.45;
+  }
+
+  .q-text code, .q-text kbd {
+    background: #EFEFEF;
+    padding: 1px 5px;
+    border-radius: 4px;
+    font-family: Consolas, "Courier New", monospace;
+    font-size: 0.92em;
+  }
+
+  .options {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .option {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1.5px solid #DDE3D8;
+    cursor: pointer;
+    transition: background-color 0.15s, border-color 0.15s;
+  }
+
+  .option:hover {
+    border-color: var(--sage-dark);
+    background-color: #F4F8F1;
+  }
+
+  .option.locked {
+    cursor: default;
+  }
+
+  .option input[type="radio"] {
+    margin-top: 3px;
+    accent-color: var(--accent);
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+  }
+
+  .option .letter {
+    font-weight: 700;
+    color: var(--accent);
+    min-width: 18px;
+  }
+
+  .option .opt-text {
+    font-size: 0.96rem;
+    line-height: 1.4;
+  }
+
+  .option .opt-text code {
+    background: #EFEFEF;
+    padding: 1px 5px;
+    border-radius: 4px;
+    font-family: Consolas, "Courier New", monospace;
+    font-size: 0.92em;
+  }
+
+  .option.selected-correct {
+    background-color: var(--correct-bg);
+    border-color: var(--correct-border);
+  }
+  .option.selected-correct .opt-text,
+  .option.selected-correct .letter {
+    color: var(--correct-text);
+    font-weight: 700;
+  }
+
+  .option.selected-incorrect {
+    background-color: var(--incorrect-bg);
+    border-color: var(--incorrect-border);
+  }
+  .option.selected-incorrect .opt-text,
+  .option.selected-incorrect .letter {
+    color: var(--incorrect-text);
+    font-weight: 700;
+  }
+
+  .feedback {
+    margin-top: 12px;
+    padding: 12px 14px;
+    border-radius: 8px;
+    font-size: 0.92rem;
+    line-height: 1.5;
+    display: none;
+  }
+
+  .feedback.show { display: block; }
+
+  .feedback.correct {
+    background-color: var(--correct-bg);
+    border-left: 4px solid var(--correct-border);
+    color: var(--correct-text);
+  }
+
+  .feedback.incorrect {
+    background-color: var(--incorrect-bg);
+    border-left: 4px solid var(--incorrect-border);
+    color: var(--incorrect-text);
+  }
+
+  .feedback .fb-label {
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 0.78rem;
+    letter-spacing: 0.03em;
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  .feedback code {
+    background: rgba(0,0,0,0.06);
+    padding: 1px 5px;
+    border-radius: 4px;
+    font-family: Consolas, "Courier New", monospace;
+    font-size: 0.92em;
+  }
+
+  .option.revealed-correct {
+    background-color: var(--correct-bg);
+    border-color: var(--correct-border);
+  }
+  .option.revealed-correct .opt-text,
+  .option.revealed-correct .letter {
+    color: var(--correct-text);
+    font-weight: 700;
+  }
+
+  .option.revealed-incorrect {
+    background-color: var(--incorrect-bg);
+    border-color: var(--incorrect-border);
+  }
+  .option.revealed-incorrect .opt-text,
+  .option.revealed-incorrect .letter {
+    color: var(--incorrect-text);
+    font-weight: 700;
+  }
+
+  .option.your-pick {
+    box-shadow: 0 0 0 2px var(--accent);
+  }
+
+  .your-pick-tag {
+    display: inline-block;
+    color: #fff;
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    padding: 1px 7px;
+    border-radius: 10px;
+    margin-left: 8px;
+    vertical-align: middle;
+  }
+  .your-pick-tag.tag-correct { background-color: var(--correct-border); }
+  .your-pick-tag.tag-incorrect { background-color: var(--incorrect-border); }
+
+  .breakdown-heading {
+    display: none;
+    align-items: center;
+    margin-top: 18px;
+    margin-bottom: 4px;
+  }
+  .breakdown-heading.show { display: flex; }
+  .breakdown-heading span {
+    font-size: 0.75rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--accent);
+    white-space: nowrap;
+    padding-right: 10px;
+  }
+  .breakdown-heading::after {
+    content: "";
+    flex: 1;
+    height: 2px;
+    background: linear-gradient(to right, var(--sage-dark), transparent);
+  }
+
+  .breakdown {
+    margin-top: 12px;
+    display: none;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .breakdown.show { display: flex; }
+
+  .breakdown-item {
+    padding: 10px 12px;
+    border-radius: 8px;
+    font-size: 0.88rem;
+    line-height: 1.45;
+  }
+  .breakdown-item.is-correct {
+    background-color: var(--correct-bg);
+    border-left: 4px solid var(--correct-border);
+    color: var(--correct-text);
+  }
+  .breakdown-item.is-incorrect {
+    background-color: var(--incorrect-bg);
+    border-left: 4px solid var(--incorrect-border);
+    color: var(--incorrect-text);
+  }
+  .breakdown-item .bd-label {
+    font-weight: 700;
+    margin-right: 4px;
+  }
+  .breakdown-item code {
+    background: rgba(0,0,0,0.06);
+    padding: 1px 5px;
+    border-radius: 4px;
+    font-family: Consolas, "Courier New", monospace;
+    font-size: 0.92em;
+  }
+
+  .intro {
+    background-color: var(--card-bg);
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin-bottom: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+  }
+
+  .intro h2 { margin-top: 0; color: var(--accent); }
+  .intro p { color: var(--text-muted); font-size: 0.95rem; line-height: 1.5; }
+
+  .reset-btn {
+    background-color: #fff;
+    color: var(--accent);
+    border: none;
+    padding: 7px 16px;
+    border-radius: 20px;
+    font-weight: 700;
+    font-size: 0.85rem;
+    cursor: pointer;
+  }
+  .reset-btn:hover { background-color: #eef3ea; }
+</style>
+</head>
+<body>
+
+<header class="top-bar">
+  <h1>C# Bonus Topics Quiz</h1>
+  <div class="score-panel">
+    <span>Progress: <span class="value" id="answeredCount">0</span>/60</span>
+    <span class="correct-stat">Correct: <span class="value" id="correctCount">0</span></span>
+    <span class="incorrect-stat">Incorrect: <span class="value" id="incorrectCount">0</span></span>
+    <span class="live-score">Current Score: <span class="value" id="liveScore">—</span></span>
+    <button class="reset-btn" id="resetBtn">Reset Quiz</button>
+  </div>
+</header>
+
+<main>
+  <div class="intro">
+    <h2>60 Bonus Questions — Not Part of the Certification Exam</h2>
+    <p>Covers the six "EXTRA" topics from the study packet that are <strong>not</strong> part of the official freeCodeCamp/Microsoft certification's 175 questions: Tuples/Records/Structs, Pattern Matching, Classes &amp; OOP, Inheritance/Abstract Classes/Interfaces, the .NET Platform Overview, and VS Code Debugging Terms. Same interaction as the main quiz — click any answer to reveal the full breakdown, and keep clicking through the other choices to read them. This score is tracked completely separately from the 175-question exam quiz.</p>
+  </div>
+
+  <div id="quizContainer"></div>
+</main>
+
+<script>
+const QUIZ_DATA = [{"title": "Tuples, Records & Structs", "questions": [{"num": 1, "text": "What is a tuple in C#?", "options": [{"text": "A named class definition requiring its own file", "correct": false, "feedback": "The correct answer is \u201cAn ordered sequence of values with a fixed length, each with a type and optional name\u201d \u2014 A tuple groups multiple values together with a fixed length. Each element has a type and an optional name, but a tuple has no name of its own and can't add behavior (methods)."}, {"text": "An ordered sequence of values with a fixed length, each with a type and optional name", "correct": true, "feedback": "Correct! A tuple groups multiple values together with a fixed length. Each element has a type and an optional name, but a tuple has no name of its own and can't add behavior (methods)."}, {"text": "A collection that can grow or shrink in size", "correct": false, "feedback": "The correct answer is \u201cAn ordered sequence of values with a fixed length, each with a type and optional name\u201d \u2014 A tuple groups multiple values together with a fixed length. Each element has a type and an optional name, but a tuple has no name of its own and can't add behavior (methods)."}]}, {"num": 2, "text": "How do you create a modified COPY of a record without changing the original?", "options": [{"text": "Use the `with` expression, e.g. `pt3 with { Y = 10 }`", "correct": true, "feedback": "Correct! The `with` expression creates a new copy of a record with only the specified members changed, leaving the original untouched."}, {"text": "Reassign the field directly on the original object", "correct": false, "feedback": "The correct answer is \u201cUse the `with` expression, e.g. `pt3 with { Y = 10 }`\u201d \u2014 The `with` expression creates a new copy of a record with only the specified members changed, leaving the original untouched."}, {"text": "Call a built-in `.Clone()` method", "correct": false, "feedback": "The correct answer is \u201cUse the `with` expression, e.g. `pt3 with { Y = 10 }`\u201d \u2014 The `with` expression creates a new copy of a record with only the specified members changed, leaving the original untouched."}]}, {"num": 3, "text": "What determines whether two tuples are considered the same TYPE?", "options": [{"text": "Their member names must match exactly", "correct": false, "feedback": "The correct answer is \u201cTheir arity (number of members) and member types\u201d \u2014 Tuple types are defined by arity and member types, not by name. A tuple with 2 int members matches any other 2-int tuple, even with different member names."}, {"text": "Their arity (number of members) and member types", "correct": true, "feedback": "Correct! Tuple types are defined by arity and member types, not by name. A tuple with 2 int members matches any other 2-int tuple, even with different member names."}, {"text": "The order they were declared in the source file", "correct": false, "feedback": "The correct answer is \u201cTheir arity (number of members) and member types\u201d \u2014 Tuple types are defined by arity and member types, not by name. A tuple with 2 int members matches any other 2-int tuple, even with different member names."}]}, {"num": 4, "text": "Which line correctly declares a record?", "options": [{"text": "`public record Point(int X, int Y);`", "correct": true, "feedback": "Correct! A record is declared with the `record` keyword followed by a name and its positional parameters in parentheses."}, {"text": "`public tuple Point(int X, int Y);`", "correct": false, "feedback": "The correct answer is \u201c`public record Point(int X, int Y);`\u201d \u2014 A record is declared with the `record` keyword followed by a name and its positional parameters in parentheses."}, {"text": "`public struct record Point(int X, int Y);`", "correct": false, "feedback": "The correct answer is \u201c`public record Point(int X, int Y);`\u201d \u2014 A record is declared with the `record` keyword followed by a name and its positional parameters in parentheses."}]}, {"num": 5, "text": "What's the key difference between a class and a struct?", "options": [{"text": "A class is a reference type (copied by reference); a struct is a value type (copied by value)", "correct": true, "feedback": "Correct! Classes are reference types -- assigning one variable to another copies the reference, so both point to the same object. Structs are value types -- assignment copies the actual data."}, {"text": "A class cannot have constructors, but a struct can", "correct": false, "feedback": "The correct answer is \u201cA class is a reference type (copied by reference); a struct is a value type (copied by value)\u201d \u2014 Classes are reference types -- assigning one variable to another copies the reference, so both point to the same object. Structs are value types -- assignment copies the actual data."}, {"text": "A struct can inherit from other structs, but a class cannot", "correct": false, "feedback": "The correct answer is \u201cA class is a reference type (copied by reference); a struct is a value type (copied by value)\u201d \u2014 Classes are reference types -- assigning one variable to another copies the reference, so both point to the same object. Structs are value types -- assignment copies the actual data."}]}, {"num": 6, "text": "What does `record struct` do differently from a plain `record`?", "options": [{"text": "It adds inheritance support that plain records lack", "correct": false, "feedback": "The correct answer is \u201cIt makes the type a value type instead of a reference type, while keeping the same added behavior\u201d \u2014 `record` is shorthand for a record class (reference type). `record struct` gives you the same record behavior (like `with` and built-in equality) but as a value type instead."}, {"text": "It makes the type a value type instead of a reference type, while keeping the same added behavior", "correct": true, "feedback": "Correct! `record` is shorthand for a record class (reference type). `record struct` gives you the same record behavior (like `with` and built-in equality) but as a value type instead."}, {"text": "It removes the ability to use the `with` expression", "correct": false, "feedback": "The correct answer is \u201cIt makes the type a value type instead of a reference type, while keeping the same added behavior\u201d \u2014 `record` is shorthand for a record class (reference type). `record struct` gives you the same record behavior (like `with` and built-in equality) but as a value type instead."}]}, {"num": 7, "text": "Structurally, what is an interface?", "options": [{"text": "A contract listing methods a class or struct must implement, with no implementation of its own", "correct": true, "feedback": "Correct! An interface defines a contract -- a list of methods a class promises to implement -- but provides no implementation itself."}, {"text": "A type that stores data directly, the same way a struct does", "correct": false, "feedback": "The correct answer is \u201cA contract listing methods a class or struct must implement, with no implementation of its own\u201d \u2014 An interface defines a contract -- a list of methods a class promises to implement -- but provides no implementation itself."}, {"text": "A special kind of tuple with named members", "correct": false, "feedback": "The correct answer is \u201cA contract listing methods a class or struct must implement, with no implementation of its own\u201d \u2014 An interface defines a contract -- a list of methods a class promises to implement -- but provides no implementation itself."}]}, {"num": 8, "text": "Can a tuple include its own methods, the way a record can?", "options": [{"text": "Yes, tuples support the exact same method definitions as records", "correct": false, "feedback": "The correct answer is \u201cNo -- tuples are quick to create but can't add behavior; use a record if you need methods\u201d \u2014 Tuples are lightweight and quick to create but cannot add behavior (methods) of their own. When you need behavior attached to a repeated tuple shape, use a record instead."}, {"text": "No -- tuples are quick to create but can't add behavior; use a record if you need methods", "correct": true, "feedback": "Correct! Tuples are lightweight and quick to create but cannot add behavior (methods) of their own. When you need behavior attached to a repeated tuple shape, use a record instead."}, {"text": "Only if it's declared with the keyword `record tuple`", "correct": false, "feedback": "The correct answer is \u201cNo -- tuples are quick to create but can't add behavior; use a record if you need methods\u201d \u2014 Tuples are lightweight and quick to create but cannot add behavior (methods) of their own. When you need behavior attached to a repeated tuple shape, use a record instead."}]}, {"num": 9, "text": "Given `var pt = (X: 1, Y: 2);`, how do you access the X value?", "options": [{"text": "`pt.GetX()`", "correct": false, "feedback": "The correct answer is \u201c`pt.X`\u201d \u2014 Named tuple elements are accessed with dot notation, just like a property -- `pt.X` and `pt.Y`."}, {"text": "`pt[0]`", "correct": false, "feedback": "The correct answer is \u201c`pt.X`\u201d \u2014 Named tuple elements are accessed with dot notation, just like a property -- `pt.X` and `pt.Y`."}, {"text": "`pt.X`", "correct": true, "feedback": "Correct! Named tuple elements are accessed with dot notation, just like a property -- `pt.X` and `pt.Y`."}]}, {"num": 10, "text": "Why would a program use a record instead of a plain tuple?", "options": [{"text": "Records always execute faster than tuples at runtime", "correct": false, "feedback": "The correct answer is \u201cA record gives a recurring tuple 'shape' a real, reusable name and lets you add behavior (methods) to it\u201d \u2014 When the same tuple shape is used repeatedly throughout a program, a record gives it a real name and the ability to add methods -- something a plain tuple can't do."}, {"text": "A record gives a recurring tuple 'shape' a real, reusable name and lets you add behavior (methods) to it", "correct": true, "feedback": "Correct! When the same tuple shape is used repeatedly throughout a program, a record gives it a real name and the ability to add methods -- something a plain tuple can't do."}, {"text": "Records cannot be copied, which improves data safety", "correct": false, "feedback": "The correct answer is \u201cA record gives a recurring tuple 'shape' a real, reusable name and lets you add behavior (methods) to it\u201d \u2014 When the same tuple shape is used repeatedly throughout a program, a record gives it a real name and the ability to add methods -- something a plain tuple can't do."}]}]}, {"title": "Pattern Matching", "questions": [{"num": 11, "text": "What does the `is` keyword do in pattern matching?", "options": [{"text": "Declares a brand new type", "correct": false, "feedback": "The correct answer is \u201cChecks whether a value matches a pattern\u201d \u2014 `is` checks whether a value matches a pattern -- a type, a value, or a shape -- and is a lighter-weight alternative to the `==` operator for this kind of check."}, {"text": "Checks whether a value matches a pattern", "correct": true, "feedback": "Correct! `is` checks whether a value matches a pattern -- a type, a value, or a shape -- and is a lighter-weight alternative to the `==` operator for this kind of check."}, {"text": "Converts one type directly into another", "correct": false, "feedback": "The correct answer is \u201cChecks whether a value matches a pattern\u201d \u2014 `is` checks whether a value matches a pattern -- a type, a value, or a shape -- and is a lighter-weight alternative to the `==` operator for this kind of check."}]}, {"num": 12, "text": "What makes a switch EXPRESSION different from a switch STATEMENT?", "options": [{"text": "A switch expression returns a value directly and must handle every possible case (exhaustive)", "correct": true, "feedback": "Correct! A switch expression returns a value directly and the compiler requires it to be exhaustive -- every possible input must be handled, which catches bugs a chain of if statements could miss."}, {"text": "A switch expression cannot use the underscore discard pattern", "correct": false, "feedback": "The correct answer is \u201cA switch expression returns a value directly and must handle every possible case (exhaustive)\u201d \u2014 A switch expression returns a value directly and the compiler requires it to be exhaustive -- every possible input must be handled, which catches bugs a chain of if statements could miss."}, {"text": "A switch expression requires the `break` keyword after every case", "correct": false, "feedback": "The correct answer is \u201cA switch expression returns a value directly and must handle every possible case (exhaustive)\u201d \u2014 A switch expression returns a value directly and the compiler requires it to be exhaustive -- every possible input must be handled, which catches bugs a chain of if statements could miss."}]}, {"num": 13, "text": "In a switch expression, what does the underscore `_` pattern mean?", "options": [{"text": "It matches only null values", "correct": false, "feedback": "The correct answer is \u201cIt's the discard pattern -- it matches anything not matched by the cases above it\u201d \u2014 The `_` discard pattern acts as a catch-all, matching any value that didn't match one of the earlier, more specific patterns."}, {"text": "It's the discard pattern -- it matches anything not matched by the cases above it", "correct": true, "feedback": "Correct! The `_` discard pattern acts as a catch-all, matching any value that didn't match one of the earlier, more specific patterns."}, {"text": "It causes a compiler syntax error", "correct": false, "feedback": "The correct answer is \u201cIt's the discard pattern -- it matches anything not matched by the cases above it\u201d \u2014 The `_` discard pattern acts as a catch-all, matching any value that didn't match one of the earlier, more specific patterns."}]}, {"num": 14, "text": "What is a 'type pattern'?", "options": [{"text": "Testing whether a value is a specific type at runtime, usable with `is` or `switch`", "correct": true, "feedback": "Correct! A type pattern tests whether a value is a specific type at runtime -- for example, `Deposit d => d.Amount` checks if the value is a Deposit."}, {"text": "A pattern that only works on primitive types like int or bool", "correct": false, "feedback": "The correct answer is \u201cTesting whether a value is a specific type at runtime, usable with `is` or `switch`\u201d \u2014 A type pattern tests whether a value is a specific type at runtime -- for example, `Deposit d => d.Amount` checks if the value is a Deposit."}, {"text": "A pattern that can only be used inside a for loop", "correct": false, "feedback": "The correct answer is \u201cTesting whether a value is a specific type at runtime, usable with `is` or `switch`\u201d \u2014 A type pattern tests whether a value is a specific type at runtime -- for example, `Deposit d => d.Amount` checks if the value is a Deposit."}]}, {"num": 15, "text": "Given `Deposit d => d.Amount,` inside a switch expression, what does `d` represent?", "options": [{"text": "A static reference to the Deposit class itself", "correct": false, "feedback": "The correct answer is \u201cA newly declared variable, typed as Deposit, immediately usable in that branch\u201d \u2014 When a type pattern matches, it also creates a variable (here, `d`) referencing the matched value, typed as that specific type -- so `d.Amount` is immediately usable."}, {"text": "A newly declared variable, typed as Deposit, immediately usable in that branch", "correct": true, "feedback": "Correct! When a type pattern matches, it also creates a variable (here, `d`) referencing the matched value, typed as that specific type -- so `d.Amount` is immediately usable."}, {"text": "A required keyword with no actual value", "correct": false, "feedback": "The correct answer is \u201cA newly declared variable, typed as Deposit, immediately usable in that branch\u201d \u2014 When a type pattern matches, it also creates a variable (here, `d`) referencing the matched value, typed as that specific type -- so `d.Amount` is immediately usable."}]}, {"num": 16, "text": "Why does the compiler warn about a non-exhaustive switch expression?", "options": [{"text": "Because switch expressions are a deprecated feature", "correct": false, "feedback": "The correct answer is \u201cBecause every possible input must be handled, and a missing case could cause a bug\u201d \u2014 Exhaustive means every possible input is accounted for. If a switch expression can't guarantee that, the compiler warns you -- catching bugs a chain of if statements could silently miss."}, {"text": "Because every possible input must be handled, and a missing case could cause a bug", "correct": true, "feedback": "Correct! Exhaustive means every possible input is accounted for. If a switch expression can't guarantee that, the compiler warns you -- catching bugs a chain of if statements could silently miss."}, {"text": "Because switch expressions are limited to exactly 3 cases", "correct": false, "feedback": "The correct answer is \u201cBecause every possible input must be handled, and a missing case could cause a bug\u201d \u2014 Exhaustive means every possible input is accounted for. If a switch expression can't guarantee that, the compiler warns you -- catching bugs a chain of if statements could silently miss."}]}, {"num": 17, "text": "Which line correctly uses the `is` pattern to check a string value?", "options": [{"text": "`if (input?.ToUpper() is \"DEPOSIT\")`", "correct": true, "feedback": "Correct! `is` is used directly as a comparison against a pattern -- here, a simple text match against the string literal."}, {"text": "`if (input?.ToUpper() == is \"DEPOSIT\")`", "correct": false, "feedback": "The correct answer is \u201c`if (input?.ToUpper() is \"DEPOSIT\")`\u201d \u2014 `is` is used directly as a comparison against a pattern -- here, a simple text match against the string literal."}, {"text": "`if (input.Match(\"DEPOSIT\"))`", "correct": false, "feedback": "The correct answer is \u201c`if (input?.ToUpper() is \"DEPOSIT\")`\u201d \u2014 `is` is used directly as a comparison against a pattern -- here, a simple text match against the string literal."}]}, {"num": 18, "text": "What's an advantage of pattern matching over a long chain of if/else statements?", "options": [{"text": "Pattern matching always executes faster", "correct": false, "feedback": "The correct answer is \u201cIt can more clearly express matching against type, value, or shape, and can force exhaustive handling\u201d \u2014 Pattern matching lets you compare an expression against a type, value, or shape in a clearer way, and a switch expression's exhaustiveness check can catch missing cases automatically."}, {"text": "It can more clearly express matching against type, value, or shape, and can force exhaustive handling", "correct": true, "feedback": "Correct! Pattern matching lets you compare an expression against a type, value, or shape in a clearer way, and a switch expression's exhaustiveness check can catch missing cases automatically."}, {"text": "Pattern matching removes the need for any conditional logic at all", "correct": false, "feedback": "The correct answer is \u201cIt can more clearly express matching against type, value, or shape, and can force exhaustive handling\u201d \u2014 Pattern matching lets you compare an expression against a type, value, or shape in a clearer way, and a switch expression's exhaustiveness check can catch missing cases automatically."}]}, {"num": 19, "text": "Can pattern matching test the TYPE of an object, not just its value?", "options": [{"text": "No, pattern matching can only check values, never types", "correct": false, "feedback": "The correct answer is \u201cYes -- a type pattern checks whether a value is a specific type at runtime\u201d \u2014 A type pattern is specifically for testing an object's type at runtime, in addition to (or instead of) testing its value."}, {"text": "Yes -- a type pattern checks whether a value is a specific type at runtime", "correct": true, "feedback": "Correct! A type pattern is specifically for testing an object's type at runtime, in addition to (or instead of) testing its value."}, {"text": "Only inside a try/catch block", "correct": false, "feedback": "The correct answer is \u201cYes -- a type pattern checks whether a value is a specific type at runtime\u201d \u2014 A type pattern is specifically for testing an object's type at runtime, in addition to (or instead of) testing its value."}]}, {"num": 20, "text": "What does 'exhaustive' mean for a switch expression?", "options": [{"text": "The program has run out of available memory", "correct": false, "feedback": "The correct answer is \u201cEvery possible case has been accounted for\u201d \u2014 Exhaustive means the switch expression accounts for every possible input value, which is what allows it to safely return a value directly without a matching case being missed."}, {"text": "Every possible case has been accounted for", "correct": true, "feedback": "Correct! Exhaustive means the switch expression accounts for every possible input value, which is what allows it to safely return a value directly without a matching case being missed."}, {"text": "The switch expression contains more than 10 cases", "correct": false, "feedback": "The correct answer is \u201cEvery possible case has been accounted for\u201d \u2014 Exhaustive means the switch expression accounts for every possible input value, which is what allows it to safely return a value directly without a matching case being missed."}]}]}, {"title": "Classes & OOP (Encapsulation)", "questions": [{"num": 21, "text": "What is the relationship between a class and an object?", "options": [{"text": "A class is a blueprint; an object is a specific instance created from it", "correct": true, "feedback": "Correct! A class defines the blueprint -- its fields, properties, and methods. An object is a specific instance created from that blueprint using `new`."}, {"text": "An object is the blueprint; a class is one instance of it", "correct": false, "feedback": "The correct answer is \u201cA class is a blueprint; an object is a specific instance created from it\u201d \u2014 A class defines the blueprint -- its fields, properties, and methods. An object is a specific instance created from that blueprint using `new`."}, {"text": "Classes and objects are the same thing in C#", "correct": false, "feedback": "The correct answer is \u201cA class is a blueprint; an object is a specific instance created from it\u201d \u2014 A class defines the blueprint -- its fields, properties, and methods. An object is a specific instance created from that blueprint using `new`."}]}, {"num": 22, "text": "What does the `this` keyword refer to inside a class's method?", "options": [{"text": "The class's own name, written as plain text", "correct": false, "feedback": "The correct answer is \u201cThe current object's own fields\u201d \u2014 `this` refers to the current object's own fields, distinguishing them from parameters or local variables that might share the same name."}, {"text": "The current object's own fields", "correct": true, "feedback": "Correct! `this` refers to the current object's own fields, distinguishing them from parameters or local variables that might share the same name."}, {"text": "The parent class", "correct": false, "feedback": "The correct answer is \u201cThe current object's own fields\u201d \u2014 `this` refers to the current object's own fields, distinguishing them from parameters or local variables that might share the same name."}]}, {"num": 23, "text": "What is a constructor?", "options": [{"text": "A method that deletes an object once it's no longer needed", "correct": false, "feedback": "The correct answer is \u201cA special method that runs automatically when an object is created with `new`, setting up its starting values\u201d \u2014 A constructor runs automatically when `new` creates an object -- it sets up the object's initial values."}, {"text": "A special method that runs automatically when an object is created with `new`, setting up its starting values", "correct": true, "feedback": "Correct! A constructor runs automatically when `new` creates an object -- it sets up the object's initial values."}, {"text": "A required public field every class must declare", "correct": false, "feedback": "The correct answer is \u201cA special method that runs automatically when an object is created with `new`, setting up its starting values\u201d \u2014 A constructor runs automatically when `new` creates an object -- it sets up the object's initial values."}]}, {"num": 24, "text": "Why use private fields with public getter/setter methods (encapsulation) instead of just making fields public?", "options": [{"text": "Private fields execute faster than public fields", "correct": false, "feedback": "The correct answer is \u201cIt protects data from being changed directly from outside the class, giving controlled access\u201d \u2014 Encapsulation protects a class's internal data by controlling how outside code can read or change it, typically through public getter/setter methods around a private field."}, {"text": "It protects data from being changed directly from outside the class, giving controlled access", "correct": true, "feedback": "Correct! Encapsulation protects a class's internal data by controlling how outside code can read or change it, typically through public getter/setter methods around a private field."}, {"text": "C# does not allow classes to declare public fields at all", "correct": false, "feedback": "The correct answer is \u201cIt protects data from being changed directly from outside the class, giving controlled access\u201d \u2014 Encapsulation protects a class's internal data by controlling how outside code can read or change it, typically through public getter/setter methods around a private field."}]}, {"num": 25, "text": "What does the `static` keyword mean when applied to a field or method?", "options": [{"text": "It belongs to the class itself, shared across every object, rather than to one specific instance", "correct": true, "feedback": "Correct! A `static` member belongs to the class as a whole, not to any individual object -- it's shared and accessed through the class name, not an instance."}, {"text": "It means the field's value can never be changed", "correct": false, "feedback": "The correct answer is \u201cIt belongs to the class itself, shared across every object, rather than to one specific instance\u201d \u2014 A `static` member belongs to the class as a whole, not to any individual object -- it's shared and accessed through the class name, not an instance."}, {"text": "It means the method runs automatically the moment the program starts", "correct": false, "feedback": "The correct answer is \u201cIt belongs to the class itself, shared across every object, rather than to one specific instance\u201d \u2014 A `static` member belongs to the class as a whole, not to any individual object -- it's shared and accessed through the class name, not an instance."}]}, {"num": 26, "text": "How do you access a static field named `staticAttribute` declared on class `Book`?", "options": [{"text": "`book1.staticAttribute` (through an object instance)", "correct": false, "feedback": "The correct answer is \u201c`Book.staticAttribute` (through the class itself)\u201d \u2014 Static members are accessed through the class name directly, not through an instance -- `Book.staticAttribute`, not `book1.staticAttribute`."}, {"text": "`Book.staticAttribute` (through the class itself)", "correct": true, "feedback": "Correct! Static members are accessed through the class name directly, not through an instance -- `Book.staticAttribute`, not `book1.staticAttribute`."}, {"text": "`new Book().staticAttribute()`", "correct": false, "feedback": "The correct answer is \u201c`Book.staticAttribute` (through the class itself)\u201d \u2014 Static members are accessed through the class name directly, not through an instance -- `Book.staticAttribute`, not `book1.staticAttribute`."}]}, {"num": 27, "text": "What's the purpose of a getter method in encapsulation?", "options": [{"text": "To change a private field's value from outside the class", "correct": false, "feedback": "The correct answer is \u201cTo return (read) the value of a private field in a controlled way\u201d \u2014 A getter method provides controlled, read-only access to a private field's current value from outside the class."}, {"text": "To return (read) the value of a private field in a controlled way", "correct": true, "feedback": "Correct! A getter method provides controlled, read-only access to a private field's current value from outside the class."}, {"text": "To permanently delete a private field", "correct": false, "feedback": "The correct answer is \u201cTo return (read) the value of a private field in a controlled way\u201d \u2014 A getter method provides controlled, read-only access to a private field's current value from outside the class."}]}, {"num": 28, "text": "Given a constructor `public Book(string title, string author)`, how do you create a new object with it?", "options": [{"text": "`Book book1 = new Book(\"Harry Potter\", \"JK Rowling\");`", "correct": true, "feedback": "Correct! Creating an object requires the `new` keyword, the class name, and parentheses containing arguments matching the constructor's parameters."}, {"text": "`Book book1 = Book(\"Harry Potter\", \"JK Rowling\");`", "correct": false, "feedback": "The correct answer is \u201c`Book book1 = new Book(\"Harry Potter\", \"JK Rowling\");`\u201d \u2014 Creating an object requires the `new` keyword, the class name, and parentheses containing arguments matching the constructor's parameters."}, {"text": "`Book book1 = new Book; title=\"Harry Potter\";`", "correct": false, "feedback": "The correct answer is \u201c`Book book1 = new Book(\"Harry Potter\", \"JK Rowling\");`\u201d \u2014 Creating an object requires the `new` keyword, the class name, and parentheses containing arguments matching the constructor's parameters."}]}, {"num": 29, "text": "What does encapsulation, as an OOP principle, primarily protect?", "options": [{"text": "The program's ability to compile successfully", "correct": false, "feedback": "The correct answer is \u201cA class's internal data, by controlling how outside code can access or change it\u201d \u2014 Encapsulation is about protecting a class's internal state -- keeping data private and exposing controlled access through public methods or properties."}, {"text": "A class's internal data, by controlling how outside code can access or change it", "correct": true, "feedback": "Correct! Encapsulation is about protecting a class's internal state -- keeping data private and exposing controlled access through public methods or properties."}, {"text": "The computer's available memory", "correct": false, "feedback": "The correct answer is \u201cA class's internal data, by controlling how outside code can access or change it\u201d \u2014 Encapsulation is about protecting a class's internal state -- keeping data private and exposing controlled access through public methods or properties."}]}, {"num": 30, "text": "True or false: every class must define its own explicit constructor, or the code will fail to compile.", "options": [{"text": "True -- every class needs an explicit constructor", "correct": false, "feedback": "The correct answer is \u201cFalse -- a class with no explicit constructor still gets a default one automatically\u201d \u2014 If a class doesn't define its own constructor, C# automatically provides a default, parameterless one -- the class will still compile and objects can still be created."}, {"text": "False -- a class with no explicit constructor still gets a default one automatically", "correct": true, "feedback": "Correct! If a class doesn't define its own constructor, C# automatically provides a default, parameterless one -- the class will still compile and objects can still be created."}, {"text": "True, but only for classes that have private fields", "correct": false, "feedback": "The correct answer is \u201cFalse -- a class with no explicit constructor still gets a default one automatically\u201d \u2014 If a class doesn't define its own constructor, C# automatically provides a default, parameterless one -- the class will still compile and objects can still be created."}]}]}, {"title": "Inheritance, Abstract Classes & Interfaces", "questions": [{"num": 31, "text": "What does the `:` symbol mean in `public class ItalianChef : Chef`?", "options": [{"text": "ItalianChef inherits everything Chef has", "correct": true, "feedback": "Correct! The `:` after a class name specifies its parent class. ItalianChef inherits Chef's fields and methods."}, {"text": "ItalianChef is completely unrelated to Chef", "correct": false, "feedback": "The correct answer is \u201cItalianChef inherits everything Chef has\u201d \u2014 The `:` after a class name specifies its parent class. ItalianChef inherits Chef's fields and methods."}, {"text": "ItalianChef is a data type stored inside Chef", "correct": false, "feedback": "The correct answer is \u201cItalianChef inherits everything Chef has\u201d \u2014 The `:` after a class name specifies its parent class. ItalianChef inherits Chef's fields and methods."}]}, {"num": 32, "text": "What does `base(name)` do inside a child class's constructor?", "options": [{"text": "Creates a brand new object, ignoring the parent entirely", "correct": false, "feedback": "The correct answer is \u201cCalls the parent class's constructor\u201d \u2014 `base(...)` calls the parent class's constructor, letting the child class reuse the parent's setup logic before adding its own."}, {"text": "Calls the parent class's constructor", "correct": true, "feedback": "Correct! `base(...)` calls the parent class's constructor, letting the child class reuse the parent's setup logic before adding its own."}, {"text": "Declares a new base class dynamically at runtime", "correct": false, "feedback": "The correct answer is \u201cCalls the parent class's constructor\u201d \u2014 `base(...)` calls the parent class's constructor, letting the child class reuse the parent's setup logic before adding its own."}]}, {"num": 33, "text": "What must a class do to satisfy an interface it implements?", "options": [{"text": "Inherit from a matching abstract class first", "correct": false, "feedback": "The correct answer is \u201cImplement every method the interface declares\u201d \u2014 A class implementing an interface must provide its own implementation for every method the interface declares -- that's the contract."}, {"text": "Implement every method the interface declares", "correct": true, "feedback": "Correct! A class implementing an interface must provide its own implementation for every method the interface declares -- that's the contract."}, {"text": "Nothing -- interfaces are optional suggestions, not requirements", "correct": false, "feedback": "The correct answer is \u201cImplement every method the interface declares\u201d \u2014 A class implementing an interface must provide its own implementation for every method the interface declares -- that's the contract."}]}, {"num": 34, "text": "What's true about an abstract class?", "options": [{"text": "It can be instantiated directly, just like a normal class", "correct": false, "feedback": "The correct answer is \u201cIt cannot be instantiated directly; it forces child classes to implement its abstract methods\u201d \u2014 An abstract class cannot be instantiated with `new` directly. It can mix abstract methods (which children must implement) with regular, already-implemented methods."}, {"text": "It cannot be instantiated directly; it forces child classes to implement its abstract methods", "correct": true, "feedback": "Correct! An abstract class cannot be instantiated with `new` directly. It can mix abstract methods (which children must implement) with regular, already-implemented methods."}, {"text": "It cannot contain any regular, non-abstract methods", "correct": false, "feedback": "The correct answer is \u201cIt cannot be instantiated directly; it forces child classes to implement its abstract methods\u201d \u2014 An abstract class cannot be instantiated with `new` directly. It can mix abstract methods (which children must implement) with regular, already-implemented methods."}]}, {"num": 35, "text": "What does marking a parent class's method `virtual` allow?", "options": [{"text": "The method to execute faster than a normal method", "correct": false, "feedback": "The correct answer is \u201cThe method to be overridden by a child class using the `override` keyword\u201d \u2014 `virtual` marks a method as allowed to be overridden. A child class then uses `override` to replace the parent's version with its own."}, {"text": "The method to be overridden by a child class using the `override` keyword", "correct": true, "feedback": "Correct! `virtual` marks a method as allowed to be overridden. A child class then uses `override` to replace the parent's version with its own."}, {"text": "The method to be called without ever creating an object", "correct": false, "feedback": "The correct answer is \u201cThe method to be overridden by a child class using the `override` keyword\u201d \u2014 `virtual` marks a method as allowed to be overridden. A child class then uses `override` to replace the parent's version with its own."}]}, {"num": 36, "text": "Can a C# class inherit from more than one class at the same time?", "options": [{"text": "Yes, C# freely supports multiple class inheritance", "correct": false, "feedback": "The correct answer is \u201cNo -- a class can inherit from only one class, but can implement multiple interfaces\u201d \u2014 C# supports single inheritance for classes -- one parent class only -- but a class can implement as many interfaces as needed."}, {"text": "No -- a class can inherit from only one class, but can implement multiple interfaces", "correct": true, "feedback": "Correct! C# supports single inheritance for classes -- one parent class only -- but a class can implement as many interfaces as needed."}, {"text": "Only if both parent classes are marked abstract", "correct": false, "feedback": "The correct answer is \u201cNo -- a class can inherit from only one class, but can implement multiple interfaces\u201d \u2014 C# supports single inheritance for classes -- one parent class only -- but a class can implement as many interfaces as needed."}]}, {"num": 37, "text": "What's the main structural difference between an abstract class and an interface?", "options": [{"text": "An abstract class can include regular, already-implemented methods alongside abstract ones; an interface traditionally provides no implementation of its own", "correct": true, "feedback": "Correct! An abstract class can mix implemented and unimplemented (abstract) methods. An interface, in its traditional form, defines only a contract with no implementation at all."}, {"text": "There is no real difference -- they are fully interchangeable", "correct": false, "feedback": "The correct answer is \u201cAn abstract class can include regular, already-implemented methods alongside abstract ones; an interface traditionally provides no implementation of its own\u201d \u2014 An abstract class can mix implemented and unimplemented (abstract) methods. An interface, in its traditional form, defines only a contract with no implementation at all."}, {"text": "An interface can be instantiated directly, while an abstract class cannot", "correct": false, "feedback": "The correct answer is \u201cAn abstract class can include regular, already-implemented methods alongside abstract ones; an interface traditionally provides no implementation of its own\u201d \u2014 An abstract class can mix implemented and unimplemented (abstract) methods. An interface, in its traditional form, defines only a contract with no implementation at all."}]}, {"num": 38, "text": "Given `class Bicycle : Vehicle`, where Vehicle is abstract with `public abstract void Move();`, what must Bicycle do?", "options": [{"text": "Nothing -- abstract methods are optional to implement", "correct": false, "feedback": "The correct answer is \u201cProvide its own implementation of Move() using the `override` keyword\u201d \u2014 Any class inheriting from an abstract class must implement every abstract method it doesn't itself declare as abstract -- using `override`."}, {"text": "Provide its own implementation of Move() using the `override` keyword", "correct": true, "feedback": "Correct! Any class inheriting from an abstract class must implement every abstract method it doesn't itself declare as abstract -- using `override`."}, {"text": "Redeclare Move() as abstract again", "correct": false, "feedback": "The correct answer is \u201cProvide its own implementation of Move() using the `override` keyword\u201d \u2014 Any class inheriting from an abstract class must implement every abstract method it doesn't itself declare as abstract -- using `override`."}]}, {"num": 39, "text": "Which keyword replaces a parent class's version of a method in the child class?", "options": [{"text": "`replace`", "correct": false, "feedback": "The correct answer is \u201c`override`\u201d \u2014 `override` is used in the child class to provide a new implementation for a method the parent marked `virtual` (or declared `abstract`)."}, {"text": "`override`", "correct": true, "feedback": "Correct! `override` is used in the child class to provide a new implementation for a method the parent marked `virtual` (or declared `abstract`)."}, {"text": "`new virtual`", "correct": false, "feedback": "The correct answer is \u201c`override`\u201d \u2014 `override` is used in the child class to provide a new implementation for a method the parent marked `virtual` (or declared `abstract`)."}]}, {"num": 40, "text": "Why might a program use an interface instead of a base class?", "options": [{"text": "To let unrelated classes (like Dog and Cat) share a common contract (like Speak()) without forcing a shared inheritance hierarchy", "correct": true, "feedback": "Correct! Interfaces let otherwise-unrelated classes share a common contract (a set of methods they all implement) without needing to share a common parent class."}, {"text": "Because interfaces always execute faster than classes at runtime", "correct": false, "feedback": "The correct answer is \u201cTo let unrelated classes (like Dog and Cat) share a common contract (like Speak()) without forcing a shared inheritance hierarchy\u201d \u2014 Interfaces let otherwise-unrelated classes share a common contract (a set of methods they all implement) without needing to share a common parent class."}, {"text": "Because interfaces can store private data directly, unlike classes", "correct": false, "feedback": "The correct answer is \u201cTo let unrelated classes (like Dog and Cat) share a common contract (like Speak()) without forcing a shared inheritance hierarchy\u201d \u2014 Interfaces let otherwise-unrelated classes share a common contract (a set of methods they all implement) without needing to share a common parent class."}]}]}, {"title": "What Is .NET? (Platform Overview)", "questions": [{"num": 41, "text": "What is .NET, fundamentally?", "options": [{"text": "A programming language that competes with C#", "correct": false, "feedback": "The correct answer is \u201cA platform -- a shared runtime and set of libraries that multiple languages compile down to and run on\u201d \u2014 .NET is not a language. It's a platform -- a shared runtime and libraries that multiple languages (C#, F#, VB.NET, and others) all target and run on top of."}, {"text": "A platform -- a shared runtime and set of libraries that multiple languages compile down to and run on", "correct": true, "feedback": "Correct! .NET is not a language. It's a platform -- a shared runtime and libraries that multiple languages (C#, F#, VB.NET, and others) all target and run on top of."}, {"text": "A single, specific compiled application", "correct": false, "feedback": "The correct answer is \u201cA platform -- a shared runtime and set of libraries that multiple languages compile down to and run on\u201d \u2014 .NET is not a language. It's a platform -- a shared runtime and libraries that multiple languages (C#, F#, VB.NET, and others) all target and run on top of."}]}, {"num": 42, "text": "What does CLR stand for, and what does it do?", "options": [{"text": "Common Language Runtime -- the engine that executes .NET programs, handling memory management and garbage collection", "correct": true, "feedback": "Correct! The CLR (Common Language Runtime) is the engine that actually executes .NET programs, managing memory, garbage collection, and security while code runs."}, {"text": "Class Library Reference -- a documentation index for .NET types", "correct": false, "feedback": "The correct answer is \u201cCommon Language Runtime -- the engine that executes .NET programs, handling memory management and garbage collection\u201d \u2014 The CLR (Common Language Runtime) is the engine that actually executes .NET programs, managing memory, garbage collection, and security while code runs."}, {"text": "Compiled Language Registry -- a list of every supported .NET language", "correct": false, "feedback": "The correct answer is \u201cCommon Language Runtime -- the engine that executes .NET programs, handling memory management and garbage collection\u201d \u2014 The CLR (Common Language Runtime) is the engine that actually executes .NET programs, managing memory, garbage collection, and security while code runs."}]}, {"num": 43, "text": "What is CIL?", "options": [{"text": "A specific text editor built for writing C#", "correct": false, "feedback": "The correct answer is \u201cThe intermediate, partially-compiled code your C# turns into after a build, before becoming machine code\u201d \u2014 CIL (Common Intermediate Language) is the hardware-independent, partially-compiled format your C# code becomes after building, before the JIT compiler turns it into real machine code."}, {"text": "The intermediate, partially-compiled code your C# turns into after a build, before becoming machine code", "correct": true, "feedback": "Correct! CIL (Common Intermediate Language) is the hardware-independent, partially-compiled format your C# code becomes after building, before the JIT compiler turns it into real machine code."}, {"text": "A category of runtime exception", "correct": false, "feedback": "The correct answer is \u201cThe intermediate, partially-compiled code your C# turns into after a build, before becoming machine code\u201d \u2014 CIL (Common Intermediate Language) is the hardware-independent, partially-compiled format your C# code becomes after building, before the JIT compiler turns it into real machine code."}]}, {"num": 44, "text": "What's the difference between managed and unmanaged code?", "options": [{"text": "Managed code runs under CLR control with automatic memory cleanup; unmanaged code requires manual memory management", "correct": true, "feedback": "Correct! Managed code (like C#) runs under the CLR, which automatically handles memory cleanup (garbage collection). Unmanaged code runs directly on the OS, with the developer responsible for memory manually."}, {"text": "Managed code is written in C++; unmanaged code is written in C#", "correct": false, "feedback": "The correct answer is \u201cManaged code runs under CLR control with automatic memory cleanup; unmanaged code requires manual memory management\u201d \u2014 Managed code (like C#) runs under the CLR, which automatically handles memory cleanup (garbage collection). Unmanaged code runs directly on the OS, with the developer responsible for memory manually."}, {"text": "There is no real difference -- just two names for the same thing", "correct": false, "feedback": "The correct answer is \u201cManaged code runs under CLR control with automatic memory cleanup; unmanaged code requires manual memory management\u201d \u2014 Managed code (like C#) runs under the CLR, which automatically handles memory cleanup (garbage collection). Unmanaged code runs directly on the OS, with the developer responsible for memory manually."}]}, {"num": 45, "text": "What does the CTS (Common Type System) do?", "options": [{"text": "Tracks how much CPU time a running program consumes", "correct": false, "feedback": "The correct answer is \u201cDefines every data type in a way every .NET language agrees on, so types can be shared across languages\u201d \u2014 The CTS defines data types consistently across every .NET language, which is what allows a type created in one .NET language to be used safely from another."}, {"text": "Defines every data type in a way every .NET language agrees on, so types can be shared across languages", "correct": true, "feedback": "Correct! The CTS defines data types consistently across every .NET language, which is what allows a type created in one .NET language to be used safely from another."}, {"text": "Compiles C# directly into machine code, skipping CIL entirely", "correct": false, "feedback": "The correct answer is \u201cDefines every data type in a way every .NET language agrees on, so types can be shared across languages\u201d \u2014 The CTS defines data types consistently across every .NET language, which is what allows a type created in one .NET language to be used safely from another."}]}, {"num": 46, "text": "What is an assembly, in .NET terms?", "options": [{"text": "A single line of C# source code", "correct": false, "feedback": "The correct answer is \u201cThe compiled output file (a .dll or .exe) containing your program's CIL code plus metadata describing it\u201d \u2014 An assembly is the packaged compiled output -- a .dll or .exe -- containing your CIL code and metadata describing the program."}, {"text": "The compiled output file (a .dll or .exe) containing your program's CIL code plus metadata describing it", "correct": true, "feedback": "Correct! An assembly is the packaged compiled output -- a .dll or .exe -- containing your CIL code and metadata describing the program."}, {"text": "A third-party package downloaded exclusively from NuGet", "correct": false, "feedback": "The correct answer is \u201cThe compiled output file (a .dll or .exe) containing your program's CIL code plus metadata describing it\u201d \u2014 An assembly is the packaged compiled output -- a .dll or .exe -- containing your CIL code and metadata describing the program."}]}, {"num": 47, "text": "Why can multiple different .NET languages (C#, F#, VB.NET) interoperate with each other?", "options": [{"text": "They all share the same CLR, CTS, and CLS, allowing code compiled from different languages to work together", "correct": true, "feedback": "Correct! Because every .NET language targets the same CLR and follows the same CTS/CLS rules, code written in one can interoperate with code written in another."}, {"text": "They are secretly the exact same language with different keywords", "correct": false, "feedback": "The correct answer is \u201cThey all share the same CLR, CTS, and CLS, allowing code compiled from different languages to work together\u201d \u2014 Because every .NET language targets the same CLR and follows the same CTS/CLS rules, code written in one can interoperate with code written in another."}, {"text": "They cannot interoperate -- each one requires a completely separate runtime", "correct": false, "feedback": "The correct answer is \u201cThey all share the same CLR, CTS, and CLS, allowing code compiled from different languages to work together\u201d \u2014 Because every .NET language targets the same CLR and follows the same CTS/CLS rules, code written in one can interoperate with code written in another."}]}, {"num": 48, "text": "What does the JIT (Just-In-Time) compiler do?", "options": [{"text": "Automatically formats your source code as you type", "correct": false, "feedback": "The correct answer is \u201cConverts CIL into real machine code at the moment the program actually runs\u201d \u2014 The JIT compiler is part of the CLR and converts CIL into actual machine code for the specific computer, at the moment the program runs."}, {"text": "Converts CIL into real machine code at the moment the program actually runs", "correct": true, "feedback": "Correct! The JIT compiler is part of the CLR and converts CIL into actual machine code for the specific computer, at the moment the program runs."}, {"text": "Finds syntax errors in your code before you attempt to build it", "correct": false, "feedback": "The correct answer is \u201cConverts CIL into real machine code at the moment the program actually runs\u201d \u2014 The JIT compiler is part of the CLR and converts CIL into actual machine code for the specific computer, at the moment the program runs."}]}, {"num": 49, "text": "What does the CLS (Common Language Specification) guarantee?", "options": [{"text": "That a program will never throw an exception", "correct": false, "feedback": "The correct answer is \u201cA set of rules a .NET language must follow so its code can be safely used by other .NET languages\u201d \u2014 The CLS is a set of rules a language must follow to guarantee that code written in it can be used safely by other .NET languages."}, {"text": "A set of rules a .NET language must follow so its code can be safely used by other .NET languages", "correct": true, "feedback": "Correct! The CLS is a set of rules a language must follow to guarantee that code written in it can be used safely by other .NET languages."}, {"text": "That code will run correctly even with no CLR present", "correct": false, "feedback": "The correct answer is \u201cA set of rules a .NET language must follow so its code can be safely used by other .NET languages\u201d \u2014 The CLS is a set of rules a language must follow to guarantee that code written in it can be used safely by other .NET languages."}]}, {"num": 50, "text": "Why can the same unchanged .NET program run on Windows, Mac, or Linux?", "options": [{"text": "The CIL is compiled once and never changes after that", "correct": false, "feedback": "The correct answer is \u201cThe JIT step at run-time adapts the CIL into the correct machine code for whichever machine it's running on\u201d \u2014 The two-step compile process (C# to CIL, then CIL to machine code via JIT at run-time) is exactly what lets the same program run unchanged across different operating systems -- the final JIT step adapts it to whatever machine it's on."}, {"text": "The JIT step at run-time adapts the CIL into the correct machine code for whichever machine it's running on", "correct": true, "feedback": "Correct! The two-step compile process (C# to CIL, then CIL to machine code via JIT at run-time) is exactly what lets the same program run unchanged across different operating systems -- the final JIT step adapts it to whatever machine it's on."}, {"text": ".NET secretly rewrites the original source code separately for each operating system", "correct": false, "feedback": "The correct answer is \u201cThe JIT step at run-time adapts the CIL into the correct machine code for whichever machine it's running on\u201d \u2014 The two-step compile process (C# to CIL, then CIL to machine code via JIT at run-time) is exactly what lets the same program run unchanged across different operating systems -- the final JIT step adapts it to whatever machine it's on."}]}]}, {"title": "VS Code Debugging Terms", "questions": [{"num": 51, "text": "What is a breakpoint?", "options": [{"text": "A marker on a line of code that pauses execution when reached", "correct": true, "feedback": "Correct! A breakpoint is a marker placed on a specific line that pauses program execution when the debugger reaches it, letting you inspect the program's state."}, {"text": "A keyword that stops a for loop early", "correct": false, "feedback": "The correct answer is \u201cA marker on a line of code that pauses execution when reached\u201d \u2014 A breakpoint is a marker placed on a specific line that pauses program execution when the debugger reaches it, letting you inspect the program's state."}, {"text": "An error message shown after a program crashes", "correct": false, "feedback": "The correct answer is \u201cA marker on a line of code that pauses execution when reached\u201d \u2014 A breakpoint is a marker placed on a specific line that pauses program execution when the debugger reaches it, letting you inspect the program's state."}]}, {"num": 52, "text": "What does the CALL STACK section in VS Code's debugger show?", "options": [{"text": "The current value of every variable currently in scope", "correct": false, "feedback": "The correct answer is \u201cThe current point of execution within the running application, starting from the initial entry point\u201d \u2014 The CALL STACK section tracks the current point of execution, starting from the application's initial entry point, showing the chain of method calls that led there."}, {"text": "The current point of execution within the running application, starting from the initial entry point", "correct": true, "feedback": "Correct! The CALL STACK section tracks the current point of execution, starting from the application's initial entry point, showing the chain of method calls that led there."}, {"text": "A permanent history of every breakpoint that has ever been set", "correct": false, "feedback": "The correct answer is \u201cThe current point of execution within the running application, starting from the initial entry point\u201d \u2014 The CALL STACK section tracks the current point of execution, starting from the application's initial entry point, showing the chain of method calls that led there."}]}, {"num": 53, "text": "What is a conditional breakpoint?", "options": [{"text": "A breakpoint that always triggers, regardless of the program's state", "correct": false, "feedback": "The correct answer is \u201cA breakpoint that only triggers when a specified condition evaluates to true\u201d \u2014 A conditional breakpoint only pauses execution when a specified condition is met, rather than every single time that line runs."}, {"text": "A breakpoint that only triggers when a specified condition evaluates to true", "correct": true, "feedback": "Correct! A conditional breakpoint only pauses execution when a specified condition is met, rather than every single time that line runs."}, {"text": "A breakpoint that can only ever be placed on the first line of a file", "correct": false, "feedback": "The correct answer is \u201cA breakpoint that only triggers when a specified condition evaluates to true\u201d \u2014 A conditional breakpoint only pauses execution when a specified condition is met, rather than every single time that line runs."}]}, {"num": 54, "text": "What does the `preLaunchTask` attribute in launch.json control?", "options": [{"text": "It specifies a task (typically a build) to run before debugging starts", "correct": true, "feedback": "Correct! `preLaunchTask` specifies a task to run before debugging begins -- commonly a `dotnet build`, defined in the accompanying tasks.json file."}, {"text": "It specifies the display name shown in the RUN AND DEBUG controls panel", "correct": false, "feedback": "The correct answer is \u201cIt specifies a task (typically a build) to run before debugging starts\u201d \u2014 `preLaunchTask` specifies a task to run before debugging begins -- commonly a `dotnet build`, defined in the accompanying tasks.json file."}, {"text": "It automatically deletes old, unused breakpoints", "correct": false, "feedback": "The correct answer is \u201cIt specifies a task (typically a build) to run before debugging starts\u201d \u2014 `preLaunchTask` specifies a task to run before debugging begins -- commonly a `dotnet build`, defined in the accompanying tasks.json file."}]}, {"num": 55, "text": "Which VS Code extension is needed to get C# debugging, IntelliSense, and project support?", "options": [{"text": "Python Extension Pack", "correct": false, "feedback": "The correct answer is \u201c\"C# Dev Kit\" (published by Microsoft)\u201d \u2014 The C# Dev Kit extension, published by Microsoft, is what gives VS Code its C# debugging, IntelliSense, and project support -- it doesn't come built in."}, {"text": "\"C# Dev Kit\" (published by Microsoft)", "correct": true, "feedback": "Correct! The C# Dev Kit extension, published by Microsoft, is what gives VS Code its C# debugging, IntelliSense, and project support -- it doesn't come built in."}, {"text": "No extension is required -- VS Code supports C# fully by default", "correct": false, "feedback": "The correct answer is \u201c\"C# Dev Kit\" (published by Microsoft)\u201d \u2014 The C# Dev Kit extension, published by Microsoft, is what gives VS Code its C# debugging, IntelliSense, and project support -- it doesn't come built in."}]}, {"num": 56, "text": "What does the WATCH section let a developer do?", "options": [{"text": "Manually track the value of specific variables or expressions continuously while debugging", "correct": true, "feedback": "Correct! The WATCH section lets you manually add specific variables or expressions so you can continuously monitor their value while stepping through code."}, {"text": "Automatically fix bugs found in the code", "correct": false, "feedback": "The correct answer is \u201cManually track the value of specific variables or expressions continuously while debugging\u201d \u2014 The WATCH section lets you manually add specific variables or expressions so you can continuously monitor their value while stepping through code."}, {"text": "Record a screen capture of the program running", "correct": false, "feedback": "The correct answer is \u201cManually track the value of specific variables or expressions continuously while debugging\u201d \u2014 The WATCH section lets you manually add specific variables or expressions so you can continuously monitor their value while stepping through code."}]}, {"num": 57, "text": "What happens when a breakpoint is disabled rather than removed?", "options": [{"text": "It's permanently deleted from the source file", "correct": false, "feedback": "The correct answer is \u201cIt's skipped during debugging but remains in place, shown as a grey dot instead of red\u201d \u2014 Disabling a breakpoint leaves it in place (shown as a grey dot) but skips it during debugging -- unlike removing it entirely."}, {"text": "It's skipped during debugging but remains in place, shown as a grey dot instead of red", "correct": true, "feedback": "Correct! Disabling a breakpoint leaves it in place (shown as a grey dot) but skips it during debugging -- unlike removing it entirely."}, {"text": "It automatically converts into a conditional breakpoint", "correct": false, "feedback": "The correct answer is \u201cIt's skipped during debugging but remains in place, shown as a grey dot instead of red\u201d \u2014 Disabling a breakpoint leaves it in place (shown as a grey dot) but skips it during debugging -- unlike removing it entirely."}]}, {"num": 58, "text": "Which exception is thrown when code tries to access an array index that doesn't exist?", "options": [{"text": "NullReferenceException", "correct": false, "feedback": "The correct answer is \u201cIndexOutOfRangeException\u201d \u2014 IndexOutOfRangeException is thrown specifically when an attempt is made to access an array or collection element with an index outside its bounds."}, {"text": "IndexOutOfRangeException", "correct": true, "feedback": "Correct! IndexOutOfRangeException is thrown specifically when an attempt is made to access an array or collection element with an index outside its bounds."}, {"text": "InvalidCastException", "correct": false, "feedback": "The correct answer is \u201cIndexOutOfRangeException\u201d \u2014 IndexOutOfRangeException is thrown specifically when an attempt is made to access an array or collection element with an index outside its bounds."}]}, {"num": 59, "text": "What does the `console` attribute in launch.json control?", "options": [{"text": "The visual color theme of the VS Code editor", "correct": false, "feedback": "The correct answer is \u201cThe type of console used when the app launches (internalConsole, integratedTerminal, or externalTerminal)\u201d \u2014 The `console` attribute specifies which type of console is used when the application launches, with internalConsole as the default."}, {"text": "The type of console used when the app launches (internalConsole, integratedTerminal, or externalTerminal)", "correct": true, "feedback": "Correct! The `console` attribute specifies which type of console is used when the application launches, with internalConsole as the default."}, {"text": "Whether breakpoints are enabled globally", "correct": false, "feedback": "The correct answer is \u201cThe type of console used when the app launches (internalConsole, integratedTerminal, or externalTerminal)\u201d \u2014 The `console` attribute specifies which type of console is used when the application launches, with internalConsole as the default."}]}, {"num": 60, "text": "Why does this certification's Debugging course focus specifically on VS Code rather than the full Visual Studio IDE?", "options": [{"text": "They are identical products that just happen to have different names", "correct": false, "feedback": "The correct answer is \u201cThe certification's Debugging course is built specifically around VS Code's interface and terminology, which differs from Visual Studio's\u201d \u2014 The certification's Debugging course teaches VS Code's specific interface and terminology (RUN AND DEBUG view, launch.json, etc.), which is different from -- and not interchangeable with -- the full Visual Studio IDE's debugger."}, {"text": "The certification's Debugging course is built specifically around VS Code's interface and terminology, which differs from Visual Studio's", "correct": true, "feedback": "Correct! The certification's Debugging course teaches VS Code's specific interface and terminology (RUN AND DEBUG view, launch.json, etc.), which is different from -- and not interchangeable with -- the full Visual Studio IDE's debugger."}, {"text": "Visual Studio Code does not support debugging C# at all", "correct": false, "feedback": "The correct answer is \u201cThe certification's Debugging course is built specifically around VS Code's interface and terminology, which differs from Visual Studio's\u201d \u2014 The certification's Debugging course teaches VS Code's specific interface and terminology (RUN AND DEBUG view, launch.json, etc.), which is different from -- and not interchangeable with -- the full Visual Studio IDE's debugger."}]}]}];
+
+function escapeAndFormatCode(text) {
+  // Convert `code` spans to <code> tags; text is already safe plain text from source
+  const escaped = text
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+  return escaped.replace(/`([^`]+)`/g, "<code>$1</code>");
+}
+
+const container = document.getElementById("quizContainer");
+const answeredCountEl = document.getElementById("answeredCount");
+const correctCountEl = document.getElementById("correctCount");
+const incorrectCountEl = document.getElementById("incorrectCount");
+const liveScoreEl = document.getElementById("liveScore");
+const resetBtn = document.getElementById("resetBtn");
+
+let answeredCount = 0;
+let correctCount = 0;
+const LETTERS = "abcdefgh";
+
+function buildQuiz() {
+  container.innerHTML = "";
+  answeredCount = 0;
+  correctCount = 0;
+  updateScore();
+
+  QUIZ_DATA.forEach(course => {
+    const courseHeader = document.createElement("div");
+    courseHeader.className = "course-header";
+    courseHeader.textContent = course.title;
+    container.appendChild(courseHeader);
+
+    course.questions.forEach(q => {
+      const card = document.createElement("div");
+      card.className = "question-card";
+      card.dataset.qnum = q.num;
+
+      const numBadge = document.createElement("div");
+      numBadge.className = "q-num";
+      numBadge.textContent = "Question " + q.num;
+      card.appendChild(numBadge);
+
+      const qText = document.createElement("p");
+      qText.className = "q-text";
+      qText.innerHTML = escapeAndFormatCode(q.text);
+      card.appendChild(qText);
+
+      const optionsWrap = document.createElement("div");
+      optionsWrap.className = "options";
+
+      const breakdownHeading = document.createElement("div");
+      breakdownHeading.className = "breakdown-heading";
+      breakdownHeading.innerHTML = '<span>Detailed Explanation</span>';
+
+      const breakdownEl = document.createElement("div");
+      breakdownEl.className = "breakdown";
+
+      const optionLabels = [];
+
+      q.options.forEach((opt, idx) => {
+        const label = document.createElement("label");
+        label.className = "option";
+
+        const radio = document.createElement("input");
+        radio.type = "radio";
+        radio.name = "q_" + q.num;
+        radio.value = idx;
+
+        const letterSpan = document.createElement("span");
+        letterSpan.className = "letter";
+        letterSpan.textContent = LETTERS[idx] + ".";
+
+        const textSpan = document.createElement("span");
+        textSpan.className = "opt-text";
+        textSpan.innerHTML = escapeAndFormatCode(opt.text);
+
+        label.appendChild(radio);
+        label.appendChild(letterSpan);
+        label.appendChild(textSpan);
+        optionLabels.push(label);
+
+        radio.addEventListener("change", () => {
+          // Mark which option the user actually clicked (only ever tags the first pick)
+          if (card.dataset.answered !== "true") {
+            card.dataset.answered = "true";
+            label.classList.add("your-pick");
+            const tag = document.createElement("span");
+            tag.className = "your-pick-tag " + (opt.correct ? "tag-correct" : "tag-incorrect");
+            tag.textContent = opt.correct ? "Correct!" : "Incorrect";
+            textSpan.appendChild(tag);
+
+            // Score counts only the first selection made
+            answeredCount++;
+            if (opt.correct) correctCount++;
+            updateScore();
+
+            // Reveal every option's status + reasoning at once
+            optionLabels.forEach((lbl, i) => {
+              lbl.classList.add(q.options[i].correct ? "revealed-correct" : "revealed-incorrect");
+            });
+
+            breakdownEl.innerHTML = "";
+            q.options.forEach((o, i) => {
+              const item = document.createElement("div");
+              item.className = "breakdown-item " + (o.correct ? "is-correct" : "is-incorrect");
+              item.innerHTML =
+                '<span class="bd-label">' + LETTERS[i] + '. ' + (o.correct ? "Correct —" : "Incorrect —") + '</span>' +
+                escapeAndFormatCode(o.feedback);
+              breakdownEl.appendChild(item);
+            });
+            breakdownHeading.classList.add("show");
+            breakdownEl.classList.add("show");
+          }
+          // Radios remain enabled after this, so the person can keep clicking
+          // through every option to read it -- selection state itself no
+          // longer changes score or colors once the breakdown is revealed.
+        });
+
+        optionsWrap.appendChild(label);
+      });
+
+      card.appendChild(optionsWrap);
+      card.appendChild(breakdownHeading);
+      card.appendChild(breakdownEl);
+      container.appendChild(card);
+    });
+  });
+}
+
+function updateScore() {
+  answeredCountEl.textContent = answeredCount;
+  correctCountEl.textContent = correctCount;
+  const incorrectCount = answeredCount - correctCount;
+  incorrectCountEl.textContent = incorrectCount;
+  if (answeredCount === 0) {
+    liveScoreEl.textContent = "—";
+  } else {
+    const pct = (correctCount / answeredCount) * 100;
+    const rounded = Number.isInteger(pct) ? pct : Math.round(pct * 10) / 10;
+    liveScoreEl.textContent = rounded + "%";
+  }
+}
+
+resetBtn.addEventListener("click", () => {
+  if (confirm("Reset all answers and start over?")) {
+    buildQuiz();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+});
+
+buildQuiz();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CompTIA A+ Core 2 — Acronym Mastery Quiz</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700&family=JetBrains+Mono:wght@400;700&family=Space+Grotesk:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:radial-gradient(ellipse at top left,#2d5a3d,#3a3f4a);min-height:100vh;font-family:'Syne',sans-serif;color:#f0f0f0;padding-bottom:80px}
+#scoreboard{position:sticky;top:0;z-index:1000;background:rgba(0,0,0,0.5);border-bottom:1px solid rgba(255,255,255,0.15);padding:16px 20px;display:flex;justify-content:space-between;align-items:center;max-width:100vw;backdrop-filter:blur(6px)}
+.score-item{font-family:'Syne',sans-serif;font-size:16px}
+.score-correct{color:#00e87a;font-weight:700}
+.score-wrong{color:#ff3b5c;font-weight:700}
+.score-remaining{color:#aaaaaa}
+.score-pct{color:#ffd166;font-weight:700}
+#progress-bar{position:sticky;top:57px;z-index:999;height:6px;background:rgba(255,255,255,0.1)}
+#progress-fill{height:100%;width:0%;background:linear-gradient(90deg,#00e87a,#00c2ff);transition:width 300ms ease-out}
+.quiz-header{max-width:760px;margin:32px auto 0;padding:0 20px}
+.quiz-title{font-family:'Syne',sans-serif;font-size:24px;font-weight:700;color:#ffffff;margin-bottom:4px}
+.quiz-sub{font-family:'JetBrains Mono',monospace;font-size:13px;color:#aaaaaa;margin-bottom:24px}
+#container{max-width:760px;margin:0 auto;padding:0 20px}
+.card{background:rgba(20,30,25,0.85);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:24px;margin-bottom:24px;box-shadow:0 4px 16px rgba(0,0,0,0.3)}
+.card-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px;gap:12px}
+.q-badge{background:#00e87a;color:#0a1a10;padding:4px 8px;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;white-space:nowrap}
+.meta{display:flex;flex-direction:column;gap:4px;align-items:flex-end}
+.badge-messer{background:#1a3a2a;color:#4ade80;padding:4px 8px;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:13px}
+.ref-code{font-family:'JetBrains Mono',monospace;font-size:13px;color:#888888}
+.obj-tag{font-family:'JetBrains Mono',monospace;font-size:13px;color:#888888}
+.question-text{font-family:'Syne',sans-serif;font-size:18px;color:#f0f0f0;margin-bottom:20px;line-height:1.6}
+.choices{display:flex;flex-direction:column;gap:12px;margin-bottom:20px}
+.choice-btn{background:#e0e0e0;color:#1a1a1a;padding:12px 16px;border:none;border-radius:6px;cursor:pointer;font-family:'Syne',sans-serif;font-size:16px;text-align:left;transition:all 200ms ease-out;line-height:1.4}
+.choice-btn:hover:not(.locked){background:#f0f0f0;transform:translateX(4px)}
+.choice-btn.correct{background:#00e87a!important;color:#0a1a10!important}
+.choice-btn.wrong-selected{background:#ff3b5c!important;color:#ffffff!important}
+.choice-btn.unchosen.locked{background:#e0e0e0;color:#1a1a1a;opacity:0.6;cursor:not-allowed}
+.choice-btn.correct.locked{opacity:1;cursor:not-allowed}
+.choice-btn.wrong-selected.locked{opacity:1;cursor:not-allowed}
+.result-badge{background:rgba(0,0,0,0.4);border:1px solid rgba(255,255,255,0.2);border-radius:6px;padding:12px 16px;margin:16px 0;font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:700;display:none}
+.result-badge.show{display:block}
+.result-correct{color:#00e87a}
+.result-wrong{color:#ff3b5c}
+.explain-pane{background:rgba(0,0,0,0.5);border:1px solid #ffffff;border-radius:6px;padding:16px;margin-top:12px;font-family:'Space Grotesk',sans-serif;font-size:17px;line-height:1.6;color:#f0f0f0;display:none}
+.explain-pane.show{display:block}
+.explain-pane strong{color:#00e87a}
+#final-banner{display:none;max-width:760px;margin:32px auto;padding:0 20px}
+.final-inner{border-radius:8px;padding:32px;text-align:center}
+.final-inner h2{font-family:'Syne',sans-serif;font-size:24px;font-weight:700;color:#fff;margin-bottom:12px}
+.final-inner p{font-family:'Syne',sans-serif;font-size:18px;color:#fff;margin-bottom:20px}
+#retake-btn{background:#00e87a;color:#0a1a10;font-family:'Syne',sans-serif;font-size:16px;font-weight:700;padding:12px 24px;border:none;border-radius:6px;cursor:pointer}
+#retake-btn:hover{background:#00c86a}
+</style>
+</head>
+<body>
+<div id="scoreboard">
+  <div class="score-item">Correct: <span class="score-correct" id="sc">0</span></div>
+  <div class="score-item">Wrong: <span class="score-wrong" id="sw">0</span></div>
+  <div class="score-item">Remaining: <span class="score-remaining" id="sr">0</span></div>
+  <div class="score-item">Score: <span class="score-pct" id="sp">0%</span></div>
+</div>
+<div id="progress-bar"><div id="progress-fill"></div></div>
+<div class="quiz-header">
+  <div class="quiz-title">CompTIA A+ Core 2 (220-1202)</div>
+  <div class="quiz-sub">ACRONYM MASTERY — 56 Acronyms | Dual Format | Pass ≥78%</div>
+</div>
+<div id="container"></div>
+<div id="final-banner">
+  <div class="final-inner" id="final-inner">
+    <h2 id="final-title">Final Score</h2>
+    <p id="final-score"></p>
+    <button id="retake-btn" onclick="retake()">Retake Quiz</button>
+  </div>
+</div>
+<script>
+// Each acronym has two formats - on each load one is randomly picked per acronym
+// format A: "What does X stand for?" -> answer is the definition
+// format B: "Scenario/definition" -> answer is the acronym
+const acronyms = [
+{
+  acronym:"APFS", obj:"Obj 1.1",
+  definition:"Apple's native file system used on macOS, iOS, and other Apple devices, replacing HFS+.",
+  wrong_defs:["Microsoft's server-grade file system with fault tolerance and automatic error correction","Cross-platform file system for flash drives that removes the 4GB file size limit","The primary Linux file system with journaling and backward compatibility"],
+  wrong_acronyms:["NTFS","exFAT","HFS"],
+  explain:"<strong>APFS</strong> stands for Apple File System. It is Apple's proprietary modern file system introduced for macOS, iOS, watchOS, and tvOS. It replaced HFS+ and is optimized for flash and SSD storage. NTFS is the Windows file system. exFAT is cross-platform. ext4 is Linux."
+},
+{
+  acronym:"GPT", obj:"Obj 1.2",
+  definition:"Modern disk partitioning standard that supports up to 128 partitions and drives larger than 2TB.",
+  wrong_defs:["Legacy partition style limited to four primary partitions and a maximum 2TB drive size","Microsoft's server-grade file system with built-in fault tolerance","A network boot protocol used to install operating systems remotely over a network"],
+  wrong_acronyms:["MBR","ReFS","PXE"],
+  explain:"<strong>GPT</strong> stands for GUID Partition Table. It is the modern replacement for MBR, supporting up to 128 partitions and drives larger than 2TB. GPT is required for UEFI boot and is standard on all modern systems. MBR is the legacy alternative."
+},
+{
+  acronym:"MBR", obj:"Obj 1.2",
+  definition:"Legacy partitioning style limited to four primary partitions and a maximum drive size of 2TB.",
+  wrong_defs:["Modern partitioning standard supporting 128 partitions and drives larger than 2TB","Windows boot loader data store containing boot-time configuration parameters","Hardware chip providing cryptographic functions required for Windows 11 installation"],
+  wrong_acronyms:["GPT","BCD","TPM"],
+  explain:"<strong>MBR</strong> stands for Master Boot Record. It is the legacy partition style limited to four primary partitions and 2TB maximum size. MBR has been largely replaced by GPT on modern UEFI systems. It also contains the first-stage boot loader."
+},
+{
+  acronym:"ReFS", obj:"Obj 1.2",
+  definition:"Microsoft's modern server-grade file system with built-in fault tolerance and automatic data integrity correction.",
+  wrong_defs:["Apple's native file system optimized for flash storage on macOS and iOS devices","Cross-platform file system for removable drives that supports files larger than 4GB","The primary Linux file system with journaling support used on most distributions"],
+  wrong_acronyms:["APFS","exFAT","ext4"],
+  explain:"<strong>ReFS</strong> stands for Resilient File System. It is Microsoft's modern file system designed for server environments with enhanced data integrity, automatic error correction, and fault tolerance. It is best suited for Windows Server workloads, not desktop use."
+},
+{
+  acronym:"FAT32", obj:"Obj 1.1",
+  definition:"Older cross-platform file system compatible with Windows, macOS, and Linux, but limited to a 4GB maximum individual file size.",
+  wrong_defs:["Apple's native file system for macOS that replaced HFS+ and is optimized for SSDs","High-performance Linux file system used in enterprise environments for large workloads","Microsoft's modern server file system with fault tolerance and integrity checking"],
+  wrong_acronyms:["APFS","XFS","ReFS"],
+  explain:"<strong>FAT32</strong> stands for File Allocation Table 32-bit. It is widely compatible across all platforms but has a hard 4GB maximum file size limit. exFAT was created to overcome this limitation while maintaining cross-platform compatibility."
+},
+{
+  acronym:"ext4", obj:"Obj 1.1",
+  definition:"The primary file system used by most Linux distributions, featuring journaling and backward compatibility with earlier versions.",
+  wrong_defs:["High-performance Linux file system originally developed by SGI for large files and workloads","Apple's file system for macOS and iOS devices optimized for flash and SSD storage","Cross-platform file system for USB drives that supports files larger than 4GB"],
+  wrong_acronyms:["XFS","APFS","exFAT"],
+  explain:"<strong>ext4</strong> stands for Fourth Extended Filesystem. It is the default file system on most Linux distributions including Ubuntu and Debian. It supports large files, journaling for data integrity, and is backward compatible with ext2 and ext3."
+},
+{
+  acronym:"TPM", obj:"Obj 1.3",
+  definition:"Dedicated hardware security chip that provides cryptographic functions and is required to install Windows 11.",
+  wrong_defs:["Modern firmware interface that replaces BIOS and supports Secure Boot and drives larger than 2TB","Windows feature that encrypts individual files and folders without full disk encryption","Hardware device that generates time-based one-time passwords for multi-factor authentication"],
+  wrong_acronyms:["UEFI","EFS","TOTP"],
+  explain:"<strong>TPM</strong> stands for Trusted Platform Module. It is a dedicated hardware security chip that provides cryptographic key storage, Secure Boot verification, and BitLocker encryption support. Windows 11 requires TPM 2.0 to install."
+},
+{
+  acronym:"UEFI", obj:"Obj 1.3",
+  definition:"Modern replacement for BIOS that supports Secure Boot, faster startup, and drives larger than 2TB.",
+  wrong_defs:["Dedicated hardware chip providing cryptographic functions required for Windows 11 installation","Windows boot loader data store that contains boot-time configuration parameters","Network boot protocol that allows systems to boot and install an OS over the network"],
+  wrong_acronyms:["TPM","BCD","PXE"],
+  explain:"<strong>UEFI</strong> stands for Unified Extensible Firmware Interface. It is the modern replacement for BIOS, offering faster boot times, support for drives larger than 2TB, Secure Boot, and a graphical configuration interface. Most systems after 2012 use UEFI."
+},
+{
+  acronym:"OS", obj:"Obj 1.1",
+  definition:"Software that manages computer hardware and software resources and provides common services for applications.",
+  wrong_defs:["A hardware chip that provides cryptographic security functions for a computer system","The physical storage device that holds all programs and data on a computer permanently","A protocol that allows one computer to remotely access and control another computer's desktop"],
+  wrong_acronyms:["TPM","HDD","RDP"],
+  explain:"<strong>OS</strong> stands for Operating System. It is the foundational software that manages hardware resources and provides services for applications. Examples include Windows, macOS, Linux, Android, and iOS."
+},
+{
+  acronym:"RSR", obj:"Obj 1.7",
+  definition:"Apple's rapid delivery mechanism for pushing critical security patches to macOS and iOS devices between major OS updates.",
+  wrong_defs:["Microsoft's tool for deploying Group Policy updates to remote Windows computers immediately","A backup rotation scheme using daily, weekly, and monthly backup sets for data retention","A Linux system service manager that controls how services start, stop, and run at boot"],
+  wrong_acronyms:["GPO","GFS","systemd"],
+  explain:"<strong>RSR</strong> stands for Rapid Security Response. It is Apple's mechanism for delivering critical security patches quickly between major OS updates without requiring a full system update. It is exclusive to Apple platforms including macOS and iOS."
+},
+{
+  acronym:"GUI", obj:"Obj 1.9",
+  definition:"Visual interface that allows users to interact with a computer using windows, icons, and menus rather than text commands.",
+  wrong_defs:["A dedicated hardware chip that handles graphics rendering and display output for a computer","The encrypted tunnel created between a user's device and a corporate network for secure access","A network protocol that assigns IP addresses automatically to devices on a network"],
+  wrong_acronyms:["GPU","VPN","DHCP"],
+  explain:"<strong>GUI</strong> stands for Graphical User Interface. It is the visual interface that lets users interact with software using windows, icons, buttons, and menus. Windows, macOS, and most modern operating systems provide a GUI. The alternative is a CLI (Command Line Interface)."
+},
+{
+  acronym:"exFAT", obj:"Obj 1.1",
+  definition:"Cross-platform file system designed for flash drives and external storage that overcomes the 4GB file size limit of its predecessor.",
+  wrong_defs:["Apple's native file system for macOS and iOS optimized for solid-state storage","Older Windows file system compatible with most platforms but limited to 4GB file sizes","Microsoft's server file system with fault tolerance and automatic integrity checking"],
+  wrong_acronyms:["APFS","FAT32","ReFS"],
+  explain:"<strong>exFAT</strong> stands for Extended File Allocation Table. It overcomes FAT32's 4GB file size limit while maintaining broad cross-platform compatibility with Windows and macOS. It is the recommended format for large USB drives and SD cards."
+},
+{
+  acronym:"XFS", obj:"Obj 1.1",
+  definition:"High-performance journaling file system originally developed by SGI, now used primarily in Linux and enterprise Unix environments.",
+  wrong_defs:["The primary Linux file system used by most distributions with journaling and backward compatibility","Apple's proprietary file system optimized for flash storage on macOS and iOS devices","Microsoft's file system for Windows servers with built-in fault tolerance and data recovery"],
+  wrong_acronyms:["ext4","APFS","ReFS"],
+  explain:"<strong>XFS</strong> stands for Extended File System. It is a high-performance journaling file system particularly efficient for large files and high I/O workloads. It is used as the default file system in Red Hat Enterprise Linux and CentOS."
+},
+{
+  acronym:"MDM", obj:"Obj 1.10",
+  definition:"Platform used by organizations to manage, monitor, and enforce security policies on smartphones and tablets remotely.",
+  wrong_defs:["A security principle that grants users only the minimum access required to perform their job function","A centralized authentication service that integrates with Active Directory for network access control","A system that monitors and logs all access to network resources and user identity management"],
+  wrong_acronyms:["ACL","RADIUS","IAM"],
+  explain:"<strong>MDM</strong> stands for Mobile Device Management. It allows IT departments to manage corporate mobile devices remotely, enforce encryption, control app installation, and perform remote wipes. MDM policies commonly restrict unauthorized app installations on corporate devices."
+},
+{
+  acronym:"MFA", obj:"Obj 2.1",
+  definition:"Security process requiring users to verify identity using two or more factors such as a password plus a hardware token or biometric.",
+  wrong_defs:["Security principle that grants users only the minimum access required to perform their specific job","System that allows a user to authenticate once and access all authorized resources without re-entering credentials","A centralized server that authenticates users for VPN and wireless network access using directory credentials"],
+  wrong_acronyms:["ACL","SSO","RADIUS"],
+  explain:"<strong>MFA</strong> stands for Multi-Factor Authentication. It requires at least two verification factors: something you know (password), something you have (token/phone), or something you are (biometric). MFA significantly reduces the risk of unauthorized access from stolen passwords."
+},
+{
+  acronym:"SSO", obj:"Obj 2.1",
+  definition:"Authentication method that allows a user to log in once and access multiple systems or applications without being prompted again.",
+  wrong_defs:["Security process requiring two or more verification factors to authenticate a user's identity","System that monitors and controls privileged account access to critical systems and resources","Technology that generates rotating time-based codes used as a second factor in authentication"],
+  wrong_acronyms:["MFA","PAM","TOTP"],
+  explain:"<strong>SSO</strong> stands for Single Sign-On. It allows a user to authenticate once and gain access to all connected systems and applications without repeated login prompts. SSO improves user experience while centralizing authentication management."
+},
+{
+  acronym:"EFS", obj:"Obj 2.2",
+  definition:"Windows feature that encrypts individual files and folders at the file system level without encrypting the entire drive.",
+  wrong_defs:["Windows feature that provides full disk encryption protecting all data on a storage drive","A network boot protocol that allows computers to receive an OS installation over the network","Security principle that grants users the minimum permissions necessary to perform their job"],
+  wrong_acronyms:["BitLocker","PXE","ACL"],
+  explain:"<strong>EFS</strong> stands for Encrypting File System. It is a Windows feature that encrypts individual files and folders rather than entire drives. Unlike BitLocker which provides full disk encryption, EFS allows selective encryption of specific files while leaving others accessible."
+},
+{
+  acronym:"UAC", obj:"Obj 2.2",
+  definition:"Windows security feature that prompts for confirmation or admin credentials before allowing applications to make system-level changes.",
+  wrong_defs:["Windows feature that encrypts individual files and folders without requiring full disk encryption","Security model that requires all users to authenticate regardless of network location or previous access","A log management tool that records system events, errors, and application crashes with timestamps"],
+  wrong_acronyms:["EFS","Zero Trust","Event Viewer"],
+  explain:"<strong>UAC</strong> stands for User Account Control. It is a Windows security feature that prevents unauthorized changes to the OS by prompting for administrator credentials or confirmation. UAC helps prevent malware from silently gaining elevated privileges."
+},
+{
+  acronym:"WPA3", obj:"Obj 2.3",
+  definition:"Current strongest wireless security protocol using SAE key exchange, replacing the vulnerable pre-shared key handshake of its predecessor.",
+  wrong_defs:["Older wireless encryption protocol considered deprecated and insecure, used with first-generation WPA","Network authentication protocol that integrates with Active Directory for centralized wireless and VPN access","Advanced encryption standard used as the cipher in modern wireless and VPN security protocols"],
+  wrong_acronyms:["TKIP","RADIUS","AES"],
+  explain:"<strong>WPA3</strong> stands for Wi-Fi Protected Access 3. It is the latest and strongest wireless security standard, replacing WPA2. WPA3 uses SAE (Simultaneous Authentication of Equals) instead of the vulnerable PSK handshake, providing stronger encryption and forward secrecy."
+},
+{
+  acronym:"TKIP", obj:"Obj 2.3",
+  definition:"Deprecated wireless encryption protocol used with original WPA that dynamically changed keys but has since been replaced by stronger standards.",
+  wrong_defs:["Current strongest wireless security protocol using SAE key exchange to replace vulnerable PSK","Network authentication protocol that provides centralized authentication for VPN and wireless users","Advanced encryption algorithm used in modern WPA2 and WPA3 wireless security implementations"],
+  wrong_acronyms:["WPA3","RADIUS","AES"],
+  explain:"<strong>TKIP</strong> stands for Temporal Key Integrity Protocol. It was introduced with the original WPA to improve on WEP by dynamically changing encryption keys. TKIP is now considered deprecated and insecure. WPA2 and WPA3 use AES encryption instead."
+},
+{
+  acronym:"DLP", obj:"Obj 2.1",
+  definition:"Security technology that detects and prevents sensitive data from being transmitted outside the organization without authorization.",
+  wrong_defs:["Platform used to manage, monitor, and enforce security policies on corporate mobile devices remotely","System that manages user identities, controls access to resources, and audits all network access activity","Security model requiring all users to authenticate regardless of their network location or previous session"],
+  wrong_acronyms:["MDM","IAM","Zero Trust"],
+  explain:"<strong>DLP</strong> stands for Data Loss Prevention. It refers to tools and policies that detect and block unauthorized transmission of sensitive data outside the organization, protecting against both accidental leaks and intentional theft."
+},
+{
+  acronym:"IAM", obj:"Obj 2.1",
+  definition:"Framework of policies and technologies that manages digital identities, controls user access to resources, and audits all access activity.",
+  wrong_defs:["Security technology that detects and prevents unauthorized transmission of sensitive data outside the organization","Platform that manages and enforces security policies on corporate smartphones and tablets remotely","A server protocol that provides centralized authentication for VPN and wireless network access control"],
+  wrong_acronyms:["DLP","MDM","RADIUS"],
+  explain:"<strong>IAM</strong> stands for Identity Access Management. It covers managing user identities, authentication processes, access controls, and auditing of resource access. IAM ensures the right users have appropriate access to technology resources."
+},
+{
+  acronym:"XSS", obj:"Obj 2.5",
+  definition:"Web security attack where malicious scripts are injected into web pages to steal session data or perform actions as the victim user.",
+  wrong_defs:["Attack that injects malicious database commands into input fields to manipulate a backend database","Attack that systematically tries every possible password combination until the correct one is found","Attack that intercepts network communications between two parties without their knowledge"],
+  wrong_acronyms:["SQL injection","Brute force","On-path attack"],
+  explain:"<strong>XSS</strong> stands for Cross-site Scripting. Attackers inject malicious client-side scripts into web pages viewed by other users. The scripts can steal session cookies, redirect users, or perform actions on the victim's behalf. Input validation and output encoding prevent XSS."
+},
+{
+  acronym:"EDR", obj:"Obj 2.4",
+  definition:"Cybersecurity solution that continuously monitors endpoints to detect suspicious activity and provides automated response to security incidents.",
+  wrong_defs:["Security platform that detects and prevents sensitive data from leaving the organization's network","System providing centralized authentication and authorization for users connecting to the network","Platform for managing and enforcing security policies on corporate mobile devices remotely"],
+  wrong_acronyms:["DLP","RADIUS","MDM"],
+  explain:"<strong>EDR</strong> stands for Endpoint Detection and Response. It continuously monitors computers and mobile devices for suspicious behavior, investigates threats, and provides automated or guided incident response. EDR goes beyond traditional antivirus by detecting behavioral threats."
+},
+{
+  acronym:"RADIUS", obj:"Obj 2.3",
+  definition:"Network protocol providing centralized authentication, authorization, and accounting for users connecting via VPN or wireless networks.",
+  wrong_defs:["Security framework that requires all users to authenticate regardless of their network location","Protocol that provides encrypted command-line access to manage network devices like switches and routers","System that manages user identities, access controls, and audits all access to network resources"],
+  wrong_acronyms:["Zero Trust","SSH","IAM"],
+  explain:"<strong>RADIUS</strong> stands for Remote Authentication Dial-In User Service. It provides centralized AAA (Authentication, Authorization, Accounting) for network access, integrating with Active Directory to authenticate VPN and wireless users with their domain credentials."
+},
+{
+  acronym:"BEC", obj:"Obj 2.5",
+  definition:"Social engineering attack where criminals impersonate executives or trusted partners via email to trick employees into transferring funds.",
+  wrong_defs:["Phishing attack targeting a specific individual or group using personalized convincing content","Attack that floods a target system with traffic from multiple sources to make it unavailable","Technique where an attacker observes someone entering credentials by looking over their shoulder"],
+  wrong_acronyms:["Spear phishing","DDoS","Shoulder surfing"],
+  explain:"<strong>BEC</strong> stands for Business Email Compromise. Cybercriminals impersonate executives or trusted vendors via email to manipulate employees into transferring funds or revealing sensitive information. BEC attacks are highly targeted and cause billions in losses annually."
+},
+{
+  acronym:"PAM", obj:"Obj 2.1",
+  definition:"Security solution that controls, monitors, and audits access to critical systems by privileged accounts such as administrators.",
+  wrong_defs:["Authentication method requiring users to verify identity with two or more independent factors","System allowing users to authenticate once and access all connected applications without re-prompting","Framework managing all user digital identities, access rights, and auditing across the organization"],
+  wrong_acronyms:["MFA","SSO","IAM"],
+  explain:"<strong>PAM</strong> stands for Privileged Access Management. It controls and monitors access by high-privilege accounts like administrators, enforcing least privilege and providing just-in-time access to sensitive systems. PAM prevents credential abuse by limiting when and how privileged accounts are used."
+},
+{
+  acronym:"DoS", obj:"Obj 2.5",
+  definition:"Attack that overwhelms a target system with traffic or requests to exhaust its resources and make it unavailable to legitimate users.",
+  wrong_defs:["Attack using multiple compromised systems to flood a target simultaneously from distributed sources","Attack that intercepts communications between two parties to eavesdrop or alter the data in transit","Attack that tries every possible character combination to discover a user's password by brute computation"],
+  wrong_acronyms:["DDoS","On-path attack","Brute force"],
+  explain:"<strong>DoS</strong> stands for Denial of Service. It is an attack that floods a system with requests to exhaust resources and prevent legitimate access. A DDoS (Distributed Denial of Service) amplifies this by using many compromised systems simultaneously."
+},
+{
+  acronym:"BSOD", obj:"Obj 3.1",
+  definition:"Critical Windows error screen displayed when the OS encounters a fatal error it cannot recover from, showing a stop code for diagnosis.",
+  wrong_defs:["Windows utility that scans and repairs corrupted or missing protected system files after a malware removal","Windows boot loader data store containing configuration parameters used during the startup process","Hardware self-test performed by BIOS or UEFI firmware every time the computer is powered on"],
+  wrong_acronyms:["SFC","BCD","POST"],
+  explain:"<strong>BSOD</strong> stands for Blue Screen of Death. It is Windows' critical error screen displayed when a fatal system error occurs that cannot be recovered. The stop code displayed helps identify the cause — common triggers include driver failures, hardware faults, and memory corruption."
+},
+{
+  acronym:"SFC", obj:"Obj 3.1",
+  definition:"Windows command-line utility that scans for and automatically repairs corrupted or missing protected system files.",
+  wrong_defs:["Windows command that forces an immediate refresh of Group Policy settings on a local computer","Windows command that displays the Resultant Set of Policy to show which Group Policies have been applied","Windows tool that manages disk partitions from the command line including creating and deleting volumes"],
+  wrong_acronyms:["gpupdate","gpresult","diskpart"],
+  explain:"<strong>SFC</strong> stands for System File Checker. Run as sfc /scannow, it scans Windows system files for corruption and automatically restores any damaged files from a cached copy. It is commonly run after malware removal or a failed Windows update."
+},
+{
+  acronym:"NFC", obj:"Obj 3.2",
+  definition:"Short-range wireless technology enabling contactless data exchange between devices held a few centimeters apart, used for mobile payments.",
+  wrong_defs:["Short-range wireless technology used to pair devices like keyboards and mice over distances up to 10 meters","Wireless networking standard allowing devices to connect to the internet through access points","Cellular network technology providing wide-area wireless data connectivity for mobile devices"],
+  wrong_acronyms:["Bluetooth","Wi-Fi","WWAN"],
+  explain:"<strong>NFC</strong> stands for Near-field Communication. It enables contactless interactions between devices within a few centimeters, used for mobile payments (Apple Pay, Google Pay), transit cards, and quick device pairing. NFC payment failures are often resolved by restarting the device."
+},
+{
+  acronym:"AUP", obj:"Obj 3.4",
+  definition:"Company document that defines the rules and constraints for acceptable use of organizational IT resources, which employees must acknowledge.",
+  wrong_defs:["Legal contract between a software publisher and user defining terms under which software may be used","Document that outlines the step-by-step instructions for performing routine IT tasks consistently","Contract establishing confidential relationship preventing parties from sharing proprietary information"],
+  wrong_acronyms:["EULA","SOP","NDA"],
+  explain:"<strong>AUP</strong> stands for Acceptable Use Policy. It defines rules for appropriate use of company IT resources including internet usage, software installation, and data handling. Employee acknowledgment of the AUP provides legal evidence in disciplinary or dismissal proceedings."
+},
+{
+  acronym:"BCD", obj:"Obj 3.1",
+  definition:"Windows boot loader data store containing configuration parameters that control the startup process, replaceable with bcdedit.",
+  wrong_defs:["Windows utility that scans and repairs corrupted or missing protected OS files after a malware infection","Hardware self-test routine run by firmware every time the computer powers on to check core components","Critical Windows error screen displaying a stop code when the OS encounters a fatal unrecoverable error"],
+  wrong_acronyms:["SFC","POST","BSOD"],
+  explain:"<strong>BCD</strong> stands for Boot Configuration Data. It is the Windows boot loader data store that replaced the old boot.ini file. The BCD contains boot-time configuration parameters and can be modified using the bcdedit command. BCD corruption causes Windows to fail to boot."
+},
+{
+  acronym:"POST", obj:"Obj 3.1",
+  definition:"Hardware diagnostic routine run by BIOS or UEFI firmware every time the computer starts, checking that core components are functional.",
+  wrong_defs:["Windows boot loader data store that contains configuration parameters controlling the startup process","Critical Windows error screen shown when the OS encounters a fatal error it cannot recover from","Windows feature that maintains system restore points allowing rollback to a previous working state"],
+  wrong_acronyms:["BCD","BSOD","System Restore"],
+  explain:"<strong>POST</strong> stands for Power-On Self-Test. It runs every time a computer starts, checking core hardware including RAM, CPU, and storage before handing off to the boot loader. POST failures are indicated by beep codes or error messages before the OS loads."
+},
+{
+  acronym:"RAM", obj:"Obj 3.1",
+  definition:"Volatile system memory that temporarily stores data currently being processed by the CPU, losing all contents when power is removed.",
+  wrong_defs:["Non-volatile flash-based storage device that retains data without power and has no moving parts","Traditional storage device using spinning magnetic platters to read and write data permanently","Dedicated memory on a graphics card used exclusively for rendering images and video output"],
+  wrong_acronyms:["SSD","HDD","VRAM"],
+  explain:"<strong>RAM</strong> stands for Random-Access Memory. It is the volatile working memory used by the CPU to store active data and instructions. Insufficient RAM causes Low Memory warnings, slow performance, and application crashes. Unlike SSDs and HDDs, RAM loses all data when power is removed."
+},
+{
+  acronym:"HDD", obj:"Obj 3.1",
+  definition:"Traditional storage device using spinning magnetic platters to read and write data, susceptible to fragmentation and mechanical failure.",
+  wrong_defs:["Flash-based storage device with no moving parts that is faster and more shock-resistant than its predecessor","Volatile system memory used by the CPU to store data currently being processed","Dedicated graphics memory used by the GPU for rendering images, video, and 3D content"],
+  wrong_acronyms:["SSD","RAM","VRAM"],
+  explain:"<strong>HDD</strong> stands for Hard Disk Drive. It uses spinning magnetic platters and a read/write head to store data. HDDs are susceptible to fragmentation over time (addressable with defrag) and mechanical failure from physical shock. They have been largely replaced by SSDs in modern systems."
+},
+{
+  acronym:"SSD", obj:"Obj 3.1",
+  definition:"Flash-based non-volatile storage device with no moving parts, significantly faster and more shock-resistant than traditional spinning drives.",
+  wrong_defs:["Traditional storage device using spinning magnetic platters susceptible to fragmentation and shock damage","Volatile system memory that loses all data when power is removed, used for active CPU processing","Small form-factor RAM designed for use in laptops instead of the larger desktop memory modules"],
+  wrong_acronyms:["HDD","RAM","SODIMM"],
+  explain:"<strong>SSD</strong> stands for Solid-State Drive. It uses flash memory with no moving parts, offering dramatically faster read/write speeds than HDDs. SSDs do not require defragmentation and are far more resistant to physical shock. They are the standard storage in modern laptops and desktops."
+},
+{
+  acronym:"VM", obj:"Obj 3.1",
+  definition:"Software emulation of a physical computer that runs its own operating system and applications in an isolated environment on shared hardware.",
+  wrong_defs:["Encrypted network tunnel that secures data in transit between a user's device and a remote network","Protocol providing graphical remote access to control another computer's desktop screen and input","A network that logically segments devices on the same physical switch into separate broadcast domains"],
+  wrong_acronyms:["VPN","VNC","VLAN"],
+  explain:"<strong>VM</strong> stands for Virtual Machine. It is a software emulation of a computer that runs its own OS and applications in isolation. VMs share the host's hardware resources and are used for testing, running multiple OSes simultaneously, and server consolidation."
+},
+{
+  acronym:"GFS", obj:"Obj 4.3",
+  definition:"Backup rotation scheme using three sets of media representing daily, weekly, and monthly backups for efficient long-term data retention.",
+  wrong_defs:["Backup strategy that combines a previous full backup with incremental backups to create a new full backup without reading source data","Backup rule requiring three copies of data on two different media types with one stored off-site","Backup type that captures all changes made since the last full backup, growing larger over time"],
+  wrong_acronyms:["Synthetic full","3-2-1 rule","Differential"],
+  explain:"<strong>GFS</strong> stands for Grandfather-Father-Son. It is a backup rotation scheme using daily (Son), weekly (Father), and monthly (Grandfather) backup sets. GFS balances storage efficiency with the ability to recover from multiple points in time over a long period."
+},
+{
+  acronym:"ESD", obj:"Obj 4.4",
+  definition:"Sudden flow of static electricity between objects that can permanently damage or destroy sensitive electronic components during handling.",
+  wrong_defs:["Power event causing a temporary increase in voltage that can damage connected electrical equipment","Complete loss of electrical power causing systems to shut down unexpectedly without warning","Gradual decrease in voltage supply causing systems to run below their required operating threshold"],
+  wrong_acronyms:["Power surge","Blackout","Brownout"],
+  explain:"<strong>ESD</strong> stands for Electrostatic Discharge. It is the sudden transfer of static electricity between objects at different electrical potentials. ESD can permanently destroy sensitive components. Prevention methods include ESD straps, anti-static bags, and ESD mats."
+},
+{
+  acronym:"UPS", obj:"Obj 4.5",
+  definition:"Device providing battery backup power to connected systems when the main power supply fails, allowing continued operation or graceful shutdown.",
+  wrong_defs:["Device that absorbs minor voltage spikes and transient power events to protect connected equipment","Power supply unit installed in servers and workstations to convert AC power to DC for components","Electrical safety measure that diverts fault current safely to ground to protect personnel from shock"],
+  wrong_acronyms:["Surge suppressor","PSU","Equipment grounding"],
+  explain:"<strong>UPS</strong> stands for Uninterruptible Power Supply. It provides battery backup that maintains operation during power outages for a defined period. UPS units also protect against voltage fluctuations. They are essential in data centers where unexpected shutdowns can cause data loss."
+},
+{
+  acronym:"MSDS", obj:"Obj 4.5",
+  definition:"Document providing information on hazardous chemical properties including safe handling, storage, and disposal procedures for technical equipment.",
+  wrong_defs:["Company policy defining rules for acceptable use of organizational IT resources that employees must acknowledge","Document outlining step-by-step instructions for performing routine IT processes consistently","Legal contract between software publisher and user defining the terms under which software may be used"],
+  wrong_acronyms:["AUP","SOP","EULA"],
+  explain:"<strong>MSDS</strong> stands for Material Safety Data Sheet (also called SDS — Safety Data Sheet). It provides official guidance on safe handling and disposal of hazardous materials. Technicians must consult MSDS documents when disposing of toner cartridges, batteries, and other potentially hazardous equipment."
+},
+{
+  acronym:"PII", obj:"Obj 4.6",
+  definition:"Any data that can be used to identify a specific individual, such as names, addresses, phone numbers, and Social Security numbers.",
+  wrong_defs:["Data related to patient medical conditions and treatment history protected under healthcare privacy regulations","Financial transaction data from credit and debit card payments subject to payment card security standards","Government-issued identification numbers and document data subject to federal privacy protections"],
+  wrong_acronyms:["PHI","PCI DSS","Government ID data"],
+  explain:"<strong>PII</strong> stands for Personally Identifiable Information. It includes any data that can identify a specific person such as names, addresses, phone numbers, email addresses, and SSNs. PII is subject to privacy regulations and must be encrypted and handled securely."
+},
+{
+  acronym:"EULA", obj:"Obj 4.6",
+  definition:"Legal contract between a software publisher and the end user defining the terms and conditions under which the software may be used.",
+  wrong_defs:["Company document defining acceptable use of organizational IT resources that all employees must sign","Document that outlines step-by-step procedures for performing routine IT administrative tasks consistently","Legal contract preventing parties from sharing proprietary or confidential information with third parties"],
+  wrong_acronyms:["AUP","SOP","NDA"],
+  explain:"<strong>EULA</strong> stands for End-User License Agreement. It is the legal contract users must accept before installing most commercial software. EULAs define permitted uses, restrictions, and liability terms. Violating a EULA can result in license revocation."
+},
+{
+  acronym:"RDP", obj:"Obj 4.9",
+  definition:"Microsoft protocol that provides a graphical interface allowing technicians to remotely view and control a Windows computer's desktop.",
+  wrong_defs:["Protocol providing secure encrypted command-line access to manage network devices like switches and routers","Platform-independent graphical desktop sharing system that works across Windows, macOS, and Linux","Encrypted network tunnel that secures all traffic between a user's device and a remote corporate network"],
+  wrong_acronyms:["SSH","VNC","VPN"],
+  explain:"<strong>RDP</strong> stands for Remote Desktop Protocol. It is Microsoft's proprietary protocol for graphical remote desktop access to Windows computers, operating on port 3389. RDP allows technicians to see and control a remote Windows desktop. It requires enabling in System settings."
+},
+{
+  acronym:"SSH", obj:"Obj 4.9",
+  definition:"Cryptographic protocol providing secure encrypted command-line access to servers and network devices, replacing insecure Telnet.",
+  wrong_defs:["Microsoft protocol that provides graphical remote desktop access to Windows computers over a network","Platform-independent graphical desktop sharing system used to remotely control any OS desktop","Encrypted network tunnel created between a device and corporate network for secure remote resource access"],
+  wrong_acronyms:["RDP","VNC","VPN"],
+  explain:"<strong>SSH</strong> stands for Secure Shell. It provides an encrypted command-line channel for remotely managing servers and network devices like switches, routers, and firewalls. SSH replaced the insecure Telnet protocol and operates on port 22 by default."
+},
+{
+  acronym:"VNC", obj:"Obj 4.9",
+  definition:"Platform-independent graphical desktop sharing system that allows remote control of any computer's screen, keyboard, and mouse.",
+  wrong_defs:["Microsoft's proprietary protocol for graphical remote desktop access to Windows computers on port 3389","Protocol providing secure encrypted command-line access to manage servers and network infrastructure","Encrypted tunnel securing all network traffic between a remote user's device and the corporate network"],
+  wrong_acronyms:["RDP","SSH","VPN"],
+  explain:"<strong>VNC</strong> stands for Virtual Network Computer. Unlike RDP which is Windows-specific, VNC is platform-independent and works across Windows, macOS, and Linux. It transmits keyboard, mouse, and screen updates over the network to provide full remote desktop control."
+},
+{
+  acronym:"VPN", obj:"Obj 4.9",
+  definition:"Encrypted tunnel between a user's device and a remote network that secures all traffic from interception on untrusted public connections.",
+  wrong_defs:["Microsoft protocol providing graphical remote desktop access to Windows computers over a network connection","Protocol providing secure encrypted command-line management of servers and network infrastructure devices","Platform-independent graphical desktop sharing system for remotely controlling any computer's screen"],
+  wrong_acronyms:["RDP","SSH","VNC"],
+  explain:"<strong>VPN</strong> stands for Virtual Private Network. It creates an encrypted tunnel between a device and a remote network, allowing secure access to corporate resources over public internet. VPNs protect data in transit from interception on untrusted networks like hotel or conference Wi-Fi."
+},
+{
+  acronym:"SLA", obj:"Obj 4.2",
+  definition:"Contract between a service provider and customer defining expected service levels including uptime guarantees and support response times.",
+  wrong_defs:["Document outlining step-by-step instructions for performing routine IT administrative procedures consistently","Company policy defining rules for acceptable use of organizational IT resources signed by all employees","Legal contract preventing parties from disclosing proprietary or confidential information to outside parties"],
+  wrong_acronyms:["SOP","AUP","NDA"],
+  explain:"<strong>SLA</strong> stands for Service-level Agreement. It is a contract defining the expected level of service between a provider and customer, including uptime percentages, response times, and support availability. SLAs are referenced in change management when assessing impact of planned maintenance."
+},
+{
+  acronym:"SOP", obj:"Obj 4.1",
+  definition:"Documented set of step-by-step instructions describing how to perform routine IT tasks or processes consistently and correctly.",
+  wrong_defs:["Contract between a service provider and customer defining expected uptime and support response times","Company policy defining acceptable use of organizational IT resources that employees must acknowledge","Legal contract preventing parties from sharing proprietary or confidential information with third parties"],
+  wrong_acronyms:["SLA","AUP","NDA"],
+  explain:"<strong>SOP</strong> stands for Standard Operating Procedure. It is a documented step-by-step guide for performing routine tasks consistently. IT SOPs cover procedures like new user onboarding, workstation configuration, incident response, and software installation."
+},
+{
+  acronym:"DRM", obj:"Obj 4.6",
+  definition:"Access control technology used by publishers to restrict unauthorized copying, sharing, and use of digital content and software.",
+  wrong_defs:["Legal contract between software publisher and end user defining permitted uses and restrictions of the software","Company document defining rules for acceptable use of organizational IT resources by employees","Security technology that detects and prevents sensitive data from being transmitted outside the organization"],
+  wrong_acronyms:["EULA","AUP","DLP"],
+  explain:"<strong>DRM</strong> stands for Digital Rights Management. It is technology used by content creators and publishers to control how digital media and software can be used, copied, and distributed. DRM enforces licensing terms and prevents piracy of music, video, software, and e-books."
+},
+{
+  acronym:"NDA", obj:"Obj 4.6",
+  definition:"Legal contract establishing a confidential relationship that prevents one or both parties from sharing proprietary information with outside parties.",
+  wrong_defs:["Legal contract between software publisher and user defining the terms under which software may be used","Company document defining rules for acceptable use of organizational IT resources signed by all employees","Document containing step-by-step instructions for performing routine IT administrative tasks consistently"],
+  wrong_acronyms:["EULA","AUP","SOP"],
+  explain:"<strong>NDA</strong> stands for Non-Disclosure Agreement. It is a legal contract that establishes confidentiality between parties, preventing disclosure of proprietary or sensitive information. IT staff working with sensitive client data or company trade secrets are commonly required to sign NDAs."
+},
+{
+  acronym:"GFS", obj:"Obj 4.3",
+  definition:"Backup rotation scheme using three sets of media representing daily, weekly, and monthly backups for efficient long-term data retention.",
+  wrong_defs:["Backup strategy combining a previous full backup with incrementals to create a new full without reading the source","Backup rule requiring three copies on two different media types with one stored off-site","Backup type that captures only changes made since the last full backup"],
+  wrong_acronyms:["Synthetic full","3-2-1 rule","Differential"],
+  explain:"<strong>GFS</strong> stands for Grandfather-Father-Son. It is a backup rotation scheme using daily (Son), weekly (Father), and monthly (Grandfather) backup sets, balancing storage efficiency with long-term recovery options."
+},
+{
+  acronym:"VRAM", obj:"Obj 1.9",
+  definition:"Dedicated high-speed memory on a graphics card used exclusively for storing image data, textures, and frame buffers during rendering.",
+  wrong_defs:["Volatile system memory used by the CPU to store active data and instructions during processing","Non-volatile flash storage with no moving parts used as the primary storage device in modern computers","Small form-factor memory module designed for use in laptops rather than full-size desktop memory slots"],
+  wrong_acronyms:["RAM","SSD","SODIMM"],
+  explain:"<strong>VRAM</strong> stands for Video Random-Access Memory. It is dedicated high-speed memory on a GPU used to store textures, frame buffers, and rendering data. Insufficient VRAM causes poor graphics performance and artifacts. It is a key consideration when installing applications with high graphics requirements."
+},
+{
+  acronym:"ISO", obj:"Obj 1.9",
+  definition:"Disc image file format that is an exact replica of optical media content, also used for OS installation images distributed digitally.",
+  wrong_defs:["Apple's native file system for macOS and iOS devices optimized for flash and solid-state storage","Cross-platform file system for external drives overcoming the 4GB file size limitation of FAT32","High-performance Linux file system designed for large files and enterprise workloads"],
+  wrong_acronyms:["APFS","exFAT","XFS"],
+  explain:"<strong>ISO</strong> refers to an International Organization for Standardization disc image file. In IT, ISO files are exact replicas of optical disc contents used to distribute OS installation media digitally. Technicians mount ISO files as virtual drives or write them to USB drives for deployment."
+},
+{
+  acronym:"OEM", obj:"Obj 1.9",
+  definition:"Hardware or software pre-installed by the original manufacturer on a device before it reaches the end consumer.",
+  wrong_defs:["Software licensing model allowing free use, modification, and distribution of source code by anyone","Corporate software agreement covering deployment across all workstations in an organization under one contract","Legal contract between software publisher and end user defining permitted uses of the software"],
+  wrong_acronyms:["Open-source","Corporate license","EULA"],
+  explain:"<strong>OEM</strong> stands for Original Equipment Manufacturer. In IT, OEM software is pre-installed by the device manufacturer and is typically tied to that specific hardware. OEM Windows licenses, for example, cannot be transferred to a different computer."
+},
+{
+  acronym:"RAID", obj:"Obj 4.3",
+  definition:"Storage configuration using multiple drives together to provide redundancy, improved performance, or both depending on the level used.",
+  wrong_defs:["Backup rotation scheme using daily, weekly, and monthly sets for long-term data retention and recovery","Rule requiring three copies of data on two different media types with one stored at an off-site location","Backup type that creates a new full backup by combining previous full and incremental backups"],
+  wrong_acronyms:["GFS","3-2-1 rule","Synthetic full"],
+  explain:"<strong>RAID</strong> stands for Redundant Array of Independent Disks. It combines multiple drives to improve redundancy (RAID 1 mirrors data) or performance (RAID 0 stripes data), or both (RAID 5/6/10). RAID protects against single drive failure but is not a substitute for backups."
+},
+{
+  acronym:"PXE", obj:"Obj 1.2",
+  definition:"Network boot protocol that allows a computer to receive an operating system installation over the network without local boot media.",
+  wrong_defs:["Modern firmware interface replacing BIOS that supports Secure Boot and drives larger than 2TB","Windows boot loader data store containing configuration parameters controlling the startup process","Network authentication protocol integrating with Active Directory for centralized VPN and wireless access"],
+  wrong_acronyms:["UEFI","BCD","RADIUS"],
+  explain:"<strong>PXE</strong> stands for Preboot eXecution Environment. It allows computers to boot from a network server instead of local media, enabling remote OS installation across many systems simultaneously. PXE is the foundation for remote network installation and zero-touch deployment."
+},
+{
+  acronym:"NVMe", obj:"Obj 1.1",
+  definition:"High-speed interface protocol for SSDs that connects directly to the CPU via PCIe, offering dramatically faster speeds than SATA-based drives.",
+  wrong_defs:["Traditional storage interface connecting hard drives and optical drives to the motherboard via cable","Flash-based storage with no moving parts that is faster than spinning drives using the SATA interface","Short-range wireless technology enabling contactless payments and device pairing over a few centimeters"],
+  wrong_acronyms:["SATA","SSD","NFC"],
+  explain:"<strong>NVMe</strong> stands for Non-Volatile Memory Express. It is a high-speed interface protocol for SSDs that communicates directly with the CPU over PCIe lanes, providing dramatically faster read/write speeds compared to SATA-connected SSDs. NVMe drives use the M.2 or U.2 form factor."
+}
+];
+
+// Build dual-format questions from acronym data
+function buildQuestions(acronymData) {
+  return acronymData.map((a, i) => {
+    // Randomly pick format A (acronym->definition) or B (definition->acronym)
+    const useFormatA = Math.random() < 0.5;
+    if (useFormatA) {
+      // Format A: "What does X stand for?" -> pick correct definition, 3 wrong defs
+      const shuffledWrong = [...a.wrong_defs].sort(() => Math.random() - 0.5);
+      const allChoices = [...shuffledWrong, a.definition];
+      const correctIdx = allChoices.length - 1;
+      // Shuffle choices
+      const indices = [...Array(allChoices.length).keys()];
+      for (let j = indices.length - 1; j > 0; j--) {
+        const k = Math.floor(Math.random() * (j + 1));
+        [indices[j], indices[k]] = [indices[k], indices[j]];
+      }
+      const finalChoices = indices.map(idx => allChoices[idx]);
+      const finalAnswer = indices.indexOf(correctIdx);
+      return {
+        obj: a.obj,
+        format: 'A',
+        q: `What does <strong>${a.acronym}</strong> stand for?`,
+        choices: finalChoices,
+        answer: finalAnswer,
+        explain: a.explain
+      };
+    } else {
+      // Format B: "This technology does X. What is the acronym?" -> pick correct acronym, 3 wrong acronyms
+      const shuffledWrong = [...a.wrong_acronyms].sort(() => Math.random() - 0.5);
+      const allChoices = [...shuffledWrong, a.acronym];
+      const correctIdx = allChoices.length - 1;
+      const indices = [...Array(allChoices.length).keys()];
+      for (let j = indices.length - 1; j > 0; j--) {
+        const k = Math.floor(Math.random() * (j + 1));
+        [indices[j], indices[k]] = [indices[k], indices[j]];
+      }
+      const finalChoices = indices.map(idx => allChoices[idx]);
+      const finalAnswer = indices.indexOf(correctIdx);
+      return {
+        obj: a.obj,
+        format: 'B',
+        q: a.definition + ' What acronym describes this?',
+        choices: finalChoices,
+        answer: finalAnswer,
+        explain: a.explain
+      };
+    }
+  });
+}
+
+function shuffle(arr){for(let i=arr.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]]}return arr;}
+
+let prepared = [];
+const total = acronyms.length;
+let correct=0,wrong=0,answered=0;
+document.getElementById('sr').textContent=total;
+
+function prepareAndBuild() {
+  // Shuffle acronym order, then build questions with random format
+  const shuffledAcronyms = shuffle([...acronyms]);
+  prepared = buildQuestions(shuffledAcronyms);
+  buildQuiz();
+  updateScore();
+}
+
+function updateScore(){
+  document.getElementById('sc').textContent=correct;
+  document.getElementById('sw').textContent=wrong;
+  document.getElementById('sr').textContent=total-answered;
+  const pct=answered>0?Math.round((correct/answered)*100):0;
+  document.getElementById('sp').textContent=pct+'%';
+  document.getElementById('progress-fill').style.width=(answered/total*100)+'%';
+  if(answered===total)showFinal();
+}
+
+function showFinal(){
+  const pct=Math.round((correct/total)*100);
+  const banner=document.getElementById('final-banner');
+  const inner=document.getElementById('final-inner');
+  banner.style.display='block';
+  inner.style.background=pct>=78?'#00e87a':'#ff3b5c';
+  inner.style.border='2px solid '+(pct>=78?'#00e87a':'#ff3b5c');
+  document.getElementById('final-title').textContent='Final Score: '+pct+'%';
+  document.getElementById('final-score').textContent=correct+' correct out of '+total+' — '+(pct>=78?'PASS ✓':'FAIL ✗');
+  banner.scrollIntoView({behavior:'smooth'});
+}
+
+function retake(){
+  correct=0;wrong=0;answered=0;
+  document.getElementById('final-banner').style.display='none';
+  document.getElementById('container').innerHTML='';
+  prepareAndBuild();
+}
+
+function buildQuiz(){
+  const container=document.getElementById('container');
+  container.innerHTML='';
+  prepared.forEach((q,idx)=>{
+    const card=document.createElement('div');
+    card.className='card';
+    const formatTag = q.format==='A'
+      ? '<span class="ref-code">Name → Definition</span>'
+      : '<span class="ref-code">Definition → Name</span>';
+    card.innerHTML=`
+      <div class="card-header">
+        <span class="q-badge">Q${idx+1}</span>
+        <div class="meta">
+          <span class="badge-messer">Messer</span>
+          ${formatTag}
+          <span class="obj-tag">${q.obj}</span>
+        </div>
+      </div>
+      <div class="question-text">${q.q}</div>
+      <div class="choices" id="choices-${idx}">
+        ${q.choices.map((c,ci)=>`<button class="choice-btn" onclick="selectAnswer(${idx},${ci})">${String.fromCharCode(65+ci)}. ${c}</button>`).join('')}
+      </div>
+      <div class="result-badge" id="result-${idx}"></div>
+      <div class="explain-pane" id="explain-${idx}">${q.explain}</div>
+    `;
+    container.appendChild(card);
+  });
+}
+
+function selectAnswer(idx,chosen){
+  const q=prepared[idx];
+  const btns=document.getElementById('choices-'+idx).querySelectorAll('.choice-btn');
+  btns.forEach((btn,bi)=>{
+    btn.classList.add('locked');
+    if(bi===q.answer){btn.classList.add('correct');}
+    else if(bi===chosen&&chosen!==q.answer){btn.classList.add('wrong-selected');}
+    else{btn.classList.add('unchosen');}
+  });
+  const isCorrect=chosen===q.answer;
+  const resultEl=document.getElementById('result-'+idx);
+  resultEl.className='result-badge show';
+  resultEl.innerHTML=isCorrect
+    ?'<span class="result-correct">&#10003; Correct!</span>'
+    :`<span class="result-wrong">&#10007; Wrong &mdash; Answer: ${String.fromCharCode(65+q.answer)}. ${q.choices[q.answer]}</span>`;
+  document.getElementById('explain-'+idx).classList.add('show');
+  isCorrect?correct++:wrong++;
+  answered++;updateScore();
+}
+
+prepareAndBuild();
+</script>
+<script src="footer.js"></script>
+</body>
+</html>

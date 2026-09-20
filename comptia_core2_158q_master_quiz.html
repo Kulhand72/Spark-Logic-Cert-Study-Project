@@ -1,0 +1,2392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CompTIA A+ Core 2 — 158Q Master Quiz</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700&family=JetBrains+Mono:wght@400;700&family=Space+Grotesk:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:radial-gradient(ellipse at center,#2d6a4f 0%,#4a5568 60%,#6b7280 100%) fixed;min-height:100vh;font-family:'Syne',sans-serif;}
+#scoreboard{position:sticky;top:0;z-index:1000;background:rgba(20,40,28,0.97);border-bottom:1px solid rgba(255,255,255,0.15);padding:14px 20px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;}
+#scoreboard span{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;}
+.s-correct{color:#00e87a;}
+.s-wrong{color:#ff3b5c;}
+.s-remaining{color:#aaa;}
+.s-pct{color:#ffd166;}
+#progressbar{position:sticky;top:53px;z-index:999;height:6px;background:rgba(255,255,255,0.1);}
+#progressfill{height:6px;width:0%;background:linear-gradient(90deg,#00c2ff,#00e87a);transition:width 300ms ease-out;}
+#container{max-width:760px;margin:32px auto;padding:0 20px 60px;}
+.card{background:rgba(20,35,25,0.82);border:1px solid rgba(255,255,255,0.12);border-radius:10px;padding:24px;margin-bottom:24px;backdrop-filter:blur(4px);}
+.card-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;gap:8px;}
+.qnum{background:#00e87a;color:#1a3a2a;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;padding:4px 8px;border-radius:4px;white-space:nowrap;}
+.badges{display:flex;gap:5px;align-items:center;flex-wrap:wrap;justify-content:flex-end;}
+.badge-messer{background:#1a3a2a;color:#4ade80;font-family:'JetBrains Mono',monospace;font-size:11px;padding:3px 7px;border-radius:4px;}
+.badge-ref{font-family:'JetBrains Mono',monospace;font-size:11px;color:rgba(255,255,255,0.45);}
+.badge-obj{font-family:'JetBrains Mono',monospace;font-size:11px;color:rgba(255,255,255,0.45);}
+.qtext{font-family:'Syne',sans-serif;font-size:17px;font-weight:700;color:#ffffff;margin-bottom:16px;line-height:1.5;}
+.answers{display:flex;flex-direction:column;gap:10px;margin-bottom:4px;}
+.ans-btn{width:100%;padding:11px 16px;border-radius:6px;border:1px solid #999;background:#e0e0e0;color:#1a1a1a;font-family:'Syne',sans-serif;font-size:15px;text-align:left;cursor:pointer;transition:background 150ms,border 150ms;}
+.ans-btn:hover:not(:disabled){background:#cacaca;border-color:#555;}
+.ans-btn.correct{background:#00e87a !important;color:#fff !important;border-color:#00e87a !important;font-weight:700;}
+.ans-btn.wrong{background:#ff3b5c !important;color:#fff !important;border-color:#ff3b5c !important;font-weight:700;}
+.ans-btn.locked{cursor:default;}
+.ans-btn.selected-multi{background:#00c2ff;color:#fff;border-color:#00c2ff;}
+.submit-btn{margin-top:10px;padding:11px 20px;border-radius:6px;border:none;background:#00c2ff;color:#fff;font-family:'Syne',sans-serif;font-size:15px;font-weight:700;cursor:pointer;}
+.submit-btn:hover{background:#00b3e6;}
+.result-badge{background:rgba(0,0,0,0.4);border:2px solid rgba(255,255,255,0.8);border-radius:8px;padding:14px 16px;margin-top:14px;}
+.result-text{font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:700;margin-bottom:8px;}
+.result-correct{color:#00e87a;}
+.result-wrong{color:#ff3b5c;}
+.explanation{font-family:'Space Grotesk',sans-serif;font-size:17px;color:rgba(255,255,255,0.92);line-height:1.7;}
+.explanation strong{color:#00e87a;}
+#final{display:none;border-radius:10px;padding:36px;text-align:center;margin-top:32px;border:2px solid #00e87a;}
+#final h2{font-family:'Syne',sans-serif;font-size:26px;font-weight:700;color:#fff;margin-bottom:16px;}
+#retake-btn{margin-top:20px;padding:13px 28px;border-radius:6px;border:none;background:#00c2ff;color:#fff;font-family:'Syne',sans-serif;font-size:16px;font-weight:700;cursor:pointer;}
+#retake-btn:hover{background:#00b3e6;}
+</style>
+</head>
+<body>
+<div id="scoreboard">
+  <span class="s-correct">Correct: <span id="sc">0</span></span>
+  <span class="s-wrong">Wrong: <span id="sw">0</span></span>
+  <span class="s-remaining">Remaining: <span id="sr">158</span></span>
+  <span class="s-pct">Score: <span id="sp">0</span>%</span>
+</div>
+<div id="progressbar"><div id="progressfill"></div></div>
+<div id="container">
+<div class="card" id="card-0">
+<div class="card-header"><span class="qnum">Q1</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">B15</span><span class="badge-obj">Obj 1.5</span></div></div>
+<div class="qtext">A system administrator is analyzing a problem with a USB flash drive causing 100% CPU utilization. They want to disable a USB controller for troubleshooting. Which tool?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-0-0" onclick="answerSingle(0,0,2)">A. Performance Monitor</button>
+<button class="ans-btn" id="btn-0-1" onclick="answerSingle(0,1,2)">B. Services</button>
+<button class="ans-btn" id="btn-0-2" onclick="answerSingle(0,2,2)">C. Device Manager</button>
+<button class="ans-btn" id="btn-0-3" onclick="answerSingle(0,3,2)">D. Event Viewer</button>
+</div>
+<div id="result-0" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-0"></div>
+<div class="explanation">Device Manager allows enabling, disabling, updating, or removing hardware devices including USB controllers. Services manages software services, not hardware.</div>
+</div>
+</div>
+<div class="card" id="card-1">
+<div class="card-header"><span class="qnum">Q2</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">B42</span><span class="badge-obj">Obj 1.2</span></div></div>
+<div class="qtext">Which of the following partition types limits a Windows installation to a maximum partition size of 2 TB?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-1-0" onclick="answerSingle(1,0,1)">A. FAT32</button>
+<button class="ans-btn" id="btn-1-1" onclick="answerSingle(1,1,1)">B. MBR</button>
+<button class="ans-btn" id="btn-1-2" onclick="answerSingle(1,2,1)">C. APFS</button>
+<button class="ans-btn" id="btn-1-3" onclick="answerSingle(1,3,1)">D. GPT</button>
+</div>
+<div id="result-1" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-1"></div>
+<div class="explanation">MBR (Master Boot Record) has a hard 2 TB limit and supports only 4 primary partitions. GPT supports drives larger than 2 TB and up to 128 partitions.</div>
+</div>
+</div>
+<div class="card" id="card-2">
+<div class="card-header"><span class="qnum">Q3</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-obj">Obj 3.1</span></div></div>
+<div class="qtext">Which of the following is a symptom of a failing hard drive?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-2-0" onclick="answerSingle(2,0,2)">A. High-pitched fan noise</button>
+<button class="ans-btn" id="btn-2-1" onclick="answerSingle(2,1,2)">B. Keyboard keys sticking</button>
+<button class="ans-btn" id="btn-2-2" onclick="answerSingle(2,2,2)">C. Loud clicking noises</button>
+<button class="ans-btn" id="btn-2-3" onclick="answerSingle(2,3,2)">D. Monitor flickering</button>
+</div>
+<div id="result-2" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-2"></div>
+<div class="explanation">Loud clicking noises (the 'click of death') from a mechanical hard drive indicate read/write head failure. Fan noise indicates cooling issues, monitor flickering is a display problem.</div>
+</div>
+</div>
+<div class="card" id="card-3">
+<div class="card-header"><span class="qnum">Q4</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">A63</span><span class="badge-obj">Obj 1.5</span></div></div>
+<div class="qtext">In which file type would a system administrator expect to see the command 'cd c:\source'?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-3-0" onclick="answerSingle(3,0,1)">A. .py</button>
+<button class="ans-btn" id="btn-3-1" onclick="answerSingle(3,1,1)">B. .bat</button>
+<button class="ans-btn" id="btn-3-2" onclick="answerSingle(3,2,1)">C. .sh</button>
+<button class="ans-btn" id="btn-3-3" onclick="answerSingle(3,3,1)">D. .vbs</button>
+</div>
+<div id="result-3" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-3"></div>
+<div class="explanation">The .bat (batch file) extension is used for Windows command scripts. The cd command is a Windows CMD instruction. .sh is Linux/macOS shell, .py is Python, .vbs is Visual Basic Script.</div>
+</div>
+</div>
+<div class="card" id="card-4">
+<div class="card-header"><span class="qnum">Q5</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">B78</span><span class="badge-obj">Obj 4.2</span></div></div>
+<div class="qtext">A server administrator configured automated VM snapshot backups each evening stored on high-density tape drives. How can the administrator confirm backups will be useful when needed?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-4-0" onclick="answerSingle(4,0,0)">A. Perform occasional recovery tests</button>
+<button class="ans-btn" id="btn-4-1" onclick="answerSingle(4,1,0)">B. Connect tape drives to battery backup</button>
+<button class="ans-btn" id="btn-4-2" onclick="answerSingle(4,2,0)">C. Create separate file-level backups</button>
+<button class="ans-btn" id="btn-4-3" onclick="answerSingle(4,3,0)">D. Send backups to an off-site facility</button>
+</div>
+<div id="result-4" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-4"></div>
+<div class="explanation">The only way to verify backup usefulness is to test recovery. Backups that have never been tested may be corrupt or incomplete. Recovery testing should be performed regularly.</div>
+</div>
+</div>
+<div class="card" id="card-5">
+<div class="card-header"><span class="qnum">Q6</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-obj">Obj 1.2</span></div></div>
+<div class="qtext">Which Apple file system is used by newer macOS versions and supports snapshots and native encryption?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-5-0" onclick="answerSingle(5,0,0)">A. APFS</button>
+<button class="ans-btn" id="btn-5-1" onclick="answerSingle(5,1,0)">B. NTFS</button>
+<button class="ans-btn" id="btn-5-2" onclick="answerSingle(5,2,0)">C. HFS+</button>
+<button class="ans-btn" id="btn-5-3" onclick="answerSingle(5,3,0)">D. FAT32</button>
+</div>
+<div id="result-5" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-5"></div>
+<div class="explanation">APFS (Apple File System) is the modern macOS file system with snapshots, native encryption, and improved performance. HFS+ is the older macOS file system it replaced.</div>
+</div>
+</div>
+<div class="card" id="card-6">
+<div class="card-header"><span class="qnum">Q7</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">C77</span><span class="badge-obj">Obj 4.9</span></div></div>
+<div class="qtext">A company is updating all UPS systems with new batteries. What is the best way to dispose of the old batteries?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-6-0" onclick="answerSingle(6,0,3)">A. Ship to a battery wholesaler</button>
+<button class="ans-btn" id="btn-6-1" onclick="answerSingle(6,1,3)">B. Throw out with the paper trash</button>
+<button class="ans-btn" id="btn-6-2" onclick="answerSingle(6,2,3)">C. Bury in a landfill</button>
+<button class="ans-btn" id="btn-6-3" onclick="answerSingle(6,3,3)">D. Take to a local hazardous waste facility</button>
+</div>
+<div id="result-6" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-6"></div>
+<div class="explanation">UPS batteries contain lead-acid or lithium, both classified as hazardous materials. They must be taken to a certified hazardous waste facility — never placed in regular trash or buried.</div>
+</div>
+</div>
+<div class="card" id="card-7">
+<div class="card-header"><span class="qnum">Q8</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">A62</span><span class="badge-obj">Obj 3.1</span></div></div>
+<div class="qtext">A user opened a help desk ticket about desktop alerts with third-party product information appearing randomly. What is the most likely cause?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-7-0" onclick="answerSingle(7,0,3)">A. Corrupted email database</button>
+<button class="ans-btn" id="btn-7-1" onclick="answerSingle(7,1,3)">B. On-path attack</button>
+<button class="ans-btn" id="btn-7-2" onclick="answerSingle(7,2,3)">C. OS update failure</button>
+<button class="ans-btn" id="btn-7-3" onclick="answerSingle(7,3,3)">D. Adware</button>
+</div>
+<div id="result-7" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-7"></div>
+<div class="explanation">Adware generates unsolicited advertisements on the desktop or in browsers. Random third-party product pop-ups are a classic adware symptom, distinct from ransomware or browser hijacking.</div>
+</div>
+</div>
+<div class="card" id="card-8">
+<div class="card-header"><span class="qnum">Q9</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">C43</span><span class="badge-obj">Obj 2.2</span></div></div>
+<div class="qtext">A user in the shipping department can view order information but cannot modify or delete it. What security principle does this describe?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-8-0" onclick="answerSingle(8,0,1)">A. Organizational Units</button>
+<button class="ans-btn" id="btn-8-1" onclick="answerSingle(8,1,1)">B. Least privilege</button>
+<button class="ans-btn" id="btn-8-2" onclick="answerSingle(8,2,1)">C. Multi-factor authentication</button>
+<button class="ans-btn" id="btn-8-3" onclick="answerSingle(8,3,1)">D. Group Policy</button>
+</div>
+<div id="result-8" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-8"></div>
+<div class="explanation">Least privilege grants users only the minimum permissions required for their job. Read-only access to orders for a shipping user is a direct application of this principle.</div>
+</div>
+</div>
+<div class="card" id="card-9">
+<div class="card-header"><span class="qnum">Q10</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">B37</span><span class="badge-obj">Obj 1.6</span></div></div>
+<div class="qtext">Which Windows Share permission takes priority when assigning access on a mapped drive?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-9-0" onclick="answerSingle(9,0,3)">A. Full control</button>
+<button class="ans-btn" id="btn-9-1" onclick="answerSingle(9,1,3)">B. List folder contents</button>
+<button class="ans-btn" id="btn-9-2" onclick="answerSingle(9,2,3)">C. Allow</button>
+<button class="ans-btn" id="btn-9-3" onclick="answerSingle(9,3,3)">D. Deny</button>
+</div>
+<div id="result-9" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-9"></div>
+<div class="explanation">Deny always takes precedence over Allow in Windows permissions. When Deny is applied at any level, it overrides all Allow permissions regardless of group membership.</div>
+</div>
+</div>
+<div class="card" id="card-10">
+<div class="card-header"><span class="qnum">Q11</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">A7</span><span class="badge-obj">Obj 3.5</span></div></div>
+<div class="qtext">A user's phone battery only lasts half a day since connecting to the corporate network, and the back of the phone is warmer than usual. Auto-lock is disabled. What is the best fix?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-10-0" onclick="answerSingle(10,0,2)">A. Disable Wi-Fi</button>
+<button class="ans-btn" id="btn-10-1" onclick="answerSingle(10,1,2)">B. Connect to VPN</button>
+<button class="ans-btn" id="btn-10-2" onclick="answerSingle(10,2,2)">C. Enable auto-lock</button>
+<button class="ans-btn" id="btn-10-3" onclick="answerSingle(10,3,2)">D. Increase available storage space</button>
+</div>
+<div id="result-10" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-10"></div>
+<div class="explanation">Enabling auto-lock turns off the screen when idle, significantly reducing battery drain. The warm phone and short battery life are consistent with the screen staying on constantly.</div>
+</div>
+</div>
+<div class="card" id="card-11">
+<div class="card-header"><span class="qnum">Q12</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">B19</span><span class="badge-obj">Obj 1.1</span></div></div>
+<div class="qtext">Which of the following features would be found in Windows 11 Pro but not in Windows 11 Home?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-11-0" onclick="answerSingle(11,0,1)">A. 32-bit and 64-bit versions</button>
+<button class="ans-btn" id="btn-11-1" onclick="answerSingle(11,1,1)">B. Domain access</button>
+<button class="ans-btn" id="btn-11-2" onclick="answerSingle(11,2,1)">C. Windows Workgroup</button>
+<button class="ans-btn" id="btn-11-3" onclick="answerSingle(11,3,1)">D. RDP client</button>
+</div>
+<div id="result-11" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-11"></div>
+<div class="explanation">Domain access (joining Active Directory) is exclusive to Windows 11 Pro. Windows 11 Home does not support joining a corporate domain.</div>
+</div>
+</div>
+<div class="card" id="card-12">
+<div class="card-header"><span class="qnum">Q13</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">B89</span><span class="badge-obj">Obj 3.1</span></div></div>
+<div class="qtext">A system administrator is troubleshooting an error that randomly spikes a workstation to 100% CPU utilization. Which utility tracks and reports utilization over a 24-hour period?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-12-0" onclick="answerSingle(12,0,1)">A. Services</button>
+<button class="ans-btn" id="btn-12-1" onclick="answerSingle(12,1,1)">B. Performance Monitor</button>
+<button class="ans-btn" id="btn-12-2" onclick="answerSingle(12,2,1)">C. Task Scheduler</button>
+<button class="ans-btn" id="btn-12-3" onclick="answerSingle(12,3,1)">D. Device Manager</button>
+</div>
+<div id="result-12" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-12"></div>
+<div class="explanation">Performance Monitor logs system metrics including CPU utilization over time, allowing the administrator to identify patterns and correlate spikes with specific events or processes.</div>
+</div>
+</div>
+<div class="card" id="card-13">
+<div class="card-header"><span class="qnum">Q14</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">A52</span><span class="badge-obj">Obj 3.1</span></div></div>
+<div class="qtext">A computer on a manufacturing floor is taking much longer to boot than normal. What is the best troubleshooting approach?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-13-0" onclick="answerSingle(13,0,2)">A. Install the latest OS patches</button>
+<button class="ans-btn" id="btn-13-1" onclick="answerSingle(13,1,2)">B. Upgrade the RAM</button>
+<button class="ans-btn" id="btn-13-2" onclick="answerSingle(13,2,2)">C. Disable the startup applications</button>
+<button class="ans-btn" id="btn-13-3" onclick="answerSingle(13,3,2)">D. Replace the CPU</button>
+</div>
+<div id="result-13" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-13"></div>
+<div class="explanation">Excessive startup applications are the most common cause of slow boot times. Disabling unnecessary startup items via Task Manager or msconfig directly addresses the issue.</div>
+</div>
+</div>
+<div class="card" id="card-14">
+<div class="card-header"><span class="qnum">Q15</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">B17</span><span class="badge-obj">Obj 4.8</span></div></div>
+<div class="qtext">A server has been exploited by an external attacker and powered down for legal investigation. What is the most important thing to ensure?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-14-0" onclick="answerSingle(14,0,3)">A. Take photos of the server in the storage room</button>
+<button class="ans-btn" id="btn-14-1" onclick="answerSingle(14,1,3)">B. Report the server location to proper channels</button>
+<button class="ans-btn" id="btn-14-2" onclick="answerSingle(14,2,3)">C. Compile all support tickets associated with the server</button>
+<button class="ans-btn" id="btn-14-3" onclick="answerSingle(14,3,3)">D. Maintain a chain of custody</button>
+</div>
+<div id="result-14" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-14"></div>
+<div class="explanation">Chain of custody documents who has had access to evidence and when, ensuring its integrity for legal proceedings. Without it, evidence may be inadmissible in court.</div>
+</div>
+</div>
+<div class="card" id="card-15">
+<div class="card-header"><span class="qnum">Q16</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-obj">Obj 1.5</span></div></div>
+<div class="qtext">A technician needs to find the MAC address of a Windows computer. Which command provides this?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-15-0" onclick="answerSingle(15,0,3)">A. nslookup</button>
+<button class="ans-btn" id="btn-15-1" onclick="answerSingle(15,1,3)">B. netstat -r</button>
+<button class="ans-btn" id="btn-15-2" onclick="answerSingle(15,2,3)">C. ping -a</button>
+<button class="ans-btn" id="btn-15-3" onclick="answerSingle(15,3,3)">D. ipconfig /all</button>
+</div>
+<div id="result-15" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-15"></div>
+<div class="explanation">ipconfig /all displays full network adapter information including the MAC (physical) address. The other commands do not display MAC addresses.</div>
+</div>
+</div>
+<div class="card" id="card-16">
+<div class="card-header"><span class="qnum">Q17</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">B27</span><span class="badge-obj">Obj 2.2</span></div></div>
+<div class="qtext">A local coffee shop wants to ensure customers can never connect to the company network. Which configuration best achieves this?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-16-0" onclick="answerSingle(16,0,1)">A. Install a new access point for company devices</button>
+<button class="ans-btn" id="btn-16-1" onclick="answerSingle(16,1,1)">B. Use a firewall between customer and corporate network</button>
+<button class="ans-btn" id="btn-16-2" onclick="answerSingle(16,2,1)">C. Configure WPA3 on the company network</button>
+<button class="ans-btn" id="btn-16-3" onclick="answerSingle(16,3,1)">D. Require static IPs on the customer network</button>
+</div>
+<div id="result-16" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-16"></div>
+<div class="explanation">A firewall between the two networks enforces traffic segmentation and access control. WPA3 improves encryption but does not prevent cross-network access if credentials are shared.</div>
+</div>
+</div>
+<div class="card" id="card-17">
+<div class="card-header"><span class="qnum">Q18</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">B67</span><span class="badge-obj">Obj 2.3</span></div></div>
+<div class="qtext">Four accounting users received emails asking for payment on an invoice with a link to a third-party payment site. The invoice numbers are not valid. What attack is this?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-17-0" onclick="answerSingle(17,0,1)">A. Evil twin</button>
+<button class="ans-btn" id="btn-17-1" onclick="answerSingle(17,1,1)">B. Spear phishing</button>
+<button class="ans-btn" id="btn-17-2" onclick="answerSingle(17,2,1)">C. Shoulder surfing</button>
+<button class="ans-btn" id="btn-17-3" onclick="answerSingle(17,3,1)">D. Denial of service</button>
+</div>
+<div id="result-17" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-17"></div>
+<div class="explanation">Spear phishing targets a specific group with personalized, convincing content. The targeted accounting department and fake invoice details are hallmarks of a spear phishing campaign.</div>
+</div>
+</div>
+<div class="card" id="card-18">
+<div class="card-header"><span class="qnum">Q19</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">B22</span><span class="badge-obj">Obj 4.2</span></div></div>
+<div class="qtext">A mobile user travels most of the time and needs multiple backups per day with no access to the home office. Which backup method is best?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-18-0" onclick="answerSingle(18,0,1)">A. Connect the smartphone to a laptop</button>
+<button class="ans-btn" id="btn-18-1" onclick="answerSingle(18,1,1)">B. Use a cloud backup service</button>
+<button class="ans-btn" id="btn-18-2" onclick="answerSingle(18,2,1)">C. Use incremental backups each night</button>
+<button class="ans-btn" id="btn-18-3" onclick="answerSingle(18,3,1)">D. Connect an external USB drive</button>
+</div>
+<div id="result-18" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-18"></div>
+<div class="explanation">Cloud backup services run automatically over any internet connection without requiring physical access to office infrastructure, making them ideal for frequent travelers.</div>
+</div>
+</div>
+<div class="card" id="card-19">
+<div class="card-header"><span class="qnum">Q20</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-obj">Obj 3.5</span></div></div>
+<div class="qtext">A mobile device screen or casing is bowing or pushing outward. What is the most likely cause?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-19-0" onclick="answerSingle(19,0,2)">A. The device is unusually cold</button>
+<button class="ans-btn" id="btn-19-1" onclick="answerSingle(19,1,2)">B. The device won't connect to Bluetooth</button>
+<button class="ans-btn" id="btn-19-2" onclick="answerSingle(19,2,2)">C. A bloated or swollen battery</button>
+<button class="ans-btn" id="btn-19-3" onclick="answerSingle(19,3,2)">D. The screen is cracked internally</button>
+</div>
+<div id="result-19" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-19"></div>
+<div class="explanation">A swollen battery expands and pushes outward on the device casing or screen. This is a safety hazard — the device should be powered off and the battery replaced immediately.</div>
+</div>
+</div>
+<div class="card" id="card-20">
+<div class="card-header"><span class="qnum">Q21</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-obj">Obj 2.2</span></div></div>
+<div class="qtext">Which wireless security protocol is considered deprecated and should never be used due to known vulnerabilities?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-20-0" onclick="answerSingle(20,0,3)">A. TKIP</button>
+<button class="ans-btn" id="btn-20-1" onclick="answerSingle(20,1,3)">B. WPA3</button>
+<button class="ans-btn" id="btn-20-2" onclick="answerSingle(20,2,3)">C. WPA2</button>
+<button class="ans-btn" id="btn-20-3" onclick="answerSingle(20,3,3)">D. WEP</button>
+</div>
+<div id="result-20" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-20"></div>
+<div class="explanation">WEP (Wired Equivalent Privacy) was cracked and deprecated decades ago. WPA3 is current standard, WPA2 is still acceptable, TKIP was WPA1's encryption (also deprecated but less broken than WEP).</div>
+</div>
+</div>
+<div class="card" id="card-21">
+<div class="card-header"><span class="qnum">Q22</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">A77</span><span class="badge-obj">Obj 1.1</span></div></div>
+<div class="qtext">A financial corporation is deploying laptops but the Windows configuration does not include any multimedia utilities. What is the most likely reason?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-21-0" onclick="answerSingle(21,0,1)">A. The video format is not recognized</button>
+<button class="ans-btn" id="btn-21-1" onclick="answerSingle(21,1,1)">B. Laptops are using Windows N edition</button>
+<button class="ans-btn" id="btn-21-2" onclick="answerSingle(21,2,1)">C. Laptop hardware does not support video playback</button>
+<button class="ans-btn" id="btn-21-3" onclick="answerSingle(21,3,1)">D. Video playback is disabled in the BIOS</button>
+</div>
+<div id="result-21" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-21"></div>
+<div class="explanation">Windows N editions (sold in Europe) do not include Windows Media Player or other multimedia components by default.</div>
+</div>
+</div>
+<div class="card" id="card-22">
+<div class="card-header"><span class="qnum">Q23</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">A36</span><span class="badge-obj">Obj 2.2</span></div></div>
+<div class="qtext">A user has a username and password for VPN access plus a hardware device showing a 6-digit code that changes every 30 seconds. What best describes the device?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-22-0" onclick="answerSingle(22,0,3)">A. ACL</button>
+<button class="ans-btn" id="btn-22-1" onclick="answerSingle(22,1,3)">B. SMS</button>
+<button class="ans-btn" id="btn-22-2" onclick="answerSingle(22,2,3)">C. Group Policy</button>
+<button class="ans-btn" id="btn-22-3" onclick="answerSingle(22,3,3)">D. MFA</button>
+</div>
+<div id="result-22" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-22"></div>
+<div class="explanation">This describes MFA (Multifactor Authentication) using a TOTP hardware token — something you know (password) plus something you have (token). The changing code is a time-based one-time password.</div>
+</div>
+</div>
+<div class="card" id="card-23">
+<div class="card-header"><span class="qnum">Q24</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-obj">Obj 2.2</span></div></div>
+<div class="qtext">A security administrator is configuring a firewall to block all traffic by default and only allow specific ports. Which principle is being applied?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-23-0" onclick="answerSingle(23,0,2)">A. Least privilege</button>
+<button class="ans-btn" id="btn-23-1" onclick="answerSingle(23,1,2)">B. Role-based access</button>
+<button class="ans-btn" id="btn-23-2" onclick="answerSingle(23,2,2)">C. Implicit deny</button>
+<button class="ans-btn" id="btn-23-3" onclick="answerSingle(23,3,2)">D. Zero trust</button>
+</div>
+<div id="result-23" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-23"></div>
+<div class="explanation">Implicit deny is the firewall principle of blocking all traffic unless explicitly permitted. Least privilege limits user permissions, zero trust verifies all access regardless of location.</div>
+</div>
+</div>
+<div class="card" id="card-24">
+<div class="card-header"><span class="qnum">Q25</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">A45</span><span class="badge-obj">Obj 1.9</span></div></div>
+<div class="qtext">The hard drive in a macOS desktop has failed and no data is recoverable. A new drive has been installed. Which tool restores the data?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-24-0" onclick="answerSingle(24,0,2)">A. Backup and Restore</button>
+<button class="ans-btn" id="btn-24-1" onclick="answerSingle(24,1,2)">B. Mission Control</button>
+<button class="ans-btn" id="btn-24-2" onclick="answerSingle(24,2,2)">C. Time Machine</button>
+<button class="ans-btn" id="btn-24-3" onclick="answerSingle(24,3,2)">D. Disk Utility</button>
+</div>
+<div id="result-24" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-24"></div>
+<div class="explanation">Time Machine is macOS's built-in backup system that creates incremental backups and allows full system restoration. Backup and Restore is a Windows tool.</div>
+</div>
+</div>
+<div class="card" id="card-25">
+<div class="card-header"><span class="qnum">Q26</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-obj">Obj 3.1</span></div></div>
+<div class="qtext">Which of these is a common troubleshooting step for a 'Profile Cannot Be Loaded' error in Windows?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-25-0" onclick="answerSingle(25,0,2)">A. Change the keyboard</button>
+<button class="ans-btn" id="btn-25-1" onclick="answerSingle(25,1,2)">B. Delete the user's data</button>
+<button class="ans-btn" id="btn-25-2" onclick="answerSingle(25,2,2)">C. Check for disk errors or recreate the user profile</button>
+<button class="ans-btn" id="btn-25-3" onclick="answerSingle(25,3,2)">D. Replace the monitor</button>
+</div>
+<div id="result-25" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-25"></div>
+<div class="explanation">A corrupted user profile causes this error. The fix involves checking disk health and either repairing or recreating the profile. Deleting data is destructive and not a troubleshooting step.</div>
+</div>
+</div>
+<div class="card" id="card-26">
+<div class="card-header"><span class="qnum">Q27</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">B43</span><span class="badge-obj">Obj 1.1</span></div></div>
+<div class="qtext">A user in engineering needs to use applications written for both Windows and Linux. Which is the best way to provide access?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-26-0" onclick="answerSingle(26,0,2)">A. Compile Linux apps in Windows</button>
+<button class="ans-btn" id="btn-26-1" onclick="answerSingle(26,1,2)">B. Boot from two removable USBs</button>
+<button class="ans-btn" id="btn-26-2" onclick="answerSingle(26,2,2)">C. Configure the PC for multiboot</button>
+<button class="ans-btn" id="btn-26-3" onclick="answerSingle(26,3,2)">D. Assign the user multiple computers</button>
+</div>
+<div id="result-26" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-26"></div>
+<div class="explanation">Configuring multiboot allows a single machine to run both Windows and Linux, letting the user select the OS at startup. This is more practical than maintaining two computers.</div>
+</div>
+</div>
+<div class="card" id="card-27">
+<div class="card-header"><span class="qnum">Q28</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">A76</span><span class="badge-obj">Obj 4.3</span></div></div>
+<div class="qtext">A data center manager requires each server to maintain at least fifteen minutes of uptime during a power failure. Which is the best choice?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-27-0" onclick="answerSingle(27,0,0)">A. UPS</button>
+<button class="ans-btn" id="btn-27-1" onclick="answerSingle(27,1,0)">B. Cloud-based storage</button>
+<button class="ans-btn" id="btn-27-2" onclick="answerSingle(27,2,0)">C. Redundant power supplies</button>
+<button class="ans-btn" id="btn-27-3" onclick="answerSingle(27,3,0)">D. Surge suppressor</button>
+</div>
+<div id="result-27" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-27"></div>
+<div class="explanation">A UPS (Uninterruptible Power Supply) provides battery backup power for a defined period during outages. Surge suppressors only protect against voltage spikes, not outages.</div>
+</div>
+</div>
+<div class="card" id="card-28">
+<div class="card-header"><span class="qnum">Q29</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-obj">Obj 2.1</span></div></div>
+<div class="qtext">Which physical security control is specifically designed to stop a vehicle from crashing into a building?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-28-0" onclick="answerSingle(28,0,2)">A. Fence</button>
+<button class="ans-btn" id="btn-28-1" onclick="answerSingle(28,1,2)">B. Turnstile</button>
+<button class="ans-btn" id="btn-28-2" onclick="answerSingle(28,2,2)">C. Bollard</button>
+<button class="ans-btn" id="btn-28-3" onclick="answerSingle(28,3,2)">D. Guard</button>
+</div>
+<div id="result-28" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-28"></div>
+<div class="explanation">Bollards are short, sturdy posts installed to prevent vehicle-based attacks on buildings. Fences and guards provide perimeter security but cannot stop a vehicle impact.</div>
+</div>
+</div>
+<div class="card" id="card-29">
+<div class="card-header"><span class="qnum">Q30</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-obj">Obj 3.1</span></div></div>
+<div class="qtext">A Windows computer boots into a GRUB prompt instead of Windows. What has most likely happened?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-29-0" onclick="answerSingle(29,0,3)">A. The power supply is failing</button>
+<button class="ans-btn" id="btn-29-1" onclick="answerSingle(29,1,3)">B. The RAM is faulty</button>
+<button class="ans-btn" id="btn-29-2" onclick="answerSingle(29,2,3)">C. The CMOS battery is dead</button>
+<button class="ans-btn" id="btn-29-3" onclick="answerSingle(29,3,3)">D. A Linux installation has overwritten the Windows bootloader</button>
+</div>
+<div id="result-29" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-29"></div>
+<div class="explanation">GRUB is the Linux bootloader. When Linux is installed on the same drive as Windows, it can overwrite the Windows bootloader. Startup Repair or bootrec /fixmbr can restore the Windows bootloader.</div>
+</div>
+</div>
+<div class="card" id="card-30">
+<div class="card-header"><span class="qnum">Q31</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">A70</span><span class="badge-obj">Obj 4.1</span></div></div>
+<div class="qtext">A help desk director wants to identify and track computers returned for service or moved between locations. Which solution is best?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-30-0" onclick="answerSingle(30,0,3)">A. Login names</button>
+<button class="ans-btn" id="btn-30-1" onclick="answerSingle(30,1,3)">B. Cable labels</button>
+<button class="ans-btn" id="btn-30-2" onclick="answerSingle(30,2,3)">C. Topology diagrams</button>
+<button class="ans-btn" id="btn-30-3" onclick="answerSingle(30,3,3)">D. Asset tags</button>
+</div>
+<div id="result-30" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-30"></div>
+<div class="explanation">Asset tags are physical labels with unique identifiers assigned to each device, allowing tracking of location, service history, and ownership in an asset management system.</div>
+</div>
+</div>
+<div class="card" id="card-31">
+<div class="card-header"><span class="qnum">Q32</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">C76</span><span class="badge-obj">Obj 4.9</span></div></div>
+<div class="qtext">A financial services company needs to permanently disable and guarantee data cannot be recovered from 100 old SAN drives. Which method is best?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-31-0" onclick="answerSingle(31,0,1)">A. Full disk encryption</button>
+<button class="ans-btn" id="btn-31-1" onclick="answerSingle(31,1,1)">B. Shredder</button>
+<button class="ans-btn" id="btn-31-2" onclick="answerSingle(31,2,1)">C. Delete the master boot record</button>
+<button class="ans-btn" id="btn-31-3" onclick="answerSingle(31,3,1)">D. Standard format</button>
+</div>
+<div id="result-31" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-31"></div>
+<div class="explanation">Physical shredding destroys the drive media entirely, making data recovery impossible. Formatting, encryption, and deleting the MBR all leave data potentially recoverable with forensic tools.</div>
+</div>
+</div>
+<div class="card" id="card-32">
+<div class="card-header"><span class="qnum">Q33</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">B58</span><span class="badge-obj">Obj 1.1</span></div></div>
+<div class="qtext">A system administrator wants to create a Windows distribution that automatically connects to the corporate domain and configures user email. Which method is best?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-32-0" onclick="answerSingle(32,0,3)">A. Image deployment</button>
+<button class="ans-btn" id="btn-32-1" onclick="answerSingle(32,1,3)">B. In-place upgrade</button>
+<button class="ans-btn" id="btn-32-2" onclick="answerSingle(32,2,3)">C. Recovery partition installation</button>
+<button class="ans-btn" id="btn-32-3" onclick="answerSingle(32,3,3)">D. Zero-touch deployment</button>
+</div>
+<div id="result-32" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-32"></div>
+<div class="explanation">Zero-touch deployment automates the entire setup process including domain join and email configuration with no manual intervention required.</div>
+</div>
+</div>
+<div class="card" id="card-33">
+<div class="card-header"><span class="qnum">Q34</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">A40</span><span class="badge-obj">Obj 1.5</span></div></div>
+<div class="qtext">A system administrator needs to view a set of log files in a folder named 'logs'. Which command makes that folder the current directory?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-33-0" onclick="answerSingle(33,0,0)">A. cd logs</button>
+<button class="ans-btn" id="btn-33-1" onclick="answerSingle(33,1,0)">B. dir logs</button>
+<button class="ans-btn" id="btn-33-2" onclick="answerSingle(33,2,0)">C. md logs</button>
+<button class="ans-btn" id="btn-33-3" onclick="answerSingle(33,3,0)">D. mv logs</button>
+</div>
+<div id="result-33" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-33"></div>
+<div class="explanation">The cd (change directory) command navigates to a specified folder. mv moves files, dir lists contents, md creates a new directory.</div>
+</div>
+</div>
+<div class="card" id="card-34">
+<div class="card-header"><span class="qnum">Q35</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">A89</span><span class="badge-obj">Obj 2.1</span></div></div>
+<div class="qtext">A company is deploying laptops to field sales teams and is concerned about data security if a laptop is stolen. Which is the best protection?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-34-0" onclick="answerSingle(34,0,1)">A. Unique device certificates</button>
+<button class="ans-btn" id="btn-34-1" onclick="answerSingle(34,1,1)">B. Data-at-rest encryption</button>
+<button class="ans-btn" id="btn-34-2" onclick="answerSingle(34,2,1)">C. Strong password policies</button>
+<button class="ans-btn" id="btn-34-3" onclick="answerSingle(34,3,1)">D. Multifactor authentication</button>
+</div>
+<div id="result-34" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-34"></div>
+<div class="explanation">Data-at-rest encryption (full disk encryption via BitLocker) makes data unreadable if the drive is physically removed. MFA and passwords can be bypassed by removing the drive.</div>
+</div>
+</div>
+<div class="card" id="card-35">
+<div class="card-header"><span class="qnum">Q36</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">A19</span><span class="badge-obj">Obj 1.1</span></div></div>
+<div class="qtext">What is the maximum amount of RAM supported by a 32-bit version of an operating system?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-35-0" onclick="answerSingle(35,0,0)">A. 4 GB</button>
+<button class="ans-btn" id="btn-35-1" onclick="answerSingle(35,1,0)">B. 192 GB</button>
+<button class="ans-btn" id="btn-35-2" onclick="answerSingle(35,2,0)">C. 16 GB</button>
+<button class="ans-btn" id="btn-35-3" onclick="answerSingle(35,3,0)">D. 8 GB</button>
+</div>
+<div id="result-35" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-35"></div>
+<div class="explanation">A 32-bit OS can address a maximum of 2^32 memory addresses, which equals 4 GB of RAM. 64-bit systems support significantly more.</div>
+</div>
+</div>
+<div class="card" id="card-36">
+<div class="card-header"><span class="qnum">Q37</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-obj">Obj 1.2</span></div></div>
+<div class="qtext">Which file system is the primary default used by most Linux distributions?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-36-0" onclick="answerSingle(36,0,0)">A. ext4</button>
+<button class="ans-btn" id="btn-36-1" onclick="answerSingle(36,1,0)">B. XFS</button>
+<button class="ans-btn" id="btn-36-2" onclick="answerSingle(36,2,0)">C. APFS</button>
+<button class="ans-btn" id="btn-36-3" onclick="answerSingle(36,3,0)">D. ReFS</button>
+</div>
+<div id="result-36" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-36"></div>
+<div class="explanation">ext4 (Fourth Extended Filesystem) is the standard Linux file system. APFS is macOS, XFS is used in high-performance Linux environments, ReFS is Windows server.</div>
+</div>
+</div>
+<div class="card" id="card-37">
+<div class="card-header"><span class="qnum">Q38</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">A80</span><span class="badge-obj">Obj 1.1</span></div></div>
+<div class="qtext">A system administrator needs to upgrade twenty training room systems to the latest Windows version simultaneously. Which method is most efficient?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-37-0" onclick="answerSingle(37,0,2)">A. USB key</button>
+<button class="ans-btn" id="btn-37-1" onclick="answerSingle(37,1,2)">B. Repair installation</button>
+<button class="ans-btn" id="btn-37-2" onclick="answerSingle(37,2,2)">C. Remote network installation</button>
+<button class="ans-btn" id="btn-37-3" onclick="answerSingle(37,3,2)">D. Recovery partition</button>
+</div>
+<div id="result-37" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-37"></div>
+<div class="explanation">Remote network installation deploys to multiple systems simultaneously from a central server, making it the most efficient method for large-scale upgrades.</div>
+</div>
+</div>
+<div class="card" id="card-38">
+<div class="card-header"><span class="qnum">Q39</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">C73</span><span class="badge-obj">Obj 4.5</span></div></div>
+<div class="qtext">A company has created an internal process to ensure all PII is encrypted. What is the most likely reason?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-38-0" onclick="answerSingle(38,0,3)">A. Improves application performance</button>
+<button class="ans-btn" id="btn-38-1" onclick="answerSingle(38,1,3)">B. Uses less storage space</button>
+<button class="ans-btn" id="btn-38-2" onclick="answerSingle(38,2,3)">C. Allows customer data to be deleted easily</button>
+<button class="ans-btn" id="btn-38-3" onclick="answerSingle(38,3,3)">D. Helps prevent identity theft</button>
+</div>
+<div id="result-38" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-38"></div>
+<div class="explanation">Encrypting PII protects individuals from identity theft if the data is breached. Encryption has no impact on application performance, deletion, or storage size.</div>
+</div>
+</div>
+<div class="card" id="card-39">
+<div class="card-header"><span class="qnum">Q40</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-obj">Obj 3.1</span></div></div>
+<div class="qtext">A user's web browser redirects to a different search engine than the one configured. What is this a sign of?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-39-0" onclick="answerSingle(39,0,3)">A. Low RAM</button>
+<button class="ans-btn" id="btn-39-1" onclick="answerSingle(39,1,3)">B. Expired browser license</button>
+<button class="ans-btn" id="btn-39-2" onclick="answerSingle(39,2,3)">C. Slow internet connection</button>
+<button class="ans-btn" id="btn-39-3" onclick="answerSingle(39,3,3)">D. Browser hijacking (malware)</button>
+</div>
+<div id="result-39" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-39"></div>
+<div class="explanation">Browser hijacking is caused by malware that modifies browser settings including the default search engine and homepage. Running an anti-malware scan is the appropriate response.</div>
+</div>
+</div>
+<div class="card" id="card-40">
+<div class="card-header"><span class="qnum">Q41</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">A16</span><span class="badge-obj">Obj 4.6</span></div></div>
+<div class="qtext">Each time a corporate application is started, a page of disclaimers and usage requirements is shown before the login prompt. What best describes this page?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-40-0" onclick="answerSingle(40,0,1)">A. Topology diagram</button>
+<button class="ans-btn" id="btn-40-1" onclick="answerSingle(40,1,1)">B. Splash screen</button>
+<button class="ans-btn" id="btn-40-2" onclick="answerSingle(40,2,1)">C. Standard operating procedures</button>
+<button class="ans-btn" id="btn-40-3" onclick="answerSingle(40,3,1)">D. Acceptable use policy</button>
+</div>
+<div id="result-40" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-40"></div>
+<div class="explanation">A splash screen displays legal warnings, disclaimers, or AUP notices before login. The AUP itself is the policy document — the splash screen is its display mechanism.</div>
+</div>
+</div>
+<div class="card" id="card-41">
+<div class="card-header"><span class="qnum">Q42</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">A20</span><span class="badge-obj">Obj 1.5</span></div></div>
+<div class="qtext">A user is attempting to start an application and it crashes each time. A technician wants details about each previous crash. Which tool provides this?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-41-0" onclick="answerSingle(41,0,2)">A. Startup Repair</button>
+<button class="ans-btn" id="btn-41-1" onclick="answerSingle(41,1,2)">B. Task Manager</button>
+<button class="ans-btn" id="btn-41-2" onclick="answerSingle(41,2,2)">C. Event Viewer</button>
+<button class="ans-btn" id="btn-41-3" onclick="answerSingle(41,3,2)">D. Safe Mode</button>
+</div>
+<div id="result-41" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-41"></div>
+<div class="explanation">Event Viewer logs application crashes with timestamps and error codes, providing a history of each occurrence. Task Manager shows current processes but not crash history.</div>
+</div>
+</div>
+<div class="card" id="card-42">
+<div class="card-header"><span class="qnum">Q43</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">C66</span><span class="badge-obj">Obj 1.2</span></div></div>
+<div class="qtext">A user needs to move data between macOS and Windows computers using a USB flash drive. Which file system is the best choice?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-42-0" onclick="answerSingle(42,0,3)">A. APFS</button>
+<button class="ans-btn" id="btn-42-1" onclick="answerSingle(42,1,3)">B. ext4</button>
+<button class="ans-btn" id="btn-42-2" onclick="answerSingle(42,2,3)">C. NTFS</button>
+<button class="ans-btn" id="btn-42-3" onclick="answerSingle(42,3,3)">D. exFAT</button>
+</div>
+<div id="result-42" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-42"></div>
+<div class="explanation">exFAT is supported natively on both Windows and macOS, making it ideal for cross-platform flash drives. APFS is macOS-only, NTFS has limited macOS write support, ext4 is Linux.</div>
+</div>
+</div>
+<div class="card" id="card-43">
+<div class="card-header"><span class="qnum">Q44</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">A13</span><span class="badge-obj">Obj 2.1</span></div></div>
+<div class="qtext">Which Windows feature provides full disk encryption for all data on a storage drive?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-43-0" onclick="answerSingle(43,0,1)">A. EFS</button>
+<button class="ans-btn" id="btn-43-1" onclick="answerSingle(43,1,1)">B. BitLocker</button>
+<button class="ans-btn" id="btn-43-2" onclick="answerSingle(43,2,1)">C. RDP</button>
+<button class="ans-btn" id="btn-43-3" onclick="answerSingle(43,3,1)">D. Domain Services</button>
+</div>
+<div id="result-43" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-43"></div>
+<div class="explanation">BitLocker encrypts the entire drive, protecting all data even if the drive is removed. EFS only encrypts individual files. Domain Services and RDP are unrelated to disk encryption.</div>
+</div>
+</div>
+<div class="card" id="card-44">
+<div class="card-header"><span class="qnum">Q45</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">C63</span><span class="badge-obj">Obj 2.6</span></div></div>
+<div class="qtext">A user's smartphone contains confidential company data. What is the best protection if the phone is lost or stolen?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-44-0" onclick="answerSingle(44,0,3)">A. Cloud backup</button>
+<button class="ans-btn" id="btn-44-1" onclick="answerSingle(44,1,3)">B. Authenticator app</button>
+<button class="ans-btn" id="btn-44-2" onclick="answerSingle(44,2,3)">C. Locator application</button>
+<button class="ans-btn" id="btn-44-3" onclick="answerSingle(44,3,3)">D. Remote wipe</button>
+</div>
+<div id="result-44" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-44"></div>
+<div class="explanation">Remote wipe erases all data from the device remotely, preventing unauthorized access to confidential information. A locator app finds the device but does not protect the data.</div>
+</div>
+</div>
+<div class="card" id="card-45">
+<div class="card-header"><span class="qnum">Q46</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">C78</span><span class="badge-obj">Obj 4.6</span></div></div>
+<div class="qtext">Which of the following should a company use to reduce legal liability if an employee is dismissed?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-45-0" onclick="answerSingle(45,0,3)">A. Regulatory compliance documentation</button>
+<button class="ans-btn" id="btn-45-1" onclick="answerSingle(45,1,3)">B. End user licensing agreement</button>
+<button class="ans-btn" id="btn-45-2" onclick="answerSingle(45,2,3)">C. Standard operating procedures</button>
+<button class="ans-btn" id="btn-45-3" onclick="answerSingle(45,3,3)">D. Acceptable use policy</button>
+</div>
+<div id="result-45" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-45"></div>
+<div class="explanation">An AUP (Acceptable Use Policy) documents the rules employees must follow. When an employee violates the AUP, having them sign it provides legal documentation supporting disciplinary action.</div>
+</div>
+</div>
+<div class="card" id="card-46">
+<div class="card-header"><span class="qnum">Q47</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">A73</span><span class="badge-obj">Obj 4.7</span></div></div>
+<div class="qtext">A network consulting firm is upgrading Internet firewalls. The proposal includes project description, topology changes, and risk assessment. What is the last step in this upgrade?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-46-0" onclick="answerSingle(46,0,1)">A. Change control application</button>
+<button class="ans-btn" id="btn-46-1" onclick="answerSingle(46,1,1)">B. End-user acceptance</button>
+<button class="ans-btn" id="btn-46-2" onclick="answerSingle(46,2,1)">C. Detailed upgrade plan</button>
+<button class="ans-btn" id="btn-46-3" onclick="answerSingle(46,3,1)">D. Backout plan</button>
+</div>
+<div id="result-46" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-46"></div>
+<div class="explanation">End-user acceptance is the final step in a change management process — confirming that stakeholders agree the change has been completed successfully and meets requirements.</div>
+</div>
+</div>
+<div class="card" id="card-47">
+<div class="card-header"><span class="qnum">Q48</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-obj">Obj 3.1</span></div></div>
+<div class="qtext">A user can receive emails but cannot send them. Which setting should the technician verify?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-47-0" onclick="answerSingle(47,0,2)">A. POP3 port settings</button>
+<button class="ans-btn" id="btn-47-1" onclick="answerSingle(47,1,2)">B. IMAP port settings</button>
+<button class="ans-btn" id="btn-47-2" onclick="answerSingle(47,2,2)">C. SMTP port settings</button>
+<button class="ans-btn" id="btn-47-3" onclick="answerSingle(47,3,2)">D. DNS server address</button>
+</div>
+<div id="result-47" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-47"></div>
+<div class="explanation">SMTP (Simple Mail Transfer Protocol) handles outbound email. If SMTP port settings (typically 587 or 465) are incorrect or blocked, the user can receive mail via IMAP/POP3 but cannot send.</div>
+</div>
+</div>
+<div class="card" id="card-48">
+<div class="card-header"><span class="qnum">Q49</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">A12</span><span class="badge-obj">Obj 4.4</span></div></div>
+<div class="qtext">The motherboard of a server in the data center has started smoking and flames can be seen. Which is the best way to extinguish this fire?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-48-0" onclick="answerSingle(48,0,3)">A. Foam-based extinguisher</button>
+<button class="ans-btn" id="btn-48-1" onclick="answerSingle(48,1,3)">B. Water hose</button>
+<button class="ans-btn" id="btn-48-2" onclick="answerSingle(48,2,3)">C. Disconnect the power</button>
+<button class="ans-btn" id="btn-48-3" onclick="answerSingle(48,3,3)">D. Carbon dioxide extinguisher</button>
+</div>
+<div id="result-48" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-48"></div>
+<div class="explanation">A CO2 (carbon dioxide) extinguisher is the correct choice for electrical fires — it displaces oxygen without leaving residue or conducting electricity. Water and foam can cause electrical hazards and further damage.</div>
+</div>
+</div>
+<div class="card" id="card-49">
+<div class="card-header"><span class="qnum">Q50</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">B39</span><span class="badge-obj">Obj 2.3</span></div></div>
+<div class="qtext">A user received a call from someone claiming to be IT Help Desk asking for their employee ID and login credentials. What is this?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-49-0" onclick="answerSingle(49,0,1)">A. Brute force</button>
+<button class="ans-btn" id="btn-49-1" onclick="answerSingle(49,1,1)">B. Social engineering</button>
+<button class="ans-btn" id="btn-49-2" onclick="answerSingle(49,2,1)">C. Denial of service</button>
+<button class="ans-btn" id="btn-49-3" onclick="answerSingle(49,3,1)">D. Shoulder surfing</button>
+</div>
+<div id="result-49" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-49"></div>
+<div class="explanation">Social engineering manipulates people into divulging confidential information by impersonating a trusted authority. Vishing (voice phishing) is a specific form of social engineering over the phone.</div>
+</div>
+</div>
+<div class="card" id="card-50">
+<div class="card-header"><span class="qnum">Q51</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">A66</span><span class="badge-obj">Obj 1.6</span></div></div>
+<div class="qtext">A system administrator would like to require a specific level of password complexity for all Active Directory users. Which tool is best?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-50-0" onclick="answerSingle(50,0,0)">A. Group Policy</button>
+<button class="ans-btn" id="btn-50-1" onclick="answerSingle(50,1,0)">B. Folder redirection</button>
+<button class="ans-btn" id="btn-50-2" onclick="answerSingle(50,2,0)">C. Port security</button>
+<button class="ans-btn" id="btn-50-3" onclick="answerSingle(50,3,0)">D. Login script</button>
+</div>
+<div id="result-50" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-50"></div>
+<div class="explanation">Group Policy (GPO) applies domain-wide security settings including password complexity rules to all Active Directory users simultaneously.</div>
+</div>
+</div>
+<div class="card" id="card-51">
+<div class="card-header"><span class="qnum">Q52</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">C48</span><span class="badge-obj">Obj 3.1</span></div></div>
+<div class="qtext">A group of devices cannot communicate outside their local IP subnet. They can ping devices on the same network but not external IPs. What is the most likely cause?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-51-0" onclick="answerSingle(51,0,2)">A. DNS server</button>
+<button class="ans-btn" id="btn-51-1" onclick="answerSingle(51,1,2)">B. Metered connection</button>
+<button class="ans-btn" id="btn-51-2" onclick="answerSingle(51,2,2)">C. Default gateway</button>
+<button class="ans-btn" id="btn-51-3" onclick="answerSingle(51,3,2)">D. Proxy server</button>
+</div>
+<div id="result-51" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-51"></div>
+<div class="explanation">The default gateway is the router that forwards traffic outside the local subnet. If it is misconfigured or unreachable, all external communication fails while local traffic continues to work.</div>
+</div>
+</div>
+<div class="card" id="card-52">
+<div class="card-header"><span class="qnum">Q53</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">C19</span><span class="badge-obj">Obj 2.3</span></div></div>
+<div class="qtext">An attacker gained access to a password hash file. Which method will they use to obtain the actual passwords?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-52-0" onclick="answerSingle(52,0,0)">A. Brute force</button>
+<button class="ans-btn" id="btn-52-1" onclick="answerSingle(52,1,0)">B. DoS</button>
+<button class="ans-btn" id="btn-52-2" onclick="answerSingle(52,2,0)">C. Decryption</button>
+<button class="ans-btn" id="btn-52-3" onclick="answerSingle(52,3,0)">D. Phishing</button>
+</div>
+<div id="result-52" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-52"></div>
+<div class="explanation">Password hashes cannot be decrypted directly. Attackers use brute force or dictionary attacks to guess passwords and compare the resulting hashes until they match.</div>
+</div>
+</div>
+<div class="card" id="card-53">
+<div class="card-header"><span class="qnum">Q54</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-obj">Obj 2.1</span></div></div>
+<div class="qtext">What is the primary purpose of a mantrap in a physical security environment?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-53-0" onclick="answerSingle(53,0,1)">A. To store backup tapes</button>
+<button class="ans-btn" id="btn-53-1" onclick="answerSingle(53,1,1)">B. To prevent tailgating and piggybacking</button>
+<button class="ans-btn" id="btn-53-2" onclick="answerSingle(53,2,1)">C. To house server racks</button>
+<button class="ans-btn" id="btn-53-3" onclick="answerSingle(53,3,1)">D. To monitor video feeds</button>
+</div>
+<div id="result-53" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-53"></div>
+<div class="explanation">A mantrap (access control vestibule) uses two interlocking doors to ensure only one person passes through at a time, preventing tailgating into secure areas.</div>
+</div>
+</div>
+<div class="card" id="card-54">
+<div class="card-header"><span class="qnum">Q55</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-obj">Obj 3.1</span></div></div>
+<div class="qtext">A user's Windows 10 computer displays a BSOD during the boot process. What is the most likely cause?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-54-0" onclick="answerSingle(54,0,1)">A. Printer driver conflict</button>
+<button class="ans-btn" id="btn-54-1" onclick="answerSingle(54,1,1)">B. Corrupted system files</button>
+<button class="ans-btn" id="btn-54-2" onclick="answerSingle(54,2,1)">C. Faulty power supply</button>
+<button class="ans-btn" id="btn-54-3" onclick="answerSingle(54,3,1)">D. Incorrect IP address</button>
+</div>
+<div id="result-54" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-54"></div>
+<div class="explanation">Corrupted system files are the most common cause of BSODs during boot. Power supply failures typically cause shutdowns, IP address issues don't cause BSODs, printer drivers load after boot.</div>
+</div>
+</div>
+<div class="card" id="card-55">
+<div class="card-header"><span class="qnum">Q56</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">A55</span><span class="badge-obj">Obj 1.6</span></div></div>
+<div class="qtext">An employee modified NTFS permissions on a folder to give Everyone read access, but remote users still cannot access the file. What is the reason?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-55-0" onclick="answerSingle(55,0,1)">A. Remote users are connecting with Guest accounts</button>
+<button class="ans-btn" id="btn-55-1" onclick="answerSingle(55,1,1)">B. Share permissions restrict access from remote devices</button>
+<button class="ans-btn" id="btn-55-2" onclick="answerSingle(55,2,1)">C. The user is an Administrator</button>
+<button class="ans-btn" id="btn-55-3" onclick="answerSingle(55,3,1)">D. The NTFS permissions were not synchronized</button>
+</div>
+<div id="result-55" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-55"></div>
+<div class="explanation">When accessing files remotely, both NTFS permissions AND share permissions apply. The more restrictive of the two takes effect, so share permissions can block remote access even if NTFS allows it.</div>
+</div>
+</div>
+<div class="card" id="card-56">
+<div class="card-header"><span class="qnum">Q57</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">C26</span><span class="badge-obj">Obj 1.5</span></div></div>
+<div class="qtext">Which tool is best for a system administrator to manage an Active Directory database via scripting?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-56-0" onclick="answerSingle(56,0,0)">A. PowerShell</button>
+<button class="ans-btn" id="btn-56-1" onclick="answerSingle(56,1,0)">B. Visual Basic Scripting</button>
+<button class="ans-btn" id="btn-56-2" onclick="answerSingle(56,2,0)">C. Batch file</button>
+<button class="ans-btn" id="btn-56-3" onclick="answerSingle(56,3,0)">D. JavaScript</button>
+</div>
+<div id="result-56" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-56"></div>
+<div class="explanation">PowerShell is the preferred tool for Active Directory management, offering full cmdlet support for AD objects, users, groups, and policies.</div>
+</div>
+</div>
+<div class="card" id="card-57">
+<div class="card-header"><span class="qnum">Q58</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-obj">Obj 1.1</span></div></div>
+<div class="qtext">Which Windows feature creates a temporary isolated desktop environment to safely run untrusted applications?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-57-0" onclick="answerSingle(57,0,0)">A. Windows Sandbox</button>
+<button class="ans-btn" id="btn-57-1" onclick="answerSingle(57,1,0)">B. Remote Desktop</button>
+<button class="ans-btn" id="btn-57-2" onclick="answerSingle(57,2,0)">C. VirtualBox</button>
+<button class="ans-btn" id="btn-57-3" onclick="answerSingle(57,3,0)">D. Hyper-V</button>
+</div>
+<div id="result-57" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-57"></div>
+<div class="explanation">Windows Sandbox creates a lightweight, disposable virtual environment. When closed, all changes are discarded. Hyper-V creates persistent VMs, VirtualBox is third-party.</div>
+</div>
+</div>
+<div class="card" id="card-58">
+<div class="card-header"><span class="qnum">Q59</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">A51</span><span class="badge-obj">Obj 1.5</span></div></div>
+<div class="qtext">A system administrator would like all help desk computers to check for antivirus updates every hour. Which tool provides this?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-58-0" onclick="answerSingle(58,0,3)">A. Certificate Manager</button>
+<button class="ans-btn" id="btn-58-1" onclick="answerSingle(58,1,3)">B. System Configuration</button>
+<button class="ans-btn" id="btn-58-2" onclick="answerSingle(58,2,3)">C. Device Manager</button>
+<button class="ans-btn" id="btn-58-3" onclick="answerSingle(58,3,3)">D. Task Scheduler</button>
+</div>
+<div id="result-58" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-58"></div>
+<div class="explanation">Task Scheduler automates the execution of programs or scripts at defined time intervals. It can schedule antivirus updates to run hourly during business hours.</div>
+</div>
+</div>
+<div class="card" id="card-59">
+<div class="card-header"><span class="qnum">Q60</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">C54</span><span class="badge-obj">Obj 4.6</span></div></div>
+<div class="qtext">A technician arrives to repair a computer while the user is at lunch and notices paperwork on the desk that may contain private customer information. What is the best next step?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-59-0" onclick="answerSingle(59,0,2)">A. Leave without repairing the computer</button>
+<button class="ans-btn" id="btn-59-1" onclick="answerSingle(59,1,2)">B. Complete the repair as quickly as possible</button>
+<button class="ans-btn" id="btn-59-2" onclick="answerSingle(59,2,2)">C. Ask an associate in the department for assistance</button>
+<button class="ans-btn" id="btn-59-3" onclick="answerSingle(59,3,2)">D. Move the papers somewhere out of sight</button>
+</div>
+<div id="result-59" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-59"></div>
+<div class="explanation">The technician should ask a department associate for guidance rather than moving confidential documents unilaterally or abandoning the repair. This respects privacy while completing the job.</div>
+</div>
+</div>
+<div class="card" id="card-60">
+<div class="card-header"><span class="qnum">Q61</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-obj">Obj 1.5</span></div></div>
+<div class="qtext">A technician needs to manage disk partitions from the Windows command line. Which tool is used?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-60-0" onclick="answerSingle(60,0,3)">A. fdisk</button>
+<button class="ans-btn" id="btn-60-1" onclick="answerSingle(60,1,3)">B. chkdsk</button>
+<button class="ans-btn" id="btn-60-2" onclick="answerSingle(60,2,3)">C. format</button>
+<button class="ans-btn" id="btn-60-3" onclick="answerSingle(60,3,3)">D. diskpart</button>
+</div>
+<div id="result-60" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-60"></div>
+<div class="explanation">diskpart is the Windows command-line tool for managing disk partitions and volumes. chkdsk checks disk errors, format prepares volumes, fdisk is a Linux tool.</div>
+</div>
+</div>
+<div class="card" id="card-61">
+<div class="card-header"><span class="qnum">Q62</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">B72</span><span class="badge-obj">Obj 1.5</span></div></div>
+<div class="qtext">Which script extension is commonly used inside Microsoft Office applications for automation?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-61-0" onclick="answerSingle(61,0,1)">A. .bat</button>
+<button class="ans-btn" id="btn-61-1" onclick="answerSingle(61,1,1)">B. .vbs</button>
+<button class="ans-btn" id="btn-61-2" onclick="answerSingle(61,2,1)">C. .py</button>
+<button class="ans-btn" id="btn-61-3" onclick="answerSingle(61,3,1)">D. .js</button>
+</div>
+<div id="result-61" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-61"></div>
+<div class="explanation">.vbs (Visual Basic Script) is the traditional scripting language for Office automation via macros. .py is Python, .bat is Windows batch, .js is JavaScript.</div>
+</div>
+</div>
+<div class="card" id="card-62">
+<div class="card-header"><span class="qnum">Q63</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">A22</span><span class="badge-obj">Obj 4.7</span></div></div>
+<div class="qtext">A system administrator is upgrading an email service but the upgrade fails repeatedly. Which process should the administrator follow to return the server to its previous state?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-62-0" onclick="answerSingle(62,0,0)">A. Rollback plan</button>
+<button class="ans-btn" id="btn-62-1" onclick="answerSingle(62,1,0)">B. Power plan</button>
+<button class="ans-btn" id="btn-62-2" onclick="answerSingle(62,2,0)">C. Disaster recovery plan</button>
+<button class="ans-btn" id="btn-62-3" onclick="answerSingle(62,3,0)">D. Incident response plan</button>
+</div>
+<div id="result-62" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-62"></div>
+<div class="explanation">A rollback plan defines the steps to revert a system to its previous state when an upgrade fails. A disaster recovery plan addresses larger-scale outages, not failed upgrades.</div>
+</div>
+</div>
+<div class="card" id="card-63">
+<div class="card-header"><span class="qnum">Q64</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">A30</span><span class="badge-obj">Obj 2.3</span></div></div>
+<div class="qtext">A security guard reported a person slipping through a secure door by closely following an authorized employee. What is this called?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-63-0" onclick="answerSingle(63,0,0)">A. Tailgating</button>
+<button class="ans-btn" id="btn-63-1" onclick="answerSingle(63,1,0)">B. Brute force</button>
+<button class="ans-btn" id="btn-63-2" onclick="answerSingle(63,2,0)">C. Phishing</button>
+<button class="ans-btn" id="btn-63-3" onclick="answerSingle(63,3,0)">D. Dumpster diving</button>
+</div>
+<div id="result-63" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-63"></div>
+<div class="explanation">Tailgating (piggybacking) is the act of following an authorized person through a secure door without using credentials. It is a physical security threat.</div>
+</div>
+</div>
+<div class="card" id="card-64">
+<div class="card-header"><span class="qnum">Q65</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">B88</span><span class="badge-obj">Obj 1.9</span></div></div>
+<div class="qtext">A user needs to deploy new smartphone configurations across four different user groups, each with different email and security settings. Which is the best approach?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-64-0" onclick="answerSingle(64,0,0)">A. Assign configuration profiles for each group</button>
+<button class="ans-btn" id="btn-64-1" onclick="answerSingle(64,1,0)">B. Assign separate support teams for each group</button>
+<button class="ans-btn" id="btn-64-2" onclick="answerSingle(64,2,0)">C. Restore all smartphones from cloud backups</button>
+<button class="ans-btn" id="btn-64-3" onclick="answerSingle(64,3,0)">D. Provide customized instructions for each user</button>
+</div>
+<div id="result-64" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-64"></div>
+<div class="explanation">MDM configuration profiles allow administrators to push specific settings to defined user groups automatically, ensuring consistent and correct configuration across all devices.</div>
+</div>
+</div>
+<div class="card" id="card-65">
+<div class="card-header"><span class="qnum">Q66</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-obj">Obj 3.1</span></div></div>
+<div class="qtext">A technician is troubleshooting a 'No Boot Device Found' error. The hard drive is spinning. What should be checked next?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-65-0" onclick="answerSingle(65,0,0)">A. Check the SATA cable connection</button>
+<button class="ans-btn" id="btn-65-1" onclick="answerSingle(65,1,0)">B. Replace the motherboard</button>
+<button class="ans-btn" id="btn-65-2" onclick="answerSingle(65,2,0)">C. Replace the power supply</button>
+<button class="ans-btn" id="btn-65-3" onclick="answerSingle(65,3,0)">D. Reinstall the OS</button>
+</div>
+<div id="result-65" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-65"></div>
+<div class="explanation">If the drive is spinning but not detected, a loose or faulty SATA cable is the most likely cause. The cable should be reseated before replacing any hardware.</div>
+</div>
+</div>
+<div class="card" id="card-66">
+<div class="card-header"><span class="qnum">Q67</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">B65</span><span class="badge-obj">Obj 2.1</span></div></div>
+<div class="qtext">A network administrator is installing upgraded routers. Which TWO options best secure access to the internal data center door? (Choose TWO)</div>
+<div class="answers">
+<button class="ans-btn" id="btn-66-0" onclick="toggleMulti(66,0)">A. Biometric lock</button>
+<button class="ans-btn" id="btn-66-1" onclick="toggleMulti(66,1)">B. ACL</button>
+<button class="ans-btn" id="btn-66-2" onclick="toggleMulti(66,2)">C. Bollard</button>
+<button class="ans-btn" id="btn-66-3" onclick="toggleMulti(66,3)">D. Additional lighting</button>
+<button class="ans-btn" id="btn-66-4" onclick="toggleMulti(66,4)">E. Motion sensor</button>
+<button class="ans-btn" id="btn-66-5" onclick="toggleMulti(66,5)">F. Access control vestibule</button>
+</div>
+<button class="submit-btn" id="submit-66" style="display:none" onclick="submitMulti(66,[0, 5])">Submit Answer</button>
+<div id="result-66" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-66"></div>
+<div class="explanation">A biometric lock (something you are) and an access control vestibule (mantrap) together provide multi-factor physical access control. ACLs and motion sensors do not directly control door access.</div>
+</div>
+</div>
+<div class="card" id="card-67">
+<div class="card-header"><span class="qnum">Q68</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">C62</span><span class="badge-obj">Obj 3.1</span></div></div>
+<div class="qtext">A user receives 'The site's security certificate is not trusted' only on their computer, not others in the same office. What is the best next troubleshooting step?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-67-0" onclick="answerSingle(67,0,1)">A. Release and refresh the IP address</button>
+<button class="ans-btn" id="btn-67-1" onclick="answerSingle(67,1,1)">B. Check the date and time on the computer</button>
+<button class="ans-btn" id="btn-67-2" onclick="answerSingle(67,2,1)">C. Create a new certificate for the computer</button>
+<button class="ans-btn" id="btn-67-3" onclick="answerSingle(67,3,1)">D. Disable Windows Firewall for HTTPS</button>
+</div>
+<div id="result-67" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-67"></div>
+<div class="explanation">SSL/TLS certificates have validity periods. If the system clock is wrong, certificates appear expired or not yet valid. Since it only affects one computer, a local setting like the clock is the likely cause.</div>
+</div>
+</div>
+<div class="card" id="card-68">
+<div class="card-header"><span class="qnum">Q69</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">C31</span><span class="badge-obj">Obj 1.9</span></div></div>
+<div class="qtext">A Linux administrator is using grep while monitoring a database application. Which best describes this activity?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-68-0" onclick="answerSingle(68,0,2)">A. View the name of the working directory</button>
+<button class="ans-btn" id="btn-68-1" onclick="answerSingle(68,1,2)">B. View a list of running processes</button>
+<button class="ans-btn" id="btn-68-2" onclick="answerSingle(68,2,2)">C. Search through a file for specific text</button>
+<button class="ans-btn" id="btn-68-3" onclick="answerSingle(68,3,2)">D. Change the permissions of a file</button>
+</div>
+<div id="result-68" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-68"></div>
+<div class="explanation">grep searches through files or output for specific text patterns. ps or top lists processes, chmod changes permissions, pwd shows working directory.</div>
+</div>
+</div>
+<div class="card" id="card-69">
+<div class="card-header"><span class="qnum">Q70</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">A15</span><span class="badge-obj">Obj 2.6</span></div></div>
+<div class="qtext">A user wants to ensure mobile data is available if their phone is stolen. Which is best?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-69-0" onclick="answerSingle(69,0,0)">A. Remote backup</button>
+<button class="ans-btn" id="btn-69-1" onclick="answerSingle(69,1,0)">B. Remote wipe</button>
+<button class="ans-btn" id="btn-69-2" onclick="answerSingle(69,2,0)">C. Full device encryption</button>
+<button class="ans-btn" id="btn-69-3" onclick="answerSingle(69,3,0)">D. IoT isolation</button>
+</div>
+<div id="result-69" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-69"></div>
+<div class="explanation">Remote backup preserves data in the cloud so it can be restored to a new device. Encryption protects data on the stolen device but does not make it available elsewhere. Remote wipe deletes data.</div>
+</div>
+</div>
+<div class="card" id="card-70">
+<div class="card-header"><span class="qnum">Q71</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-obj">Obj 2.3</span></div></div>
+<div class="qtext">An attacker is watching a user type their PIN from nearby. What type of attack is this?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-70-0" onclick="answerSingle(70,0,1)">A. Spoofing</button>
+<button class="ans-btn" id="btn-70-1" onclick="answerSingle(70,1,1)">B. Shoulder surfing</button>
+<button class="ans-btn" id="btn-70-2" onclick="answerSingle(70,2,1)">C. Tailgating</button>
+<button class="ans-btn" id="btn-70-3" onclick="answerSingle(70,3,1)">D. DoS</button>
+</div>
+<div id="result-70" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-70"></div>
+<div class="explanation">Shoulder surfing is visually observing someone entering sensitive information such as a PIN or password. It is a low-tech but effective physical attack.</div>
+</div>
+</div>
+<div class="card" id="card-71">
+<div class="card-header"><span class="qnum">Q72</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">C17</span><span class="badge-obj">Obj 2.2</span></div></div>
+<div class="qtext">A user in the shipping department authenticates to a tracking service with a username and password, then receives a six-digit code via email to complete login. What is this?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-71-0" onclick="answerSingle(71,0,2)">A. SMS</button>
+<button class="ans-btn" id="btn-71-1" onclick="answerSingle(71,1,2)">B. SPF</button>
+<button class="ans-btn" id="btn-71-2" onclick="answerSingle(71,2,2)">C. OTP</button>
+<button class="ans-btn" id="btn-71-3" onclick="answerSingle(71,3,2)">D. ACL</button>
+</div>
+<div id="result-71" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-71"></div>
+<div class="explanation">An OTP (One-Time Password) sent via email is a second authentication factor. SPF is an email authentication standard, ACL controls access permissions, SMS refers to text messaging.</div>
+</div>
+</div>
+<div class="card" id="card-72">
+<div class="card-header"><span class="qnum">Q73</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-obj">Obj 3.1</span></div></div>
+<div class="qtext">A technician needs to troubleshoot a service that fails to start in Windows. Which tool should be used to manually start it?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-72-0" onclick="answerSingle(72,0,3)">A. diskmgmt.msc</button>
+<button class="ans-btn" id="btn-72-1" onclick="answerSingle(72,1,3)">B. devmgmt.msc</button>
+<button class="ans-btn" id="btn-72-2" onclick="answerSingle(72,2,3)">C. eventvwr.msc</button>
+<button class="ans-btn" id="btn-72-3" onclick="answerSingle(72,3,3)">D. services.msc</button>
+</div>
+<div id="result-72" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-72"></div>
+<div class="explanation">services.msc opens the Services management console where administrators can start, stop, restart, and configure Windows services. devmgmt manages devices, diskmgmt manages storage.</div>
+</div>
+</div>
+<div class="card" id="card-73">
+<div class="card-header"><span class="qnum">Q74</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">C81</span><span class="badge-obj">Obj 1.5</span></div></div>
+<div class="qtext">A network administrator has been asked to manage router configurations at all company locations remotely. Which tool is best?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-73-0" onclick="answerSingle(73,0,1)">A. VNC</button>
+<button class="ans-btn" id="btn-73-1" onclick="answerSingle(73,1,1)">B. SSH</button>
+<button class="ans-btn" id="btn-73-2" onclick="answerSingle(73,2,1)">C. RDP</button>
+<button class="ans-btn" id="btn-73-3" onclick="answerSingle(73,3,1)">D. NFC</button>
+</div>
+<div id="result-73" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-73"></div>
+<div class="explanation">SSH provides encrypted command-line access to routers and network devices. RDP is for Windows GUIs, VNC shares graphical desktops, NFC is short-range wireless.</div>
+</div>
+</div>
+<div class="card" id="card-74">
+<div class="card-header"><span class="qnum">Q75</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">C68</span><span class="badge-obj">Obj 4.9</span></div></div>
+<div class="qtext">A technician is moving hard drives from training computers to new computers. Which method allows reuse but prevents any data recovery?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-74-0" onclick="answerSingle(74,0,0)">A. Standard format</button>
+<button class="ans-btn" id="btn-74-1" onclick="answerSingle(74,1,0)">B. Shredder</button>
+<button class="ans-btn" id="btn-74-2" onclick="answerSingle(74,2,0)">C. Quick format</button>
+<button class="ans-btn" id="btn-74-3" onclick="answerSingle(74,3,0)">D. Drill</button>
+</div>
+<div id="result-74" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-74"></div>
+<div class="explanation">A standard (full) format overwrites all sectors on the drive, preventing data recovery while keeping the drive intact for reuse. A shredder or drill would destroy the drive completely.</div>
+</div>
+</div>
+<div class="card" id="card-75">
+<div class="card-header"><span class="qnum">Q76</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">A25</span><span class="badge-obj">Obj 1.2</span></div></div>
+<div class="qtext">A system administrator is installing a Windows Server device in the data center. Which of the following file systems would be the best choice for this task?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-75-0" onclick="answerSingle(75,0,3)">A. ext4</button>
+<button class="ans-btn" id="btn-75-1" onclick="answerSingle(75,1,3)">B. APFS</button>
+<button class="ans-btn" id="btn-75-2" onclick="answerSingle(75,2,3)">C. XFS</button>
+<button class="ans-btn" id="btn-75-3" onclick="answerSingle(75,3,3)">D. ReFS</button>
+</div>
+<div id="result-75" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-75"></div>
+<div class="explanation">ReFS (Resilient File System) is Microsoft's server-grade file system with enhanced fault tolerance and data integrity. APFS is macOS-only, ext4 and XFS are Linux file systems.</div>
+</div>
+</div>
+<div class="card" id="card-76">
+<div class="card-header"><span class="qnum">Q77</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">C27</span><span class="badge-obj">Obj 2.4</span></div></div>
+<div class="qtext">A user started their computer and received: 'Your important files are encrypted. Pay to decrypt.' No apps are accessible. What is this?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-76-0" onclick="answerSingle(76,0,0)">A. Ransomware</button>
+<button class="ans-btn" id="btn-76-1" onclick="answerSingle(76,1,0)">B. Rootkit</button>
+<button class="ans-btn" id="btn-76-2" onclick="answerSingle(76,2,0)">C. Spyware</button>
+<button class="ans-btn" id="btn-76-3" onclick="answerSingle(76,3,0)">D. Boot sector virus</button>
+</div>
+<div id="result-76" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-76"></div>
+<div class="explanation">Ransomware encrypts user files and demands payment for decryption. Spyware silently collects data, rootkits hide in the kernel, boot sector viruses infect the boot process.</div>
+</div>
+</div>
+<div class="card" id="card-77">
+<div class="card-header"><span class="qnum">Q78</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">B41</span><span class="badge-obj">Obj 1.6</span></div></div>
+<div class="qtext">A user would like to encrypt a small group of files in a shared folder without modifying other files on the drive. Which feature is best?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-77-0" onclick="answerSingle(77,0,1)">A. Hidden share</button>
+<button class="ans-btn" id="btn-77-1" onclick="answerSingle(77,1,1)">B. EFS</button>
+<button class="ans-btn" id="btn-77-2" onclick="answerSingle(77,2,1)">C. Save with Administrator rights</button>
+<button class="ans-btn" id="btn-77-3" onclick="answerSingle(77,3,1)">D. BitLocker</button>
+</div>
+<div id="result-77" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-77"></div>
+<div class="explanation">EFS (Encrypting File System) encrypts individual files and folders within NTFS without affecting other files. BitLocker encrypts the entire drive.</div>
+</div>
+</div>
+<div class="card" id="card-78">
+<div class="card-header"><span class="qnum">Q79</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">C47</span><span class="badge-obj">Obj 2.2</span></div></div>
+<div class="qtext">A network administrator modified all wireless access points from WPA2 to WPA3. What is the primary reason for this change?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-78-0" onclick="answerSingle(78,0,1)">A. Larger usable range</button>
+<button class="ans-btn" id="btn-78-1" onclick="answerSingle(78,1,1)">B. Stronger encryption</button>
+<button class="ans-btn" id="btn-78-2" onclick="answerSingle(78,2,1)">C. Additional frequency choices</button>
+<button class="ans-btn" id="btn-78-3" onclick="answerSingle(78,3,1)">D. Lower power consumption</button>
+</div>
+<div id="result-78" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-78"></div>
+<div class="explanation">WPA3 provides stronger encryption than WPA2, including individualized data encryption and protection against offline dictionary attacks via SAE (Simultaneous Authentication of Equals).</div>
+</div>
+</div>
+<div class="card" id="card-79">
+<div class="card-header"><span class="qnum">Q80</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">C66</span><span class="badge-obj">Obj 1.2</span></div></div>
+<div class="qtext">A technician is installing Windows on a drive that will be shared with a Linux system. Which file system provides the best cross-platform compatibility?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-79-0" onclick="answerSingle(79,0,1)">A. ext4</button>
+<button class="ans-btn" id="btn-79-1" onclick="answerSingle(79,1,1)">B. exFAT</button>
+<button class="ans-btn" id="btn-79-2" onclick="answerSingle(79,2,1)">C. APFS</button>
+<button class="ans-btn" id="btn-79-3" onclick="answerSingle(79,3,1)">D. NTFS</button>
+</div>
+<div id="result-79" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-79"></div>
+<div class="explanation">exFAT is cross-platform and supported natively by Windows, macOS, and Linux without size limitations. NTFS has limited Linux write support, ext4 is Linux-only, APFS is macOS-only.</div>
+</div>
+</div>
+<div class="card" id="card-80">
+<div class="card-header"><span class="qnum">Q81</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">C45</span><span class="badge-obj">Obj 2.2</span></div></div>
+<div class="qtext">A small company in a large shared building wants to prevent their wireless network from appearing in the list of available networks. Which setting achieves this?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-80-0" onclick="answerSingle(80,0,2)">A. WPA3 encryption</button>
+<button class="ans-btn" id="btn-80-1" onclick="answerSingle(80,1,2)">B. MAC filtering</button>
+<button class="ans-btn" id="btn-80-2" onclick="answerSingle(80,2,2)">C. SSID suppression</button>
+<button class="ans-btn" id="btn-80-3" onclick="answerSingle(80,3,2)">D. Static IP addressing</button>
+</div>
+<div id="result-80" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-80"></div>
+<div class="explanation">SSID suppression hides the network name from broadcast, so it does not appear in available networks lists. It does not provide strong security but reduces casual discovery.</div>
+</div>
+</div>
+<div class="card" id="card-81">
+<div class="card-header"><span class="qnum">Q82</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">A79</span><span class="badge-obj">Obj 1.5</span></div></div>
+<div class="qtext">A company vice president's laptop interrupts meetings with notifications from the browser, PDF reader, Microsoft Store, and other applications. What is the best solution?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-81-0" onclick="answerSingle(81,0,2)">A. Run presentation software as Administrator</button>
+<button class="ans-btn" id="btn-81-1" onclick="answerSingle(81,1,2)">B. Enable Airplane mode while presenting</button>
+<button class="ans-btn" id="btn-81-2" onclick="answerSingle(81,2,2)">C. Disable notifications while specific applications are running</button>
+<button class="ans-btn" id="btn-81-3" onclick="answerSingle(81,3,2)">D. Use a different laptop for presentations</button>
+</div>
+<div id="result-81" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-81"></div>
+<div class="explanation">Windows Focus Assist or per-app notification settings allow disabling notifications during specific applications like presentation software, without disconnecting from the network or changing hardware.</div>
+</div>
+</div>
+<div class="card" id="card-82">
+<div class="card-header"><span class="qnum">Q83</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">B45</span><span class="badge-obj">Obj 2.2</span></div></div>
+<div class="qtext">Employees have direct network access from desktops but must authenticate through a VPN from wireless or conference rooms. What policy is this?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-82-0" onclick="answerSingle(82,0,1)">A. Least privilege</button>
+<button class="ans-btn" id="btn-82-1" onclick="answerSingle(82,1,1)">B. Zero trust</button>
+<button class="ans-btn" id="btn-82-2" onclick="answerSingle(82,2,1)">C. Multifactor authentication</button>
+<button class="ans-btn" id="btn-82-3" onclick="answerSingle(82,3,1)">D. Group Policy</button>
+</div>
+<div id="result-82" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-82"></div>
+<div class="explanation">Zero trust requires verification of every access request regardless of location — trusted users on wireless must still authenticate through VPN, treating all networks as untrusted.</div>
+</div>
+</div>
+<div class="card" id="card-83">
+<div class="card-header"><span class="qnum">Q84</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">A31</span><span class="badge-obj">Obj 1.9</span></div></div>
+<div class="qtext">A Linux administrator needs to modify the configuration text file for a service. Which utility provides this functionality?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-83-0" onclick="answerSingle(83,0,3)">A. sudo</button>
+<button class="ans-btn" id="btn-83-1" onclick="answerSingle(83,1,3)">B. df</button>
+<button class="ans-btn" id="btn-83-2" onclick="answerSingle(83,2,3)">C. chmod</button>
+<button class="ans-btn" id="btn-83-3" onclick="answerSingle(83,3,3)">D. nano</button>
+</div>
+<div id="result-83" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-83"></div>
+<div class="explanation">nano is a terminal-based text editor used to edit configuration files. chmod changes permissions, df shows disk usage, sudo elevates privileges.</div>
+</div>
+</div>
+<div class="card" id="card-84">
+<div class="card-header"><span class="qnum">Q85</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">A41</span><span class="badge-obj">Obj 1.2</span></div></div>
+<div class="qtext">A system administrator is configuring a server to use eight bootable partitions on a single SSD. Which partition style supports this?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-84-0" onclick="answerSingle(84,0,1)">A. NTFS</button>
+<button class="ans-btn" id="btn-84-1" onclick="answerSingle(84,1,1)">B. GPT</button>
+<button class="ans-btn" id="btn-84-2" onclick="answerSingle(84,2,1)">C. MBR</button>
+<button class="ans-btn" id="btn-84-3" onclick="answerSingle(84,3,1)">D. diskpart</button>
+</div>
+<div id="result-84" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-84"></div>
+<div class="explanation">GPT (GUID Partition Table) supports up to 128 partitions and drives larger than 2 TB. MBR is limited to 4 primary partitions and a maximum of 2 TB.</div>
+</div>
+</div>
+<div class="card" id="card-85">
+<div class="card-header"><span class="qnum">Q86</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">B35</span><span class="badge-obj">Obj 2.2</span></div></div>
+<div class="qtext">A system administrator has inadvertently installed a Trojan that deleted files across many file shares. Which action would limit the scope of future exploits?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-85-0" onclick="answerSingle(85,0,1)">A. Configure full disk encryption</button>
+<button class="ans-btn" id="btn-85-1" onclick="answerSingle(85,1,1)">B. Modify the default permissions (least privilege)</button>
+<button class="ans-btn" id="btn-85-2" onclick="answerSingle(85,2,1)">C. Disable all guest accounts</button>
+<button class="ans-btn" id="btn-85-3" onclick="answerSingle(85,3,1)">D. Require MFA</button>
+</div>
+<div id="result-85" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-85"></div>
+<div class="explanation">Applying least privilege limits what any account or process can access, so a Trojan running under a restricted account can only damage files that account can reach.</div>
+</div>
+</div>
+<div class="card" id="card-86">
+<div class="card-header"><span class="qnum">Q87</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">A26</span><span class="badge-obj">Obj 2.4</span></div></div>
+<div class="qtext">A security technician identified malware running in the OS kernel that traditional antivirus could not detect. What type of malware is this?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-86-0" onclick="answerSingle(86,0,1)">A. Cryptominer</button>
+<button class="ans-btn" id="btn-86-1" onclick="answerSingle(86,1,1)">B. Rootkit</button>
+<button class="ans-btn" id="btn-86-2" onclick="answerSingle(86,2,1)">C. Botnet</button>
+<button class="ans-btn" id="btn-86-3" onclick="answerSingle(86,3,1)">D. Worm</button>
+</div>
+<div id="result-86" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-86"></div>
+<div class="explanation">Rootkits operate at the kernel level, allowing them to hide from the OS and antivirus tools. Worms self-replicate across networks, botnets are networks of infected machines, cryptominers steal compute resources.</div>
+</div>
+</div>
+<div class="card" id="card-87">
+<div class="card-header"><span class="qnum">Q88</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">C87</span><span class="badge-obj">Obj 3.1</span></div></div>
+<div class="qtext">A technician just installed a new device driver and restarted a Windows laptop, but the system shows a Stop Error before the login screen. What is the best resolution?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-87-0" onclick="answerSingle(87,0,3)">A. Reinstall Windows from original media</button>
+<button class="ans-btn" id="btn-87-1" onclick="answerSingle(87,1,3)">B. Replace the system memory</button>
+<button class="ans-btn" id="btn-87-2" onclick="answerSingle(87,2,3)">C. Perform a full backup</button>
+<button class="ans-btn" id="btn-87-3" onclick="answerSingle(87,3,3)">D. Start in Safe Mode</button>
+</div>
+<div id="result-87" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-87"></div>
+<div class="explanation">Safe Mode loads only essential drivers, allowing the technician to roll back or uninstall the problematic driver without triggering the Stop Error. Reinstalling Windows is a last resort.</div>
+</div>
+</div>
+<div class="card" id="card-88">
+<div class="card-header"><span class="qnum">Q89</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">A61</span><span class="badge-obj">Obj 3.1</span></div></div>
+<div class="qtext">A user receives 'Missing Operating System' at startup. A connected USB flash drive was found to be causing the issue. What prevents this in the future?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-88-0" onclick="answerSingle(88,0,2)">A. Install the latest OS patches</button>
+<button class="ans-btn" id="btn-88-1" onclick="answerSingle(88,1,2)">B. Create a login script</button>
+<button class="ans-btn" id="btn-88-2" onclick="answerSingle(88,2,2)">C. Modify the BIOS boot order</button>
+<button class="ans-btn" id="btn-88-3" onclick="answerSingle(88,3,2)">D. Run SFC</button>
+</div>
+<div id="result-88" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-88"></div>
+<div class="explanation">Modifying the BIOS boot order to prioritize the internal drive over USB prevents the system from attempting to boot from an inserted USB drive.</div>
+</div>
+</div>
+<div class="card" id="card-89">
+<div class="card-header"><span class="qnum">Q90</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">A46</span><span class="badge-obj">Obj 1.8</span></div></div>
+<div class="qtext">A user installed personal tax software on a company computer and it was automatically removed. What is the most likely reason?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-89-0" onclick="answerSingle(89,0,2)">A. The company per-seat licenses are all in use</button>
+<button class="ans-btn" id="btn-89-1" onclick="answerSingle(89,1,2)">B. The software requires a USB key for DRM</button>
+<button class="ans-btn" id="btn-89-2" onclick="answerSingle(89,2,2)">C. The user installed a personal license</button>
+<button class="ans-btn" id="btn-89-3" onclick="answerSingle(89,3,2)">D. The software uses an open-source license</button>
+</div>
+<div id="result-89" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-89"></div>
+<div class="explanation">Personal licenses are restricted to personal devices. Corporate environments typically use software management tools that detect and remove personally licensed software.</div>
+</div>
+</div>
+<div class="card" id="card-90">
+<div class="card-header"><span class="qnum">Q91</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">C57</span><span class="badge-obj">Obj 1.8</span></div></div>
+<div class="qtext">A company deploys a suite of commercial software onto every workstation in the organization. Which licensing type best describes this?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-90-0" onclick="answerSingle(90,0,3)">A. Personal licenses</button>
+<button class="ans-btn" id="btn-90-1" onclick="answerSingle(90,1,3)">B. Open-source license</button>
+<button class="ans-btn" id="btn-90-2" onclick="answerSingle(90,2,3)">C. End user licensing agreement</button>
+<button class="ans-btn" id="btn-90-3" onclick="answerSingle(90,3,3)">D. Corporate license</button>
+</div>
+<div id="result-90" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-90"></div>
+<div class="explanation">A corporate (volume) license covers multiple installations across an organization under a single agreement. Personal licenses are for individual use only.</div>
+</div>
+</div>
+<div class="card" id="card-91">
+<div class="card-header"><span class="qnum">Q92</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-obj">Obj 1.2</span></div></div>
+<div class="qtext">Which partitioning scheme is required for Windows to boot from a disk larger than 2.2 TB?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-91-0" onclick="answerSingle(91,0,1)">A. MBR</button>
+<button class="ans-btn" id="btn-91-1" onclick="answerSingle(91,1,1)">B. GPT</button>
+<button class="ans-btn" id="btn-91-2" onclick="answerSingle(91,2,1)">C. FAT32</button>
+<button class="ans-btn" id="btn-91-3" onclick="answerSingle(91,3,1)">D. NTFS</button>
+</div>
+<div id="result-91" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-91"></div>
+<div class="explanation">GPT is the modern partition standard required for drives larger than 2 TB and systems using UEFI firmware. MBR is the legacy standard with a 2 TB maximum.</div>
+</div>
+</div>
+<div class="card" id="card-92">
+<div class="card-header"><span class="qnum">Q93</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">C55</span><span class="badge-obj">Obj 4.2</span></div></div>
+<div class="qtext">A company was completely destroyed by flooding, including all systems and backups at the data center. Which is the best way to avoid this loss in the future?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-92-0" onclick="answerSingle(92,0,1)">A. Battery backup</button>
+<button class="ans-btn" id="btn-92-1" onclick="answerSingle(92,1,1)">B. Cloud storage</button>
+<button class="ans-btn" id="btn-92-2" onclick="answerSingle(92,2,1)">C. Image-level backups</button>
+<button class="ans-btn" id="btn-92-3" onclick="answerSingle(92,3,1)">D. RADIUS administration servers</button>
+</div>
+<div id="result-92" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-92"></div>
+<div class="explanation">Cloud storage stores data off-site in geographically separate locations, protecting against total on-site destruction from natural disasters like flooding.</div>
+</div>
+</div>
+<div class="card" id="card-93">
+<div class="card-header"><span class="qnum">Q94</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">A56</span><span class="badge-obj">Obj 4.9</span></div></div>
+<div class="qtext">A healthcare company is disposing of computers. The security administrator wants to guarantee no data on the hard drives can be recovered. Which method meets this requirement?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-93-0" onclick="answerSingle(93,0,0)">A. Shred the drives</button>
+<button class="ans-btn" id="btn-93-1" onclick="answerSingle(93,1,0)">B. Remove all user folders</button>
+<button class="ans-btn" id="btn-93-2" onclick="answerSingle(93,2,0)">C. Quick format</button>
+<button class="ans-btn" id="btn-93-3" onclick="answerSingle(93,3,0)">D. Reinstall the OS</button>
+</div>
+<div id="result-93" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-93"></div>
+<div class="explanation">Physical shredding destroys the drive platters, making data recovery impossible. Quick format, OS reinstall, and deleting user folders all leave data recoverable with forensic tools.</div>
+</div>
+</div>
+<div class="card" id="card-94">
+<div class="card-header"><span class="qnum">Q95</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">A69</span><span class="badge-obj">Obj 4.4</span></div></div>
+<div class="qtext">A desktop administrator is upgrading a video adapter in a workstation. Which item should be used during this process?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-94-0" onclick="answerSingle(94,0,1)">A. Safety goggles</button>
+<button class="ans-btn" id="btn-94-1" onclick="answerSingle(94,1,1)">B. Anti-static strap</button>
+<button class="ans-btn" id="btn-94-2" onclick="answerSingle(94,2,1)">C. Toner vacuum</button>
+<button class="ans-btn" id="btn-94-3" onclick="answerSingle(94,3,1)">D. Tone generator</button>
+</div>
+<div id="result-94" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-94"></div>
+<div class="explanation">An anti-static (ESD) strap grounds the technician to prevent electrostatic discharge from damaging sensitive electronic components like video cards.</div>
+</div>
+</div>
+<div class="card" id="card-95">
+<div class="card-header"><span class="qnum">Q96</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">A14</span><span class="badge-obj">Obj 4.5</span></div></div>
+<div class="qtext">A company maintains data retention of five years for all customer names, addresses, and phone numbers. What best describes this data?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-95-0" onclick="answerSingle(95,0,2)">A. Government-issued information</button>
+<button class="ans-btn" id="btn-95-1" onclick="answerSingle(95,1,2)">B. Credit card transactions</button>
+<button class="ans-btn" id="btn-95-2" onclick="answerSingle(95,2,2)">C. PII</button>
+<button class="ans-btn" id="btn-95-3" onclick="answerSingle(95,3,2)">D. Healthcare data</button>
+</div>
+<div id="result-95" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-95"></div>
+<div class="explanation">PII (Personally Identifiable Information) includes names, addresses, and phone numbers that can identify an individual. PCI applies to credit card data, PHI to medical data.</div>
+</div>
+</div>
+<div class="card" id="card-96">
+<div class="card-header"><span class="qnum">Q97</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">A57</span><span class="badge-obj">Obj 4.6</span></div></div>
+<div class="qtext">A technician completed an urgent laptop screen repair in under 24 hours and the user immediately left on a business trip. What is the best next step?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-96-0" onclick="answerSingle(96,0,3)">A. Order a backup replacement display</button>
+<button class="ans-btn" id="btn-96-1" onclick="answerSingle(96,1,3)">B. Run diagnostics on the original screen</button>
+<button class="ans-btn" id="btn-96-2" onclick="answerSingle(96,2,3)">C. Update the user's login script</button>
+<button class="ans-btn" id="btn-96-3" onclick="answerSingle(96,3,3)">D. Contact the user to verify satisfaction</button>
+</div>
+<div id="result-96" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-96"></div>
+<div class="explanation">Verifying satisfaction closes the support ticket properly and ensures the repair met the user's needs. This is a best practice in professional IT support and part of the ticketing lifecycle.</div>
+</div>
+</div>
+<div class="card" id="card-97">
+<div class="card-header"><span class="qnum">Q98</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">A85</span><span class="badge-obj">Obj 1.9</span></div></div>
+<div class="qtext">A Linux administrator has been asked to upgrade web server software. Which command provides the appropriate rights for this upgrade?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-97-0" onclick="answerSingle(97,0,3)">A. chmod</button>
+<button class="ans-btn" id="btn-97-1" onclick="answerSingle(97,1,3)">B. apt</button>
+<button class="ans-btn" id="btn-97-2" onclick="answerSingle(97,2,3)">C. dig</button>
+<button class="ans-btn" id="btn-97-3" onclick="answerSingle(97,3,3)">D. sudo</button>
+</div>
+<div id="result-97" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-97"></div>
+<div class="explanation">sudo allows a user to run a command with root-level privileges without fully switching to the root account. apt installs packages, chmod changes permissions, dig queries DNS.</div>
+</div>
+</div>
+<div class="card" id="card-98">
+<div class="card-header"><span class="qnum">Q99</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-obj">Obj 1.6</span></div></div>
+<div class="qtext">A technician needs to verify the results of Group Policy applied to a specific user. Which command should be used?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-98-0" onclick="answerSingle(98,0,0)">A. gpresult</button>
+<button class="ans-btn" id="btn-98-1" onclick="answerSingle(98,1,0)">B. gpupdate</button>
+<button class="ans-btn" id="btn-98-2" onclick="answerSingle(98,2,0)">C. net user</button>
+<button class="ans-btn" id="btn-98-3" onclick="answerSingle(98,3,0)">D. tasklist</button>
+</div>
+<div id="result-98" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-98"></div>
+<div class="explanation">gpresult displays the Group Policy settings currently applied to a user or computer. gpupdate forces a refresh but does not display results.</div>
+</div>
+</div>
+<div class="card" id="card-99">
+<div class="card-header"><span class="qnum">Q100</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">A64</span><span class="badge-obj">Obj 1.5</span></div></div>
+<div class="qtext">A malware infection was removed from a computer. Windows now shows errors about missing core OS files during startup. Which command restores them?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-99-0" onclick="answerSingle(99,0,3)">A. winver</button>
+<button class="ans-btn" id="btn-99-1" onclick="answerSingle(99,1,3)">B. diskpart</button>
+<button class="ans-btn" id="btn-99-2" onclick="answerSingle(99,2,3)">C. gpupdate</button>
+<button class="ans-btn" id="btn-99-3" onclick="answerSingle(99,3,3)">D. sfc</button>
+</div>
+<div id="result-99" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-99"></div>
+<div class="explanation">SFC (System File Checker) scans and restores missing or corrupted Windows system files. diskpart manages partitions, gpupdate refreshes Group Policy, winver shows OS version.</div>
+</div>
+</div>
+<div class="card" id="card-100">
+<div class="card-header"><span class="qnum">Q101</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">C46</span><span class="badge-obj">Obj 1.1</span></div></div>
+<div class="qtext">A manager wants to upgrade to Windows 11 but does not want to lose any installed applications or data. Which installation method is best?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-100-0" onclick="answerSingle(100,0,2)">A. Remote network installation</button>
+<button class="ans-btn" id="btn-100-1" onclick="answerSingle(100,1,2)">B. Image deployment</button>
+<button class="ans-btn" id="btn-100-2" onclick="answerSingle(100,2,2)">C. In-place upgrade</button>
+<button class="ans-btn" id="btn-100-3" onclick="answerSingle(100,3,2)">D. Clean install</button>
+</div>
+<div id="result-100" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-100"></div>
+<div class="explanation">In-place upgrade preserves all existing applications, files, and settings while upgrading the OS version. A clean install would wipe everything.</div>
+</div>
+</div>
+<div class="card" id="card-101">
+<div class="card-header"><span class="qnum">Q102</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-obj">Obj 2.3</span></div></div>
+<div class="qtext">An attacker is impersonating a device by matching its MAC address or IP address. What type of attack is this?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-101-0" onclick="answerSingle(101,0,1)">A. Tailgating</button>
+<button class="ans-btn" id="btn-101-1" onclick="answerSingle(101,1,1)">B. Spoofing</button>
+<button class="ans-btn" id="btn-101-2" onclick="answerSingle(101,2,1)">C. DoS</button>
+<button class="ans-btn" id="btn-101-3" onclick="answerSingle(101,3,1)">D. Shoulder surfing</button>
+</div>
+<div id="result-101" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-101"></div>
+<div class="explanation">Spoofing involves falsifying an identity — in this case, cloning a MAC or IP address to impersonate a legitimate device on the network.</div>
+</div>
+</div>
+<div class="card" id="card-102">
+<div class="card-header"><span class="qnum">Q103</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-obj">Obj 3.1</span></div></div>
+<div class="qtext">Which of the following is a common symptom of a failing GPU?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-102-0" onclick="answerSingle(102,0,3)">A. Keyboard keys not responding</button>
+<button class="ans-btn" id="btn-102-1" onclick="answerSingle(102,1,3)">B. High-pitched noise from speakers</button>
+<button class="ans-btn" id="btn-102-2" onclick="answerSingle(102,2,3)">C. Slow hard drive access</button>
+<button class="ans-btn" id="btn-102-3" onclick="answerSingle(102,3,3)">D. Artifacts or strange patterns on the screen</button>
+</div>
+<div id="result-102" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-102"></div>
+<div class="explanation">Graphical artifacts — random pixels, distorted images, or strange patterns — are the classic symptom of a failing GPU. They indicate the graphics processor is malfunctioning during rendering.</div>
+</div>
+</div>
+<div class="card" id="card-103">
+<div class="card-header"><span class="qnum">Q104</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">A78</span><span class="badge-obj">Obj 1.5</span></div></div>
+<div class="qtext">A system administrator is adding an additional drive to a server and extending an existing volume. Which utility provides a graphical summary?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-103-0" onclick="answerSingle(103,0,3)">A. Task Scheduler</button>
+<button class="ans-btn" id="btn-103-1" onclick="answerSingle(103,1,3)">B. Performance Monitor</button>
+<button class="ans-btn" id="btn-103-2" onclick="answerSingle(103,2,3)">C. Event Viewer</button>
+<button class="ans-btn" id="btn-103-3" onclick="answerSingle(103,3,3)">D. Disk Management</button>
+</div>
+<div id="result-103" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-103"></div>
+<div class="explanation">Disk Management provides a graphical view of all drives and volumes and allows extending existing volumes. The others do not show storage configuration graphically.</div>
+</div>
+</div>
+<div class="card" id="card-104">
+<div class="card-header"><span class="qnum">Q105</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">A38</span><span class="badge-obj">Obj 4.4</span></div></div>
+<div class="qtext">A server administrator is replacing memory in a database server. Which step should be completed first?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-104-0" onclick="answerSingle(104,0,2)">A. Remove the existing memory modules</button>
+<button class="ans-btn" id="btn-104-1" onclick="answerSingle(104,1,2)">B. Connect an ESD strap</button>
+<button class="ans-btn" id="btn-104-2" onclick="answerSingle(104,2,2)">C. Disconnect all power sources</button>
+<button class="ans-btn" id="btn-104-3" onclick="answerSingle(104,3,2)">D. Wear an air filter mask</button>
+</div>
+<div id="result-104" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-104"></div>
+<div class="explanation">Disconnecting all power sources is always the first step before working on internal components. ESD protection is the second step. Working on powered equipment creates shock and damage risks.</div>
+</div>
+</div>
+<div class="card" id="card-105">
+<div class="card-header"><span class="qnum">Q106</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">C23</span><span class="badge-obj">Obj 3.1</span></div></div>
+<div class="qtext">A Windows computer has one application that crashes randomly. Other applications and the OS run normally. What is the best solution?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-105-0" onclick="answerSingle(105,0,1)">A. Reload the Active Directory profile</button>
+<button class="ans-btn" id="btn-105-1" onclick="answerSingle(105,1,1)">B. Uninstall and reinstall the application</button>
+<button class="ans-btn" id="btn-105-2" onclick="answerSingle(105,2,1)">C. Perform a full backup</button>
+<button class="ans-btn" id="btn-105-3" onclick="answerSingle(105,3,1)">D. Defragment the hard drive</button>
+</div>
+<div id="result-105" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-105"></div>
+<div class="explanation">When only a single application crashes while everything else works normally, the application files are likely corrupted. Uninstalling and reinstalling replaces all application files cleanly.</div>
+</div>
+</div>
+<div class="card" id="card-106">
+<div class="card-header"><span class="qnum">Q107</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">A59</span><span class="badge-obj">Obj 1.5</span></div></div>
+<div class="qtext">A network administrator needs to manage a switch and a firewall in the local data center via command line. Which tool is best?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-106-0" onclick="answerSingle(106,0,2)">A. VPN</button>
+<button class="ans-btn" id="btn-106-1" onclick="answerSingle(106,1,2)">B. RDP</button>
+<button class="ans-btn" id="btn-106-2" onclick="answerSingle(106,2,2)">C. SSH</button>
+<button class="ans-btn" id="btn-106-3" onclick="answerSingle(106,3,2)">D. VNC</button>
+</div>
+<div id="result-106" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-106"></div>
+<div class="explanation">SSH (Secure Shell) provides encrypted command-line access to network devices. RDP is GUI-based for Windows desktops, VNC shares a desktop graphically, VPN is a secure tunnel.</div>
+</div>
+</div>
+<div class="card" id="card-107">
+<div class="card-header"><span class="qnum">Q108</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">B31</span><span class="badge-obj">Obj 4.9</span></div></div>
+<div class="qtext">A manufacturing company is donating older computers to charity. Which method allows the drives to be reused but prevents data recovery?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-107-0" onclick="answerSingle(107,0,3)">A. Shredder</button>
+<button class="ans-btn" id="btn-107-1" onclick="answerSingle(107,1,3)">B. Degaussing</button>
+<button class="ans-btn" id="btn-107-2" onclick="answerSingle(107,2,3)">C. Quick format</button>
+<button class="ans-btn" id="btn-107-3" onclick="answerSingle(107,3,3)">D. Regular format</button>
+</div>
+<div id="result-107" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-107"></div>
+<div class="explanation">A regular (full) format overwrites all sectors, making data recovery extremely difficult while keeping the drive functional for reuse. Degaussing destroys the drive. Quick format only removes the file table.</div>
+</div>
+</div>
+<div class="card" id="card-108">
+<div class="card-header"><span class="qnum">Q109</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">A47</span><span class="badge-obj">Obj 1.1</span></div></div>
+<div class="qtext">A system administrator is upgrading four workstations from Windows 8.1 to Windows 11. No documents or settings need to be retained. Which installation method is best?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-108-0" onclick="answerSingle(108,0,0)">A. Clean install</button>
+<button class="ans-btn" id="btn-108-1" onclick="answerSingle(108,1,0)">B. In-place upgrade</button>
+<button class="ans-btn" id="btn-108-2" onclick="answerSingle(108,2,0)">C. Factory reset</button>
+<button class="ans-btn" id="btn-108-3" onclick="answerSingle(108,3,0)">D. Repair installation</button>
+</div>
+<div id="result-108" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-108"></div>
+<div class="explanation">A clean install wipes the existing OS entirely, which is ideal when no local data or settings need to be preserved. In-place upgrade retains apps and settings.</div>
+</div>
+</div>
+<div class="card" id="card-109">
+<div class="card-header"><span class="qnum">Q110</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">C89</span><span class="badge-obj">Obj 4.2</span></div></div>
+<div class="qtext">A company configured a server for daily backups, with a full backup created each Sunday based on previous incremental backups. Which backup strategy is this?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-109-0" onclick="answerSingle(109,0,3)">A. Differential</button>
+<button class="ans-btn" id="btn-109-1" onclick="answerSingle(109,1,3)">B. GFS</button>
+<button class="ans-btn" id="btn-109-2" onclick="answerSingle(109,2,3)">C. 3-2-1</button>
+<button class="ans-btn" id="btn-109-3" onclick="answerSingle(109,3,3)">D. Synthetic</button>
+</div>
+<div id="result-109" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-109"></div>
+<div class="explanation">A synthetic full backup is created by combining the last full backup with subsequent incremental backups, without reading all data from the source — exactly as described.</div>
+</div>
+</div>
+<div class="card" id="card-110">
+<div class="card-header"><span class="qnum">Q111</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-obj">Obj 3.1</span></div></div>
+<div class="qtext">A technician is troubleshooting 'Limited or No Connectivity' on a Windows workstation. What is the first command to check IP configuration?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-110-0" onclick="answerSingle(110,0,1)">A. netstat</button>
+<button class="ans-btn" id="btn-110-1" onclick="answerSingle(110,1,1)">B. ipconfig</button>
+<button class="ans-btn" id="btn-110-2" onclick="answerSingle(110,2,1)">C. ping</button>
+<button class="ans-btn" id="btn-110-3" onclick="answerSingle(110,3,1)">D. nslookup</button>
+</div>
+<div id="result-110" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-110"></div>
+<div class="explanation">ipconfig displays the current IP address, subnet mask, and gateway — the first information needed to diagnose network connectivity issues. ping tests reachability, nslookup queries DNS.</div>
+</div>
+</div>
+<div class="card" id="card-111">
+<div class="card-header"><span class="qnum">Q112</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">C86</span><span class="badge-obj">Obj 1.9</span></div></div>
+<div class="qtext">A technician needs to view real-time CPU and memory utilization for each process on a Linux server. Which command provides this?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-111-0" onclick="answerSingle(111,0,2)">A. cat</button>
+<button class="ans-btn" id="btn-111-1" onclick="answerSingle(111,1,2)">B. dig</button>
+<button class="ans-btn" id="btn-111-2" onclick="answerSingle(111,2,2)">C. top</button>
+<button class="ans-btn" id="btn-111-3" onclick="answerSingle(111,3,2)">D. df</button>
+</div>
+<div id="result-111" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-111"></div>
+<div class="explanation">top displays a real-time, continuously updating view of system processes and resource usage. df shows disk space, dig queries DNS, cat outputs file contents.</div>
+</div>
+</div>
+<div class="card" id="card-112">
+<div class="card-header"><span class="qnum">Q113</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">B61</span><span class="badge-obj">Obj 2.1</span></div></div>
+<div class="qtext">A data center manager is installing a new access door requiring multi-factor authentication. Which TWO factors should be used? (Choose TWO)</div>
+<div class="answers">
+<button class="ans-btn" id="btn-112-0" onclick="toggleMulti(112,0)">A. Cabinet locks</button>
+<button class="ans-btn" id="btn-112-1" onclick="toggleMulti(112,1)">B. Key fobs</button>
+<button class="ans-btn" id="btn-112-2" onclick="toggleMulti(112,2)">C. Privacy filter</button>
+<button class="ans-btn" id="btn-112-3" onclick="toggleMulti(112,3)">D. Palmprint scanner</button>
+<button class="ans-btn" id="btn-112-4" onclick="toggleMulti(112,4)">E. USB lock</button>
+<button class="ans-btn" id="btn-112-5" onclick="toggleMulti(112,5)">F. Cable lock</button>
+</div>
+<button class="submit-btn" id="submit-112" style="display:none" onclick="submitMulti(112,[1, 3])">Submit Answer</button>
+<div id="result-112" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-112"></div>
+<div class="explanation">Key fobs (something you have) and palmprint scanners (something you are/biometric) together create true multi-factor authentication. Cabinet locks, privacy filters, USB locks, and cable locks are not authentication factors.</div>
+</div>
+</div>
+<div class="card" id="card-113">
+<div class="card-header"><span class="qnum">Q114</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">B75</span><span class="badge-obj">Obj 4.5</span></div></div>
+<div class="qtext">A manufacturing company in the United States sells monthly subscriptions from their website. Which regulated data type is MOST important to manage?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-113-0" onclick="answerSingle(113,0,3)">A. Personal government-issued information</button>
+<button class="ans-btn" id="btn-113-1" onclick="answerSingle(113,1,3)">B. Software license terms</button>
+<button class="ans-btn" id="btn-113-2" onclick="answerSingle(113,2,3)">C. Healthcare data</button>
+<button class="ans-btn" id="btn-113-3" onclick="answerSingle(113,3,3)">D. Credit card transactions</button>
+</div>
+<div id="result-113" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-113"></div>
+<div class="explanation">Credit card transaction data is regulated by PCI DSS (Payment Card Industry Data Security Standard). Any company processing payments must comply with PCI DSS requirements.</div>
+</div>
+</div>
+<div class="card" id="card-114">
+<div class="card-header"><span class="qnum">Q115</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">A90</span><span class="badge-obj">Obj 2.3</span></div></div>
+<div class="qtext">A company discovered a data breach introduced through a vulnerability in a software upgrade distributed by a trusted vendor. What attack type is this?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-114-0" onclick="answerSingle(114,0,2)">A. Insider threat</button>
+<button class="ans-btn" id="btn-114-1" onclick="answerSingle(114,1,2)">B. Business email compromise</button>
+<button class="ans-btn" id="btn-114-2" onclick="answerSingle(114,2,2)">C. Supply chain attack</button>
+<button class="ans-btn" id="btn-114-3" onclick="answerSingle(114,3,2)">D. On-path attack</button>
+</div>
+<div id="result-114" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-114"></div>
+<div class="explanation">A supply chain attack compromises software or hardware at the source before it reaches the end customer. The attacker embeds malicious code in a legitimate vendor update.</div>
+</div>
+</div>
+<div class="card" id="card-115">
+<div class="card-header"><span class="qnum">Q116</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-obj">Obj 5.1</span></div></div>
+<div class="qtext">What is the first step in the CompTIA troubleshooting methodology?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-115-0" onclick="answerSingle(115,0,0)">A. Identify the problem</button>
+<button class="ans-btn" id="btn-115-1" onclick="answerSingle(115,1,0)">B. Document findings, actions, and outcomes</button>
+<button class="ans-btn" id="btn-115-2" onclick="answerSingle(115,2,0)">C. Test the theory to determine the cause</button>
+<button class="ans-btn" id="btn-115-3" onclick="answerSingle(115,3,0)">D. Establish a theory of probable cause</button>
+</div>
+<div id="result-115" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-115"></div>
+<div class="explanation">The CompTIA 6-step troubleshooting methodology begins with identifying the problem — gathering information, asking questions, and defining the issue before forming any theories.</div>
+</div>
+</div>
+<div class="card" id="card-116">
+<div class="card-header"><span class="qnum">Q117</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">B68</span><span class="badge-obj">Obj 4.6</span></div></div>
+<div class="qtext">A user dropped off a laptop with a note reading 'Doesn't work.' What is the best next step?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-116-0" onclick="answerSingle(116,0,1)">A. Start the laptop and look for issues</button>
+<button class="ans-btn" id="btn-116-1" onclick="answerSingle(116,1,1)">B. Call the customer and ask for more information</button>
+<button class="ans-btn" id="btn-116-2" onclick="answerSingle(116,2,1)">C. Replace the power adapter and try booting</button>
+<button class="ans-btn" id="btn-116-3" onclick="answerSingle(116,3,1)">D. Use a diagnostics boot CD to run hardware tests</button>
+</div>
+<div id="result-116" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-116"></div>
+<div class="explanation">Gathering more information from the customer is always the first step when the problem description is insufficient. Attempting repairs without understanding the issue wastes time and may cause additional damage.</div>
+</div>
+</div>
+<div class="card" id="card-117">
+<div class="card-header"><span class="qnum">Q118</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">B60</span><span class="badge-obj">Obj 1.9</span></div></div>
+<div class="qtext">A macOS user needs to protect all data on their laptop if it is stolen or lost. Which feature is best?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-117-0" onclick="answerSingle(117,0,1)">A. Mission Control</button>
+<button class="ans-btn" id="btn-117-1" onclick="answerSingle(117,1,1)">B. FileVault</button>
+<button class="ans-btn" id="btn-117-2" onclick="answerSingle(117,2,1)">C. Keychain</button>
+<button class="ans-btn" id="btn-117-3" onclick="answerSingle(117,3,1)">D. Spaces</button>
+</div>
+<div id="result-117" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-117"></div>
+<div class="explanation">FileVault provides full disk encryption on macOS, making data unreadable without authentication. Keychain stores passwords, Spaces manages virtual desktops, Mission Control organizes windows.</div>
+</div>
+</div>
+<div class="card" id="card-118">
+<div class="card-header"><span class="qnum">Q119</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">A39</span><span class="badge-obj">Obj 4.9</span></div></div>
+<div class="qtext">A system administrator is dismantling a test lab. The lab manager wants to reuse the hard drives but the security administrator wants to ensure no previous data is accessible. Which method is best?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-118-0" onclick="answerSingle(118,0,2)">A. Degauss</button>
+<button class="ans-btn" id="btn-118-1" onclick="answerSingle(118,1,2)">B. Reinstall the operating system</button>
+<button class="ans-btn" id="btn-118-2" onclick="answerSingle(118,2,2)">C. Regular format</button>
+<button class="ans-btn" id="btn-118-3" onclick="answerSingle(118,3,2)">D. Quick format</button>
+</div>
+<div id="result-118" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-118"></div>
+<div class="explanation">A regular (full) format overwrites all sectors, making data recovery extremely difficult while keeping the drive functional for reuse. Quick format only removes the file table. Degaussing destroys the drive.</div>
+</div>
+</div>
+<div class="card" id="card-119">
+<div class="card-header"><span class="qnum">Q120</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">B40</span><span class="badge-obj">Obj 2.5</span></div></div>
+<div class="qtext">A desktop administrator removed malware, configured automatic AV updates, and scheduled nightly scans. What should the next step be?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-119-0" onclick="answerSingle(119,0,1)">A. Boot to Safe Mode</button>
+<button class="ans-btn" id="btn-119-1" onclick="answerSingle(119,1,1)">B. Enable System Restore</button>
+<button class="ans-btn" id="btn-119-2" onclick="answerSingle(119,2,1)">C. Educate the end user</button>
+<button class="ans-btn" id="btn-119-3" onclick="answerSingle(119,3,1)">D. Quarantine the computer</button>
+</div>
+<div id="result-119" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-119"></div>
+<div class="explanation">After scheduling scans and confirming cleanup, System Restore should be re-enabled and a clean restore point created. Educating the user is the final step after System Restore is back on.</div>
+</div>
+</div>
+<div class="card" id="card-120">
+<div class="card-header"><span class="qnum">Q121</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">C25</span><span class="badge-obj">Obj 4.4</span></div></div>
+<div class="qtext">A technician does not have an anti-static strap but needs to replace a faulty adapter card in a server. Which is the best alternative?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-120-0" onclick="answerSingle(120,0,1)">A. Store the faulty card in an anti-static bag</button>
+<button class="ans-btn" id="btn-120-1" onclick="answerSingle(120,1,1)">B. Periodically touch the server's metal chassis</button>
+<button class="ans-btn" id="btn-120-2" onclick="answerSingle(120,2,1)">C. Have a CO2 extinguisher nearby</button>
+<button class="ans-btn" id="btn-120-3" onclick="answerSingle(120,3,1)">D. Wear safety goggles</button>
+</div>
+<div id="result-120" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-120"></div>
+<div class="explanation">Periodically touching the server's unpainted metal chassis equalizes the static charge between the technician and the equipment, providing basic ESD protection when a strap is unavailable.</div>
+</div>
+</div>
+<div class="card" id="card-121">
+<div class="card-header"><span class="qnum">Q122</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">C51</span><span class="badge-obj">Obj 4.8</span></div></div>
+<div class="qtext">A workstation has been identified as participating in a DDoS attack. The computer has been powered down and stored. What is the most important procedure to follow?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-121-0" onclick="answerSingle(121,0,1)">A. Create documentation of the storage area</button>
+<button class="ans-btn" id="btn-121-1" onclick="answerSingle(121,1,1)">B. Maintain chain of custody and integrity of data</button>
+<button class="ans-btn" id="btn-121-2" onclick="answerSingle(121,2,1)">C. Obtain purchase records of the workstation</button>
+<button class="ans-btn" id="btn-121-3" onclick="answerSingle(121,3,1)">D. Retrieve logs from Event Viewer</button>
+</div>
+<div id="result-121" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-121"></div>
+<div class="explanation">Chain of custody ensures evidence is handled properly and remains admissible. Any tampering, access without documentation, or failure to track custody can invalidate the evidence.</div>
+</div>
+</div>
+<div class="card" id="card-122">
+<div class="card-header"><span class="qnum">Q123</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">B9</span><span class="badge-obj">Obj 1.9</span></div></div>
+<div class="qtext">A macOS server administrator needs a backup system to recover data from any point in the last thirty days. Which tool should be used?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-122-0" onclick="answerSingle(122,0,1)">A. Spotlight</button>
+<button class="ans-btn" id="btn-122-1" onclick="answerSingle(122,1,1)">B. Time Machine</button>
+<button class="ans-btn" id="btn-122-2" onclick="answerSingle(122,2,1)">C. Backup and Restore</button>
+<button class="ans-btn" id="btn-122-3" onclick="answerSingle(122,3,1)">D. Spaces</button>
+</div>
+<div id="result-122" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-122"></div>
+<div class="explanation">Time Machine supports rolling backups with retention up to 30 days, allowing point-in-time recovery. Spotlight is a search tool, Spaces manages virtual desktops.</div>
+</div>
+</div>
+<div class="card" id="card-123">
+<div class="card-header"><span class="qnum">Q124</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">B70</span><span class="badge-obj">Obj 4.2</span></div></div>
+<div class="qtext">An IT manager wants users to recover daily versions of documents from any day in the last month. Which feature is best?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-123-0" onclick="answerSingle(123,0,3)">A. Maintain a monthly image backup</button>
+<button class="ans-btn" id="btn-123-1" onclick="answerSingle(123,1,3)">B. Store full backup tapes offsite</button>
+<button class="ans-btn" id="btn-123-2" onclick="answerSingle(123,2,3)">C. Assign each user a USB flash drive</button>
+<button class="ans-btn" id="btn-123-3" onclick="answerSingle(123,3,3)">D. Create a file-level backup each day</button>
+</div>
+<div id="result-123" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-123"></div>
+<div class="explanation">Daily file-level backups with 30-day retention allow point-in-time recovery of any file version from the past month. Monthly image backups only capture one point in time.</div>
+</div>
+</div>
+<div class="card" id="card-124">
+<div class="card-header"><span class="qnum">Q125</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">A32</span><span class="badge-obj">Obj 2.4</span></div></div>
+<div class="qtext">An internal audit found a server with malware that is not part of any OS file but runs each time the system starts. What type is most likely?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-124-0" onclick="answerSingle(124,0,2)">A. Ransomware</button>
+<button class="ans-btn" id="btn-124-1" onclick="answerSingle(124,1,2)">B. Keylogger</button>
+<button class="ans-btn" id="btn-124-2" onclick="answerSingle(124,2,2)">C. Boot sector virus</button>
+<button class="ans-btn" id="btn-124-3" onclick="answerSingle(124,3,2)">D. Trojan</button>
+</div>
+<div id="result-124" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-124"></div>
+<div class="explanation">A boot sector virus embeds itself in the boot sector and executes before the OS loads, making it persistent and hard to detect. It is not stored as a regular file.</div>
+</div>
+</div>
+<div class="card" id="card-125">
+<div class="card-header"><span class="qnum">Q126</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">B51</span><span class="badge-obj">Obj 3.1</span></div></div>
+<div class="qtext">An executive's laptop runs very slowly after login and applications crash randomly. Memory utilization is near 100%. What is the best short-term fix?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-125-0" onclick="answerSingle(125,0,3)">A. Reboot the computer</button>
+<button class="ans-btn" id="btn-125-1" onclick="answerSingle(125,1,3)">B. Update to the latest OS patches</button>
+<button class="ans-btn" id="btn-125-2" onclick="answerSingle(125,2,3)">C. Defragment the hard drive</button>
+<button class="ans-btn" id="btn-125-3" onclick="answerSingle(125,3,3)">D. Disable startup items</button>
+</div>
+<div id="result-125" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-125"></div>
+<div class="explanation">Disabling unnecessary startup items reduces the number of processes competing for RAM at login, providing immediate performance relief without requiring hardware changes.</div>
+</div>
+</div>
+<div class="card" id="card-126">
+<div class="card-header"><span class="qnum">Q127</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">A75</span><span class="badge-obj">Obj 2.5</span></div></div>
+<div class="qtext">A technician has been tasked with removing malware from a desktop. Which step must be completed BEFORE scanning and removing the malware?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-126-0" onclick="answerSingle(126,0,1)">A. Educate the end user</button>
+<button class="ans-btn" id="btn-126-1" onclick="answerSingle(126,1,1)">B. Disable System Restore</button>
+<button class="ans-btn" id="btn-126-2" onclick="answerSingle(126,2,1)">C. Schedule future scans</button>
+<button class="ans-btn" id="btn-126-3" onclick="answerSingle(126,3,1)">D. Enable System Restore</button>
+</div>
+<div id="result-126" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-126"></div>
+<div class="explanation">System Restore must be disabled before malware removal to prevent infected restore points from reinfecting the system after cleanup. It is re-enabled after removal is confirmed.</div>
+</div>
+</div>
+<div class="card" id="card-127">
+<div class="card-header"><span class="qnum">Q128</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">C42</span><span class="badge-obj">Obj 1.6</span></div></div>
+<div class="qtext">A Windows administrator needs to define a minimum password length for all network users. Which tool should be used?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-127-0" onclick="answerSingle(127,0,3)">A. Performance Monitor</button>
+<button class="ans-btn" id="btn-127-1" onclick="answerSingle(127,1,3)">B. Certificate Manager</button>
+<button class="ans-btn" id="btn-127-2" onclick="answerSingle(127,2,3)">C. Device Manager</button>
+<button class="ans-btn" id="btn-127-3" onclick="answerSingle(127,3,3)">D. Group Policy Editor</button>
+</div>
+<div id="result-127" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-127"></div>
+<div class="explanation">Group Policy Editor (gpedit.msc) allows administrators to define and enforce password policies across all domain users. Device Manager handles hardware drivers.</div>
+</div>
+</div>
+<div class="card" id="card-128">
+<div class="card-header"><span class="qnum">Q129</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">C34</span><span class="badge-obj">Obj 3.5</span></div></div>
+<div class="qtext">A phone is sharing location information with an unauthorized third-party site. What is the best next step?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-128-0" onclick="answerSingle(128,0,2)">A. Soft reset</button>
+<button class="ans-btn" id="btn-128-1" onclick="answerSingle(128,1,2)">B. Disable GPS</button>
+<button class="ans-btn" id="btn-128-2" onclick="answerSingle(128,2,2)">C. Run an anti-malware scan</button>
+<button class="ans-btn" id="btn-128-3" onclick="answerSingle(128,3,2)">D. Use the cellular network</button>
+</div>
+<div id="result-128" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-128"></div>
+<div class="explanation">Unauthorized location sharing is a symptom of spyware or a malicious app. An anti-malware scan identifies and removes the root cause. Disabling GPS treats the symptom only.</div>
+</div>
+</div>
+<div class="card" id="card-129">
+<div class="card-header"><span class="qnum">Q130</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">B66</span><span class="badge-obj">Obj 3.1</span></div></div>
+<div class="qtext">An administrator is troubleshooting an error message appearing each time an application starts. Uninstalling and reinstalling did not fix it. What is the best next step?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-129-0" onclick="answerSingle(129,0,2)">A. View hardware settings in Device Manager</button>
+<button class="ans-btn" id="btn-129-1" onclick="answerSingle(129,1,2)">B. Use Performance Monitor</button>
+<button class="ans-btn" id="btn-129-2" onclick="answerSingle(129,2,2)">C. Check the Event Viewer logs</button>
+<button class="ans-btn" id="btn-129-3" onclick="answerSingle(129,3,2)">D. Disable unneeded background processes</button>
+</div>
+<div id="result-129" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-129"></div>
+<div class="explanation">Event Viewer logs detailed error codes and messages that persist across reinstalls, helping identify root causes such as missing dependencies, registry issues, or service failures.</div>
+</div>
+</div>
+<div class="card" id="card-130">
+<div class="card-header"><span class="qnum">Q131</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-obj">Obj 3.1</span></div></div>
+<div class="qtext">A user cannot print to a network printer. The technician can ping the printer's IP address. What is the most likely issue?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-130-0" onclick="answerSingle(130,0,3)">A. The printer has no paper</button>
+<button class="ans-btn" id="btn-130-1" onclick="answerSingle(130,1,3)">B. The network cable is unplugged</button>
+<button class="ans-btn" id="btn-130-2" onclick="answerSingle(130,2,3)">C. The printer is powered off</button>
+<button class="ans-btn" id="btn-130-3" onclick="answerSingle(130,3,3)">D. The print spooler service is stopped</button>
+</div>
+<div id="result-130" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-130"></div>
+<div class="explanation">If the printer is pingable, it is powered on and network-connected. The print spooler service manages print jobs in Windows — if stopped, jobs queue but never print.</div>
+</div>
+</div>
+<div class="card" id="card-131">
+<div class="card-header"><span class="qnum">Q132</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">A27</span><span class="badge-obj">Obj 3.5</span></div></div>
+<div class="qtext">A smartphone app shows a splash screen then disappears after a few seconds. What is the best first troubleshooting step?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-131-0" onclick="answerSingle(131,0,2)">A. Install all OS updates</button>
+<button class="ans-btn" id="btn-131-1" onclick="answerSingle(131,1,2)">B. Roll back to the previous app version</button>
+<button class="ans-btn" id="btn-131-2" onclick="answerSingle(131,2,2)">C. Power cycle the tablets</button>
+<button class="ans-btn" id="btn-131-3" onclick="answerSingle(131,3,2)">D. Uninstall the application</button>
+</div>
+<div id="result-131" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-131"></div>
+<div class="explanation">Power cycling clears temporary memory and resets app state without data loss. It is the fastest first step before more invasive actions like uninstalling or rolling back.</div>
+</div>
+</div>
+<div class="card" id="card-132">
+<div class="card-header"><span class="qnum">Q133</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">C29</span><span class="badge-obj">Obj 2.2</span></div></div>
+<div class="qtext">Users on the corporate network authenticate once at the beginning of the day and are not prompted again until the following day. What best describes this?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-132-0" onclick="answerSingle(132,0,3)">A. Inherited permissions</button>
+<button class="ans-btn" id="btn-132-1" onclick="answerSingle(132,1,3)">B. NTFS</button>
+<button class="ans-btn" id="btn-132-2" onclick="answerSingle(132,2,3)">C. EFS</button>
+<button class="ans-btn" id="btn-132-3" onclick="answerSingle(132,3,3)">D. SSO</button>
+</div>
+<div id="result-132" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-132"></div>
+<div class="explanation">SSO (Single Sign-On) allows users to authenticate once and access all authorized resources for the session without re-entering credentials. NTFS and EFS are file system features.</div>
+</div>
+</div>
+<div class="card" id="card-133">
+<div class="card-header"><span class="qnum">Q134</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">A18</span><span class="badge-obj">Obj 4.3</span></div></div>
+<div class="qtext">An office power system occasionally experiences minor voltage spikes. Which is the best way to address this?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-133-0" onclick="answerSingle(133,0,3)">A. Maintain an inventory of replacement power supplies</button>
+<button class="ans-btn" id="btn-133-1" onclick="answerSingle(133,1,3)">B. Confirm the building has an electrical ground</button>
+<button class="ans-btn" id="btn-133-2" onclick="answerSingle(133,2,3)">C. Power down when not actively working</button>
+<button class="ans-btn" id="btn-133-3" onclick="answerSingle(133,3,3)">D. Connect a surge suppressor to each system</button>
+</div>
+<div id="result-133" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-133"></div>
+<div class="explanation">Surge suppressors absorb voltage spikes before they reach connected equipment, protecting components from damage. Grounding prevents shock but does not protect against spikes.</div>
+</div>
+</div>
+<div class="card" id="card-134">
+<div class="card-header"><span class="qnum">Q135</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">C21</span><span class="badge-obj">Obj 1.9</span></div></div>
+<div class="qtext">A desktop administrator received a notification of a deployed RSR update. Which devices are most affected?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-134-0" onclick="answerSingle(134,0,2)">A. Linux database servers</button>
+<button class="ans-btn" id="btn-134-1" onclick="answerSingle(134,1,2)">B. Android tablets</button>
+<button class="ans-btn" id="btn-134-2" onclick="answerSingle(134,2,2)">C. macOS laptops</button>
+<button class="ans-btn" id="btn-134-3" onclick="answerSingle(134,3,2)">D. Windows desktops</button>
+</div>
+<div id="result-134" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-134"></div>
+<div class="explanation">RSR (Rapid Security Response) is Apple's fast-delivery security patch system for macOS and iOS devices. It does not apply to Linux, Android, or Windows systems.</div>
+</div>
+</div>
+<div class="card" id="card-135">
+<div class="card-header"><span class="qnum">Q136</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">B7</span><span class="badge-obj">Obj 4.9</span></div></div>
+<div class="qtext">A company has accumulated hundreds of used toner cartridges after annual laser printer maintenance. What is the best disposal method?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-135-0" onclick="answerSingle(135,0,0)">A. Take to a hazardous waste facility</button>
+<button class="ans-btn" id="btn-135-1" onclick="answerSingle(135,1,0)">B. Send in bulk to the local landfill</button>
+<button class="ans-btn" id="btn-135-2" onclick="answerSingle(135,2,0)">C. Contract with an incineration company</button>
+<button class="ans-btn" id="btn-135-3" onclick="answerSingle(135,3,0)">D. Separate the parts and dispose normally</button>
+</div>
+<div id="result-135" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-135"></div>
+<div class="explanation">Toner cartridges contain chemicals classified as hazardous waste. They must be taken to a certified hazardous waste facility or returned to the manufacturer for proper recycling.</div>
+</div>
+</div>
+<div class="card" id="card-136">
+<div class="card-header"><span class="qnum">Q137</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">B49</span><span class="badge-obj">Obj 1.9</span></div></div>
+<div class="qtext">Which Linux command is used to rename a file or move it to a different directory?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-136-0" onclick="answerSingle(136,0,3)">A. cp</button>
+<button class="ans-btn" id="btn-136-1" onclick="answerSingle(136,1,3)">B. ls</button>
+<button class="ans-btn" id="btn-136-2" onclick="answerSingle(136,2,3)">C. rn</button>
+<button class="ans-btn" id="btn-136-3" onclick="answerSingle(136,3,3)">D. mv</button>
+</div>
+<div id="result-136" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-136"></div>
+<div class="explanation">mv (move) renames or moves files and directories. cp copies files, ls lists directory contents, rn is not a standard Linux command.</div>
+</div>
+</div>
+<div class="card" id="card-137">
+<div class="card-header"><span class="qnum">Q138</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-obj">Obj 2.4</span></div></div>
+<div class="qtext">A user's browser homepage changed and constant pop-up ads appear. What is the most likely cause?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-137-0" onclick="answerSingle(137,0,1)">A. Ransomware</button>
+<button class="ans-btn" id="btn-137-1" onclick="answerSingle(137,1,1)">B. Adware</button>
+<button class="ans-btn" id="btn-137-2" onclick="answerSingle(137,2,1)">C. Worm</button>
+<button class="ans-btn" id="btn-137-3" onclick="answerSingle(137,3,1)">D. Rootkit</button>
+</div>
+<div id="result-137" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-137"></div>
+<div class="explanation">Adware modifies browser settings and displays unwanted advertisements. Ransomware encrypts files, rootkits hide in the kernel, worms self-replicate across networks.</div>
+</div>
+</div>
+<div class="card" id="card-138">
+<div class="card-header"><span class="qnum">Q139</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">C69</span><span class="badge-obj">Obj 1.1</span></div></div>
+<div class="qtext">A workstation technician manages a training center with thirty identical computers. Which installation method is best for quickly resetting the rooms each week?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-138-0" onclick="answerSingle(138,0,1)">A. Clean install</button>
+<button class="ans-btn" id="btn-138-1" onclick="answerSingle(138,1,1)">B. Image installation</button>
+<button class="ans-btn" id="btn-138-2" onclick="answerSingle(138,2,1)">C. In-place upgrade</button>
+<button class="ans-btn" id="btn-138-3" onclick="answerSingle(138,3,1)">D. Repair installation</button>
+</div>
+<div id="result-138" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-138"></div>
+<div class="explanation">Image installation allows rapid, identical deployment across all identically-configured systems, making weekly resets fast and consistent.</div>
+</div>
+</div>
+<div class="card" id="card-139">
+<div class="card-header"><span class="qnum">Q140</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">C28</span><span class="badge-obj">Obj 3.1</span></div></div>
+<div class="qtext">A desktop technician believes a network outage at an application provider is the root cause of an issue. Which tool best confirms the location of the outage?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-139-0" onclick="answerSingle(139,0,0)">A. tracert</button>
+<button class="ans-btn" id="btn-139-1" onclick="answerSingle(139,1,0)">B. ping</button>
+<button class="ans-btn" id="btn-139-2" onclick="answerSingle(139,2,0)">C. nslookup</button>
+<button class="ans-btn" id="btn-139-3" onclick="answerSingle(139,3,0)">D. netstat</button>
+</div>
+<div id="result-139" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-139"></div>
+<div class="explanation">tracert (traceroute) shows each hop along the network path to a destination, identifying exactly where packets stop — allowing the technician to pinpoint the outage location.</div>
+</div>
+</div>
+<div class="card" id="card-140">
+<div class="card-header"><span class="qnum">Q141</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-obj">Obj 3.1</span></div></div>
+<div class="qtext">Which tool is best for troubleshooting a Windows application that fails during OS startup?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-140-0" onclick="answerSingle(140,0,0)">A. MSConfig (System Configuration)</button>
+<button class="ans-btn" id="btn-140-1" onclick="answerSingle(140,1,0)">B. Disk Management</button>
+<button class="ans-btn" id="btn-140-2" onclick="answerSingle(140,2,0)">C. Performance Monitor</button>
+<button class="ans-btn" id="btn-140-3" onclick="answerSingle(140,3,0)">D. Resource Monitor</button>
+</div>
+<div id="result-140" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-140"></div>
+<div class="explanation">MSConfig allows administrators to selectively disable startup programs and services to identify which item is causing the failure during boot. It is the primary tool for startup troubleshooting.</div>
+</div>
+</div>
+<div class="card" id="card-141">
+<div class="card-header"><span class="qnum">Q142</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-obj">Obj 1.5</span></div></div>
+<div class="qtext">A user wants to find out which version of Windows is currently installed. Which command should be typed in the Run dialog?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-141-0" onclick="answerSingle(141,0,1)">A. cmd</button>
+<button class="ans-btn" id="btn-141-1" onclick="answerSingle(141,1,1)">B. winver</button>
+<button class="ans-btn" id="btn-141-2" onclick="answerSingle(141,2,1)">C. dxdiag</button>
+<button class="ans-btn" id="btn-141-3" onclick="answerSingle(141,3,1)">D. msconfig</button>
+</div>
+<div id="result-141" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-141"></div>
+<div class="explanation">winver opens a dialog showing the exact Windows version and build number. msconfig manages startup, cmd opens command prompt, dxdiag shows DirectX diagnostics.</div>
+</div>
+</div>
+<div class="card" id="card-142">
+<div class="card-header"><span class="qnum">Q143</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">A8</span><span class="badge-obj">Obj 1.9</span></div></div>
+<div class="qtext">A user's app on their corporate smartphone cannot be installed. What is the most likely reason?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-142-0" onclick="answerSingle(142,0,1)">A. Incorrect file system type</button>
+<button class="ans-btn" id="btn-142-1" onclick="answerSingle(142,1,1)">B. MDM policy restriction</button>
+<button class="ans-btn" id="btn-142-2" onclick="answerSingle(142,2,1)">C. Slow CPU speeds</button>
+<button class="ans-btn" id="btn-142-3" onclick="answerSingle(142,3,1)">D. Low battery level</button>
+</div>
+<div id="result-142" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-142"></div>
+<div class="explanation">MDM (Mobile Device Management) policies can restrict which apps users are permitted to install on corporate devices. This is the most common cause of failed app installations on managed phones.</div>
+</div>
+</div>
+<div class="card" id="card-143">
+<div class="card-header"><span class="qnum">Q144</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">C22</span><span class="badge-obj">Obj 2.5</span></div></div>
+<div class="qtext">A desktop administrator is removing a virus. The computer has been removed from the network and System Restore has been disabled. The AV utility disables itself when trying to update. What is the best next step?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-143-0" onclick="answerSingle(143,0,2)">A. Discuss AV strategies with the end user</button>
+<button class="ans-btn" id="btn-143-1" onclick="answerSingle(143,1,2)">B. Roll back to a previous configuration</button>
+<button class="ans-btn" id="btn-143-2" onclick="answerSingle(143,2,2)">C. Boot to Safe Mode and use signatures downloaded from a separate computer</button>
+<button class="ans-btn" id="btn-143-3" onclick="answerSingle(143,3,2)">D. Schedule periodic updates and reconnect to the network</button>
+</div>
+<div id="result-143" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-143"></div>
+<div class="explanation">Booting to Safe Mode prevents the malware from loading, and using externally downloaded signatures bypasses the malware's ability to disable the AV update process.</div>
+</div>
+</div>
+<div class="card" id="card-144">
+<div class="card-header"><span class="qnum">Q145</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">C11</span><span class="badge-obj">Obj 1.9</span></div></div>
+<div class="qtext">A Linux administrator needs to modify the group associated with a file. Which command should be used?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-144-0" onclick="answerSingle(144,0,3)">A. df</button>
+<button class="ans-btn" id="btn-144-1" onclick="answerSingle(144,1,3)">B. grep</button>
+<button class="ans-btn" id="btn-144-2" onclick="answerSingle(144,2,3)">C. ps</button>
+<button class="ans-btn" id="btn-144-3" onclick="answerSingle(144,3,3)">D. chown</button>
+</div>
+<div id="result-144" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-144"></div>
+<div class="explanation">chown changes the owner and/or group of a file. ps lists processes, df shows disk usage, grep searches text within files.</div>
+</div>
+</div>
+<div class="card" id="card-145">
+<div class="card-header"><span class="qnum">Q146</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-obj">Obj 1.2</span></div></div>
+<div class="qtext">Which of the following file systems is the standard for Windows 10 and 11 installations, supporting permissions and encryption?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-145-0" onclick="answerSingle(145,0,1)">A. ReFS</button>
+<button class="ans-btn" id="btn-145-1" onclick="answerSingle(145,1,1)">B. NTFS</button>
+<button class="ans-btn" id="btn-145-2" onclick="answerSingle(145,2,1)">C. FAT32</button>
+<button class="ans-btn" id="btn-145-3" onclick="answerSingle(145,3,1)">D. exFAT</button>
+</div>
+<div id="result-145" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-145"></div>
+<div class="explanation">NTFS is the default Windows file system with built-in support for permissions, encryption (EFS), and journaling. FAT32 and exFAT lack these security features. ReFS is for servers.</div>
+</div>
+</div>
+<div class="card" id="card-146">
+<div class="card-header"><span class="qnum">Q147</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">B52</span><span class="badge-obj">Obj 1.5</span></div></div>
+<div class="qtext">A help desk technician needs to view and control the desktop of a Windows computer at a remote location. Which tool is best?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-146-0" onclick="answerSingle(146,0,3)">A. VPN</button>
+<button class="ans-btn" id="btn-146-1" onclick="answerSingle(146,1,3)">B. SSH</button>
+<button class="ans-btn" id="btn-146-2" onclick="answerSingle(146,2,3)">C. VNC</button>
+<button class="ans-btn" id="btn-146-3" onclick="answerSingle(146,3,3)">D. RDP</button>
+</div>
+<div id="result-146" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-146"></div>
+<div class="explanation">RDP (Remote Desktop Protocol) provides full GUI remote control of Windows systems on port 3389. VNC is cross-platform but less integrated, SSH is command-line only.</div>
+</div>
+</div>
+<div class="card" id="card-147">
+<div class="card-header"><span class="qnum">Q148</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">A81</span><span class="badge-obj">Obj 2.5</span></div></div>
+<div class="qtext">A user has application slowdowns and unwanted pop-up windows appearing constantly. After malware removal and a new restore point, what is the next step?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-147-0" onclick="answerSingle(147,0,1)">A. Update antivirus signatures</button>
+<button class="ans-btn" id="btn-147-1" onclick="answerSingle(147,1,1)">B. Educate the end user</button>
+<button class="ans-btn" id="btn-147-2" onclick="answerSingle(147,2,1)">C. Disable System Restore</button>
+<button class="ans-btn" id="btn-147-3" onclick="answerSingle(147,3,1)">D. Quarantine the system</button>
+</div>
+<div id="result-147" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-147"></div>
+<div class="explanation">After completing malware removal and re-enabling System Restore, the final step per CompTIA's methodology is to educate the end user to prevent future infections.</div>
+</div>
+</div>
+<div class="card" id="card-148">
+<div class="card-header"><span class="qnum">Q149</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">B85</span><span class="badge-obj">Obj 3.1</span></div></div>
+<div class="qtext">A desktop computer is stuck in a continuous reboot loop before the Windows login screen appears. What is the best way to address this?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-148-0" onclick="answerSingle(148,0,0)">A. Run Startup Repair from Advanced Boot Options</button>
+<button class="ans-btn" id="btn-148-1" onclick="answerSingle(148,1,0)">B. Reinstall OS from original media</button>
+<button class="ans-btn" id="btn-148-2" onclick="answerSingle(148,2,0)">C. Start Safe Mode and defragment</button>
+<button class="ans-btn" id="btn-148-3" onclick="answerSingle(148,3,0)">D. Update the boot order from BIOS</button>
+</div>
+<div id="result-148" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-148"></div>
+<div class="explanation">Startup Repair in the Windows Recovery Environment diagnoses and fixes boot loop issues without requiring a full reinstall. Safe Mode + defrag does not address boot corruption.</div>
+</div>
+</div>
+<div class="card" id="card-149">
+<div class="card-header"><span class="qnum">Q150</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-obj">Obj 3.1</span></div></div>
+<div class="qtext">A user's laptop screen is very dim, but images are visible when a flashlight is held to it. What component has likely failed?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-149-0" onclick="answerSingle(149,0,1)">A. RAM</button>
+<button class="ans-btn" id="btn-149-1" onclick="answerSingle(149,1,1)">B. Inverter or backlight</button>
+<button class="ans-btn" id="btn-149-2" onclick="answerSingle(149,2,1)">C. Video card</button>
+<button class="ans-btn" id="btn-149-3" onclick="answerSingle(149,3,1)">D. Hard drive</button>
+</div>
+<div id="result-149" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-149"></div>
+<div class="explanation">A dim screen with visible content indicates the LCD panel is working but the backlight (or inverter on older laptops) has failed. The backlight illuminates the image — without it, it appears nearly black.</div>
+</div>
+</div>
+<div class="card" id="card-150">
+<div class="card-header"><span class="qnum">Q151</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">A21</span><span class="badge-obj">Obj 2.3</span></div></div>
+<div class="qtext">An attacker uses every combination of letters, numbers, and special characters to discover a user's password. What attack type is this?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-150-0" onclick="answerSingle(150,0,0)">A. Brute force attack</button>
+<button class="ans-btn" id="btn-150-1" onclick="answerSingle(150,1,0)">B. DDoS</button>
+<button class="ans-btn" id="btn-150-2" onclick="answerSingle(150,2,0)">C. Social engineering</button>
+<button class="ans-btn" id="btn-150-3" onclick="answerSingle(150,3,0)">D. Spoofing</button>
+</div>
+<div id="result-150" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-150"></div>
+<div class="explanation">A brute force attack exhaustively tries every possible character combination until the correct password is found. Social engineering uses manipulation, spoofing falsifies identity, DDoS floods a target.</div>
+</div>
+</div>
+<div class="card" id="card-151">
+<div class="card-header"><span class="qnum">Q152</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">C52</span><span class="badge-obj">Obj 1.6</span></div></div>
+<div class="qtext">A system administrator configured EFS on a user's workstation. Which functionality does this provide?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-151-0" onclick="answerSingle(151,0,3)">A. Secure wireless communication</button>
+<button class="ans-btn" id="btn-151-1" onclick="answerSingle(151,1,3)">B. Encrypted network tunnel</button>
+<button class="ans-btn" id="btn-151-2" onclick="answerSingle(151,2,3)">C. Full disk encryption</button>
+<button class="ans-btn" id="btn-151-3" onclick="answerSingle(151,3,3)">D. Encryption of individual files and folders</button>
+</div>
+<div id="result-151" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-151"></div>
+<div class="explanation">EFS (Encrypting File System) provides file-level encryption within NTFS. It encrypts individual files and folders, not the entire disk. BitLocker provides full disk encryption.</div>
+</div>
+</div>
+<div class="card" id="card-152">
+<div class="card-header"><span class="qnum">Q153</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">B55</span><span class="badge-obj">Obj 4.7</span></div></div>
+<div class="qtext">A server administrator planned an OS upgrade but the risk analysis was not completed until Friday afternoon, so the change cannot happen over the weekend. What is preventing the upgrade?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-152-0" onclick="answerSingle(152,0,0)">A. Change board approval</button>
+<button class="ans-btn" id="btn-152-1" onclick="answerSingle(152,1,0)">B. Upgrade file availability</button>
+<button class="ans-btn" id="btn-152-2" onclick="answerSingle(152,2,0)">C. Not enough time</button>
+<button class="ans-btn" id="btn-152-3" onclick="answerSingle(152,3,0)">D. Need more people</button>
+</div>
+<div id="result-152" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-152"></div>
+<div class="explanation">Change board (change control board) approval is required before any planned change can proceed. Without an approved risk analysis, the change board cannot authorize the upgrade.</div>
+</div>
+</div>
+<div class="card" id="card-153">
+<div class="card-header"><span class="qnum">Q154</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">A75</span><span class="badge-obj">Obj 2.5</span></div></div>
+<div class="qtext">A technician removed malware from a training room laptop, updated AV, removed malware, and created a backup. The malware returned after the training class. Which step was missed?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-153-0" onclick="answerSingle(153,0,2)">A. Identify malware symptoms</button>
+<button class="ans-btn" id="btn-153-1" onclick="answerSingle(153,1,2)">B. Update to the latest BIOS version</button>
+<button class="ans-btn" id="btn-153-2" onclick="answerSingle(153,2,2)">C. Disable System Restore before removal</button>
+<button class="ans-btn" id="btn-153-3" onclick="answerSingle(153,3,2)">D. Boot to a pre-installation environment</button>
+</div>
+<div id="result-153" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-153"></div>
+<div class="explanation">System Restore must be disabled before malware removal. If not disabled, an infected restore point can reinfect the system when System Restore is triggered.</div>
+</div>
+</div>
+<div class="card" id="card-154">
+<div class="card-header"><span class="qnum">Q155</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-obj">Obj 3.1</span></div></div>
+<div class="qtext">A user can reach websites by IP address but not by domain name. What is the most likely issue?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-154-0" onclick="answerSingle(154,0,2)">A. DHCP conflict</button>
+<button class="ans-btn" id="btn-154-1" onclick="answerSingle(154,1,2)">B. MAC address filtering</button>
+<button class="ans-btn" id="btn-154-2" onclick="answerSingle(154,2,2)">C. DNS server issue</button>
+<button class="ans-btn" id="btn-154-3" onclick="answerSingle(154,3,2)">D. Gateway failure</button>
+</div>
+<div id="result-154" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-154"></div>
+<div class="explanation">DNS (Domain Name System) translates domain names to IP addresses. If DNS fails, domain names cannot be resolved but direct IP access still works.</div>
+</div>
+</div>
+<div class="card" id="card-155">
+<div class="card-header"><span class="qnum">Q156</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">A74</span><span class="badge-obj">Obj 1.6</span></div></div>
+<div class="qtext">An organization needs to require all passwords to be at least ten characters. After creating the policy, a laptop still allows 8-character passwords. Which command applies the policy?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-155-0" onclick="answerSingle(155,0,2)">A. tasklist</button>
+<button class="ans-btn" id="btn-155-1" onclick="answerSingle(155,1,2)">B. sfc</button>
+<button class="ans-btn" id="btn-155-2" onclick="answerSingle(155,2,2)">C. gpupdate</button>
+<button class="ans-btn" id="btn-155-3" onclick="answerSingle(155,3,2)">D. net use</button>
+</div>
+<div id="result-155" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-155"></div>
+<div class="explanation">gpupdate /force pushes the latest Group Policy settings to the local machine. Without running gpupdate, the new policy may not apply until the next login cycle.</div>
+</div>
+</div>
+<div class="card" id="card-156">
+<div class="card-header"><span class="qnum">Q157</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-ref">C79</span><span class="badge-obj">Obj 2.1</span></div></div>
+<div class="qtext">A healthcare administrator stores sensitive data on a laptop at a desk in an open area near a busy hallway. Which adds the most security to the work area?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-156-0" onclick="answerSingle(156,0,3)">A. Bollards</button>
+<button class="ans-btn" id="btn-156-1" onclick="answerSingle(156,1,3)">B. Magnetometer</button>
+<button class="ans-btn" id="btn-156-2" onclick="answerSingle(156,2,3)">C. Door lock</button>
+<button class="ans-btn" id="btn-156-3" onclick="answerSingle(156,3,3)">D. Fingerprint scanner</button>
+</div>
+<div id="result-156" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-156"></div>
+<div class="explanation">A fingerprint scanner on the laptop requires biometric authentication, preventing unauthorized access if someone sits at the desk. A door lock helps but the desk is in an open area.</div>
+</div>
+</div>
+<div class="card" id="card-157">
+<div class="card-header"><span class="qnum">Q158</span><div class="badges"><span class="badge-messer">[Messer]</span><span class="badge-obj">Obj 3.1</span></div></div>
+<div class="qtext">A Windows 10 computer is performing very slowly and Task Manager shows disk utilization at 100%. What should the technician check first?</div>
+<div class="answers">
+<button class="ans-btn" id="btn-157-0" onclick="answerSingle(157,0,3)">A. Version of the BIOS</button>
+<button class="ans-btn" id="btn-157-1" onclick="answerSingle(157,1,3)">B. Monitor refresh rate</button>
+<button class="ans-btn" id="btn-157-2" onclick="answerSingle(157,2,3)">C. Number of installed applications</button>
+<button class="ans-btn" id="btn-157-3" onclick="answerSingle(157,3,3)">D. Amount of free space on the system drive</button>
+</div>
+<div id="result-157" style="display:none" class="result-badge">
+<div class="result-text" id="rtext-157"></div>
+<div class="explanation">A nearly full system drive causes Windows to struggle with virtual memory and temporary files, resulting in 100% disk utilization. Freeing disk space is the first corrective action.</div>
+</div>
+</div>
+
+<div id="final">
+  <h2 id="final-text">Final Score: 0%</h2>
+  <div style="font-family:'Space Grotesk',sans-serif;font-size:16px;color:rgba(255,255,255,0.85);margin-top:8px;" id="final-sub"></div>
+  <button id="retake-btn" onclick="retake()">Retake Quiz</button>
+</div>
+</div>
+
+<script>
+var total=158,correct=0,wrong=0,answered=0;
+var multiSelected={};
+
+function updateScore(){
+  document.getElementById('sc').textContent=correct;
+  document.getElementById('sw').textContent=wrong;
+  document.getElementById('sr').textContent=total-answered;
+  var pct=answered>0?Math.round(correct/total*100):0;
+  document.getElementById('sp').textContent=pct;
+  document.getElementById('progressfill').style.width=(answered/total*100)+'%';
+  if(answered===total){
+    var fpct=Math.round(correct/total*100);
+    var final=document.getElementById('final');
+    final.style.display='block';
+    final.style.background=fpct>=78?'rgba(0,232,122,0.25)':'rgba(255,59,92,0.25)';
+    final.style.borderColor=fpct>=78?'#00e87a':'#ff3b5c';
+    document.getElementById('final-text').textContent='Final Score: '+fpct+'%';
+    document.getElementById('final-sub').textContent=fpct>=78?'PASS — You met the 78% threshold.':'FAIL — Below the 78% threshold. Review and retake.';
+    final.scrollIntoView({behavior:'smooth'});
+  }
+}
+
+function lockCard(idx,numAnswers){
+  for(var i=0;i<numAnswers;i++){
+    var b=document.getElementById('btn-'+idx+'-'+i);
+    if(b){b.disabled=true;b.classList.add('locked');}
+  }
+  answered++;
+  updateScore();
+}
+
+function showResult(idx,isCorrect,msg){
+  var rd=document.getElementById('result-'+idx);
+  var rt=document.getElementById('rtext-'+idx);
+  rd.style.display='block';
+  rt.textContent=msg;
+  rt.className='result-text '+(isCorrect?'result-correct':'result-wrong');
+}
+
+function answerSingle(idx,chosen,correctIdx){
+  var numAnswers=document.querySelectorAll('[id^="btn-'+idx+'-"]').length;
+  var letters=["A","B","C","D","E","F"];
+  for(var i=0;i<numAnswers;i++){
+    var b=document.getElementById('btn-'+idx+'-'+i);
+    if(i===correctIdx) b.classList.add('correct');
+    else if(i===chosen && chosen!==correctIdx) b.classList.add('wrong');
+  }
+  var isCorrect=chosen===correctIdx;
+  if(isCorrect) correct++; else wrong++;
+  lockCard(idx,numAnswers);
+  var msg=isCorrect?'✓ Correct!':'✗ Wrong — Answer: '+letters[correctIdx];
+  showResult(idx,isCorrect,msg);
+}
+
+function toggleMulti(idx,ai){
+  if(!multiSelected[idx]) multiSelected[idx]=[];
+  var sel=multiSelected[idx];
+  var b=document.getElementById('btn-'+idx+'-'+ai);
+  var pos=sel.indexOf(ai);
+  if(pos>-1){sel.splice(pos,1);b.classList.remove('selected-multi');b.style.background='#e0e0e0';b.style.color='#1a1a1a';}
+  else{sel.push(ai);b.classList.add('selected-multi');b.style.background='#00c2ff';b.style.color='#fff';}
+  var sub=document.getElementById('submit-'+idx);
+  if(sub) sub.style.display=sel.length>0?'block':'none';
+}
+
+function submitMulti(idx,correctArr){
+  var sel=multiSelected[idx]||[];
+  var numAnswers=document.querySelectorAll('[id^="btn-'+idx+'-"]').length;
+  var letters=["A","B","C","D","E","F"];
+  var isCorrect=sel.length===correctArr.length&&correctArr.every(function(c){return sel.indexOf(c)>-1;});
+  for(var i=0;i<numAnswers;i++){
+    var b=document.getElementById('btn-'+idx+'-'+i);
+    if(correctArr.indexOf(i)>-1) b.classList.add('correct');
+    else if(sel.indexOf(i)>-1) b.classList.add('wrong');
+  }
+  var sub=document.getElementById('submit-'+idx);
+  if(sub) sub.style.display='none';
+  if(isCorrect) correct++; else wrong++;
+  lockCard(idx,numAnswers);
+  var selLetters=sel.map(function(i){return letters[i];}).sort().join(', ');
+  var corrLetters=correctArr.map(function(i){return letters[i];}).sort().join(', ');
+  var msg=isCorrect?'✓ Correct!':'✗ Wrong — Correct: '+corrLetters+'. You selected: '+selLetters+'.';
+  showResult(idx,isCorrect,msg);
+}
+
+function retake(){
+  correct=0;wrong=0;answered=0;multiSelected={};
+  document.getElementById('sc').textContent=0;
+  document.getElementById('sw').textContent=0;
+  document.getElementById('sr').textContent=total;
+  document.getElementById('sp').textContent=0;
+  document.getElementById('progressfill').style.width='0%';
+  document.getElementById('final').style.display='none';
+  var btns=document.querySelectorAll('.ans-btn');
+  btns.forEach(function(b){
+    b.disabled=false;b.classList.remove('locked','correct','wrong','selected-multi');
+    b.style.background='#e0e0e0';b.style.color='#1a1a1a';
+  });
+  var results=document.querySelectorAll('[id^="result-"]');
+  results.forEach(function(r){r.style.display='none';});
+  var subs=document.querySelectorAll('[id^="submit-"]');
+  subs.forEach(function(s){s.style.display='none';});
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+</script>
+<script src="footer.js"></script>
+</body>
+</html>
