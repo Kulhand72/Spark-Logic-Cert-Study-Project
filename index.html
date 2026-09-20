@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Spark Logic — CompTIA Study Hub</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: Arial, sans-serif;
+  background: #0d1b2a;
+  color: #fff;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 20px 40px;
+}
+
+/* ── CERT NAV BAR ── */
+#cert-nav {
+  width: 100%;
+  background: #07111e;
+  border-bottom: 1px solid #1a3a5c;
+  display: flex;
+  justify-content: center;
+  padding: 0;
+  margin-bottom: 40px;
+  position: sticky;
+  top: 0;
+  z-index: 500;
+}
+.cert-nav-inner {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: wrap;
+  row-gap: 6px;
+  max-width: 960px;
+  width: 100%;
+  padding: 6px 8px;
+}
+.cert-nav-label {
+  font-size: 13px;
+  color: #ffffff;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  white-space: nowrap;
+  padding: 0 10px 0 4px;
+  border-right: 1px solid #1a3a5c;
+  margin-right: 4px;
+}
+
+/* ── Individual cert color schemes ── */
+.cert-btn {
+  padding: 8px 12px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  background: transparent;
+  color: #ffffff;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  white-space: nowrap;
+}
+
+/* A+ — Red */
+.cert-btn.cert-red {
+  border-color: rgba(255, 60, 60, 0.3);
+  background: rgba(255, 60, 60, 0.08);
+}
+.cert-btn.cert-red:hover {
+  border-color: rgba(255, 60, 60, 0.6);
+  background: rgba(255, 60, 60, 0.15);
+}
+.cert-btn.cert-red.active {
+  border-color: #ff3c3c;
+  background: rgba(255, 60, 60, 0.2);
+  box-shadow: 0 0 12px rgba(255, 60, 60, 0.6), 0 0 4px rgba(255, 60, 60, 0.3);
+  color: #ffffff;
+}
+
+/* Network+ — Green */
+.cert-btn.cert-green {
+  border-color: rgba(0, 220, 100, 0.3);
+  background: rgba(0, 220, 100, 0.08);
+}
+.cert-btn.cert-green:hover {
+  border-color: rgba(0, 220, 100, 0.6);
+  background: rgba(0, 220, 100, 0.15);
+}
+.cert-btn.cert-green.active {
+  border-color: #00dc64;
+  background: rgba(0, 220, 100, 0.2);
+  box-shadow: 0 0 12px rgba(0, 220, 100, 0.6), 0 0 4px rgba(0, 220, 100, 0.3);
+  color: #ffffff;
+}
+
+/* Security+ — Blue */
+.cert-btn.cert-blue {
+  border-color: rgba(60, 120, 255, 0.3);
+  background: rgba(60, 120, 255, 0.08);
+}
+.cert-btn.cert-blue:hover {
+  border-color: rgba(60, 120, 255, 0.6);
+  background: rgba(60, 120, 255, 0.15);
+}
+.cert-btn.cert-blue.active {
+  border-color: #3c78ff;
+  background: rgba(60, 120, 255, 0.2);
+  box-shadow: 0 0 12px rgba(60, 120, 255, 0.6), 0 0 4px rgba(60, 120, 255, 0.3);
+  color: #ffffff;
+}
+
+/* CySA+ — Orange */
+.cert-btn.cert-orange {
+  border-color: rgba(255, 160, 40, 0.3);
+  background: rgba(255, 160, 40, 0.08);
+}
+.cert-btn.cert-orange:hover {
+  border-color: rgba(255, 160, 40, 0.6);
+  background: rgba(255, 160, 40, 0.15);
+}
+.cert-btn.cert-orange.active {
+  border-color: #ffa028;
+  background: rgba(255, 160, 40, 0.2);
+  box-shadow: 0 0 12px rgba(255, 160, 40, 0.6), 0 0 4px rgba(255, 160, 40, 0.3);
+  color: #ffffff;
+}
+
+/* Linux+ — Yellow */
+.cert-btn.cert-yellow {
+  border-color: rgba(255, 220, 40, 0.3);
+  background: rgba(255, 220, 40, 0.08);
+}
+.cert-btn.cert-yellow:hover {
+  border-color: rgba(255, 220, 40, 0.6);
+  background: rgba(255, 220, 40, 0.15);
+}
+.cert-btn.cert-yellow.active {
+  border-color: #ffdc28;
+  background: rgba(255, 220, 40, 0.2);
+  box-shadow: 0 0 12px rgba(255, 220, 40, 0.6), 0 0 4px rgba(255, 220, 40, 0.3);
+  color: #ffffff;
+}
+
+/* C# — Purple */
+.cert-btn.cert-purple {
+  border-color: rgba(168, 85, 247, 0.3);
+  background: rgba(168, 85, 247, 0.08);
+}
+.cert-btn.cert-purple:hover {
+  border-color: rgba(168, 85, 247, 0.6);
+  background: rgba(168, 85, 247, 0.15);
+}
+.cert-btn.cert-purple.active {
+  border-color: #a855f7;
+  background: rgba(168, 85, 247, 0.2);
+  box-shadow: 0 0 12px rgba(168, 85, 247, 0.6), 0 0 4px rgba(168, 85, 247, 0.3);
+  color: #ffffff;
+}
+
+/* Future-build tabs — greyed out and unclickable */
+.cert-btn.cert-future {
+  border-color: #16304c;
+  background: rgba(142, 170, 207, 0.04);
+  color: #55698a;
+  text-transform: none;
+  letter-spacing: 0.3px;
+  cursor: default;
+  pointer-events: none;
+}
+.cert-btn.cert-future .future-tag {
+  font-size: 9px;
+  font-weight: 600;
+  color: #44567a;
+  margin-left: 3px;
+}
+
+/* Divider grouping CompTIA tabs apart from the coding tabs */
+.cert-nav-divider {
+  width: 1px;
+  align-self: stretch;
+  min-height: 22px;
+  background: #1a3a5c;
+  margin: 0 8px;
+  flex-shrink: 0;
+}
+
+/* SOON badge for coming-soon tabs */
+.cert-btn.coming-soon {
+  cursor: pointer;
+  position: relative;
+}
+.cert-btn.coming-soon::after {
+  content: 'SOON';
+  font-size: 7px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: #8eaacf;
+  background: #0d1b2a;
+  border: 1px solid #3a5a7a;
+  border-radius: 3px;
+  padding: 1px 3px;
+  margin-left: 4px;
+  vertical-align: middle;
+}
+
+/* ── CERT PANELS ── */
+.cert-panel { display: none; width: 100%; }
+.cert-panel.active { display: flex; flex-direction: column; align-items: center; }
+
+/* ── UNDER CONSTRUCTION PANEL ── */
+.coming-soon-panel {
+  max-width: 960px;
+  width: 100%;
+  margin-top: 20px;
+  background: #0f1f30;
+  border: 1px solid #1a3a5c;
+  border-radius: 12px;
+  padding: 60px 40px;
+  text-align: center;
+}
+.coming-soon-panel .cs-badge {
+  display: inline-block;
+  background: #0d1b2a;
+  border: 1px solid #2255aa;
+  color: #4a7acc;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 6px 14px;
+  border-radius: 4px;
+  margin-bottom: 24px;
+}
+.coming-soon-panel h2 {
+  font-size: 28px;
+  color: #ffd700;
+  margin-bottom: 16px;
+}
+.coming-soon-panel .cs-desc {
+  font-size: 15px;
+  color: #8eaacf;
+  max-width: 540px;
+  margin: 0 auto 32px;
+  line-height: 1.7;
+}
+.coming-soon-panel .cs-features {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.cs-feature-pill {
+  background: #1a2a4a;
+  border: 1px solid #2255aa;
+  color: #6a9acc;
+  font-size: 12px;
+  padding: 8px 16px;
+  border-radius: 20px;
+}
+
+/* ── EXISTING STYLES ── */
+h1 {
+  font-size: 28px;
+  margin-bottom: 8px;
+  color: #fff;
+}
+.subtitle {
+  font-size: 14px;
+  color: #8eaacf;
+  margin-bottom: 40px;
+}
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
+  max-width: 960px;
+  width: 100%;
+}
+.card {
+  background: #1a2a4a;
+  border: 1px solid #2255aa;
+  border-radius: 10px;
+  padding: 28px 24px;
+  text-decoration: none;
+  color: #fff;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+}
+.card-icon {
+  font-size: 36px;
+  margin-bottom: 16px;
+}
+.card h2 {
+  font-size: 18px;
+  margin-bottom: 8px;
+  color: #ffd700;
+}
+.card p {
+  font-size: 13px;
+  color: #a0b8d8;
+  line-height: 1.6;
+}
+.card-action {
+  display: flex;
+  flex-direction: column;
+}
+.card-action p {
+  flex: 1;
+}
+.card-cta {
+  display: inline-flex;
+  align-self: flex-start;
+  align-items: center;
+  gap: 8px;
+  margin-top: 18px;
+  padding: 9px 18px;
+  border: 1px solid #ffd700;
+  border-radius: 20px;
+  background: rgba(255,215,0,0.1);
+  color: #ffd700;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  transition: background 0.15s, color 0.15s;
+}
+.card-cta .cta-arrow {
+  transition: transform 0.15s;
+}
+.card-action:hover .card-cta,
+.card-action:focus-visible .card-cta {
+  background: #ffd700;
+  color: #0d1b2a;
+}
+.card-action:hover .card-cta .cta-arrow,
+.card-action:focus-visible .card-cta .cta-arrow {
+  transform: translateX(3px);
+}
+.card-action:focus-visible {
+  outline: 2px solid #ffd700;
+  outline-offset: 3px;
+}
+.section-title {
+  font-size: 22px;
+  color: #ffd700;
+  margin-bottom: 6px;
+  text-align: center;
+  width: 100%;
+  max-width: 960px;
+}
+.section-desc {
+  font-size: 13px;
+  color: #8eaacf;
+  margin-bottom: 24px;
+  text-align: center;
+  max-width: 960px;
+}
+.section-divider {
+  width: 100%;
+  max-width: 960px;
+  border-top: 1px solid #2255aa;
+  margin: 48px 0 40px;
+}
+.category-title {
+  font-size: 16px;
+  color: #8eaacf;
+  margin-top: 32px;
+  margin-bottom: 16px;
+  text-align: left;
+  width: 100%;
+  max-width: 960px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.cards-compact {
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+.cards-compact .card {
+  padding: 18px 14px;
+}
+.cards-compact .card-icon {
+  font-size: 26px;
+  margin-bottom: 10px;
+}
+.cards-compact .card h2 {
+  font-size: 15px;
+  margin-bottom: 6px;
+}
+.cards-compact .card p {
+  font-size: 12px;
+  line-height: 1.5;
+}
+.tab-container {
+  display: flex;
+  gap: 0;
+  max-width: 960px;
+  width: 100%;
+  margin-bottom: 24px;
+}
+.tab-btn {
+  flex: 1;
+  padding: 14px 24px;
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  border: 2px solid #2255aa;
+  background: #0d1b2a;
+  color: #8eaacf;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+  text-align: center;
+}
+.tab-btn:first-child { border-radius: 8px 0 0 8px; }
+.tab-btn:last-child  { border-radius: 0 8px 8px 0; }
+.tab-btn.active {
+  background: #1a2a4a;
+  color: #ffd700;
+  border-color: #ffd700;
+}
+.tab-btn:not(.active):hover {
+  background: #152240;
+  color: #c0d4ee;
+}
+.tab-content { display: none; width: 100%; max-width: 960px; }
+.tab-content.active { display: block; }
+.tab-placeholder {
+  text-align: center;
+  padding: 48px 24px;
+  color: #8eaacf;
+  font-size: 16px;
+  background: #1a2a4a;
+  border: 1px solid #2255aa;
+  border-radius: 10px;
+  max-width: 960px;
+  width: 100%;
+}
+/* ── Dion Practice Exams: LIVE badge + green glow ── */
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+.live-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.live-dot {
+  width: 8px;
+  height: 8px;
+  background: #00dc64;
+  border-radius: 50%;
+  display: inline-block;
+  animation: pulse-dot 1.5s ease-in-out infinite;
+  box-shadow: 0 0 6px #00dc64;
+}
+.live-badge {
+  background: #00dc64;
+  color: #0d1b2a;
+  font-size: 10px;
+  font-weight: 800;
+  padding: 2px 7px;
+  border-radius: 4px;
+  letter-spacing: 1px;
+  margin-left: 4px;
+}
+.cards-compact.dion-live .card {
+  border: 1.5px solid rgba(0, 220, 100, 0.45);
+  box-shadow: 0 0 10px rgba(0, 220, 100, 0.15);
+  transition: transform 0.15s, box-shadow 0.25s, border-color 0.25s;
+}
+.cards-compact.dion-live .card:hover {
+  border-color: #00dc64;
+  box-shadow: 0 0 20px rgba(0, 220, 100, 0.45), 0 0 6px rgba(0, 220, 100, 0.3);
+}
+
+/* ── Under Construction section ── */
+.category-title.under-construction {
+  color: #ff8c00;
+  font-weight: 800;
+}
+.cards-under-construction .card {
+  opacity: 0.35;
+  cursor: default;
+  pointer-events: none;
+  position: relative;
+}
+.not-available-tag {
+  display: inline-block;
+  background: #cc2222;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: 4px;
+  letter-spacing: 0.8px;
+  margin-top: 10px;
+}
+</style>
+</head>
+<body>
+
+<!-- ── CERT NAV ── -->
+<nav id="cert-nav">
+  <div class="cert-nav-inner">
+    <span class="cert-nav-label">Certifications Tabs:</span>
+    <button class="cert-btn cert-red active" onclick="switchCert('aplus')" id="btn-aplus">A+</button>
+    <button class="cert-btn cert-green" onclick="switchCert('netplus')" id="btn-netplus">Network+</button>
+    <button class="cert-btn cert-blue coming-soon" onclick="showComingSoon(this, 'Security+', 'CompTIA Security+ is the most trusted entry into cybersecurity, proving you have real-world, hands-on skills to protect networks, apps, and data. It\'s vendor-neutral, globally recognized, and built to help you launch and grow a lasting security career.')">Security+</button>
+    <button class="cert-btn cert-orange coming-soon" onclick="showComingSoon(this, 'CySA+', 'CompTIA CySA+ proves you can detect, analyze, and stop threats in real time. From vulnerability management to incident response, it builds the skills SOCs rely on daily.')">CySA+</button>
+    <button class="cert-btn cert-yellow coming-soon" onclick="showComingSoon(this, 'Linux+', 'CompTIA Linux+ proves you can manage, secure, and troubleshoot Linux systems across cloud and hybrid environments. With skills in automation, containers, and orchestration.')">Linux+</button>
+    <span class="cert-nav-divider"></span>
+    <button class="cert-btn cert-purple" onclick="switchCert('csharp')" id="btn-csharp">C#</button>
+    <button class="cert-btn cert-future" disabled aria-disabled="true">Python <span class="future-tag">(future build)</span></button>
+    <button class="cert-btn cert-future" disabled aria-disabled="true">C++ <span class="future-tag">(future build)</span></button>
+    <button class="cert-btn cert-future" disabled aria-disabled="true">SQL <span class="future-tag">(future build)</span></button>
+    <button class="cert-btn cert-future" disabled aria-disabled="true">Sherlock <span class="future-tag">(future build)</span></button>
+  </div>
+</nav>
+
+<!-- ── A+ PANEL ── -->
+<div class="cert-panel active" id="panel-aplus">
+  <h1>A+ Study Hub</h1>
+  <p class="subtitle">Interactive practice labs and exam prep for CompTIA A+ Core 1 and Core 2</p>
+
+  <h2 class="section-title">PBQ Practice Simulations</h2>
+  <p class="section-desc">Hands-on performance-based question labs to build real-world troubleshooting skills</p>
+
+  <div class="tab-container">
+    <button class="tab-btn" onclick="switchTab('pbq', 'core1')" id="pbq-core1-tab">Core 1</button>
+    <button class="tab-btn active" onclick="switchTab('pbq', 'core2')" id="pbq-core2-tab">Core 2</button>
+  </div>
+
+  <div class="tab-content" id="pbq-core1">
+    <div class="tab-placeholder">Core 1 PBQ simulations coming soon.</div>
+  </div>
+
+  <div class="tab-content active" id="pbq-core2">
+    <div class="cards">
+      <a class='card' href='/chat-simulation'>
+        <div class="card-icon">💬</div>
+        <h2>Chat Troubleshooting</h2>
+        <p>Practice diagnosing and resolving issues through a live chat support simulation with end users.</p>
+      </a>
+      <a class='card' href='/network-simulation'>
+        <div class="card-icon">🌐</div>
+        <h2>Network Configuration</h2>
+        <p>Configure network settings, troubleshoot connectivity issues, and apply proper network configurations.</p>
+      </a>
+      <a class='card' href='/ticket-simulation'>
+        <div class="card-icon">🎫</div>
+        <h2>Helpdesk Ticket</h2>
+        <p>Work through realistic helpdesk tickets by triaging, diagnosing, and resolving common IT support issues.</p>
+      </a>
+      <a class='card' href='/email-simulation'>
+        <div class="card-icon">📧</div>
+        <h2>Email Security</h2>
+        <p>Identify phishing attempts, analyze email headers, and practice email security best practices in a realistic inbox simulation.</p>
+      </a>
+      <a class='card' href='/interactive-quiz'>
+        <div class="card-icon">📝</div>
+        <h2>Networking Services PBQ</h2>
+        <p>Test your knowledge of Windows services by selecting the correct Start/Stop status for host and server role configurations.</p>
+      </a>
+    </div>
+  </div>
+
+  <div class="section-divider"></div>
+
+  <h2 class="section-title">CompTIA A+ Question Study</h2>
+  <p class="section-desc">Structured practice covering all 4 exam domains | Messer + Dion sources | 78% pass threshold</p>
+
+  <div class="tab-container">
+    <button class="tab-btn" onclick="switchTab('study', 'core1')" id="study-core1-tab">Core 1</button>
+    <button class="tab-btn active" onclick="switchTab('study', 'core2')" id="study-core2-tab">Core 2</button>
+  </div>
+
+  <div class="tab-content" id="study-core1">
+    <div class="tab-placeholder">Core 1 question study material coming soon.</div>
+  </div>
+
+  <div class="tab-content active" id="study-core2">
+    <h3 class="category-title">Domain Study</h3>
+    <div class="cards cards-compact">
+      <a class='card' href='/domain1_ordered'>
+        <div class="card-icon">📘</div>
+        <h2>Domain 1: Operating Systems</h2>
+        <p>Obj 1.1–1.11 | 74 questions | Ordered by objective</p>
+      </a>
+      <a class='card' href='/domain2_ordered'>
+        <div class="card-icon">🔒</div>
+        <h2>Domain 2: Security</h2>
+        <p>Obj 2.1–2.11 | 73 questions | Ordered by objective</p>
+      </a>
+      <a class='card' href='/domain3_ordered'>
+        <div class="card-icon">🛠️</div>
+        <h2>Domain 3: Software Troubleshooting</h2>
+        <p>Obj 3.1–3.4 | 53 questions | Ordered by objective</p>
+      </a>
+      <a class='card' href='/domain4_ordered'>
+        <div class="card-icon">📋</div>
+        <h2>Domain 4: Operational Procedures</h2>
+        <p>Obj 4.1–4.10 | 75 questions | Ordered by objective</p>
+      </a>
+    </div>
+
+    <h3 class="category-title">Full Exam Simulation</h3>
+    <div class="cards">
+      <a class='card' href='/master_quiz'>
+        <div class="card-icon">🎯</div>
+        <h2>Master Exam — All 4 Domains</h2>
+        <p>275 questions fully shuffled across all domains and objectives | Exam-style randomization</p>
+      </a>
+    </div>
+
+    <h3 class="category-title">Acronym Study</h3>
+    <div class="cards">
+      <a class='card' href='/acronym_dual_quiz'>
+        <div class="card-icon">🔤</div>
+        <h2>Acronym Mastery Quiz</h2>
+        <p>56 acronyms | Dual format: Name→Definition and Definition→Name randomized each load</p>
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- ── NETWORK+ PANEL ── -->
+<div class="cert-panel" id="panel-netplus">
+  <h1>Network+ Study Hub</h1>
+  <p class="subtitle">Interactive practice labs and exam prep for CompTIA Network+ (N10-009)</p>
+
+  <div class="section-divider"></div>
+
+  <h2 class="section-title">CompTIA Network+ Question Study</h2>
+  <p class="section-desc">Structured practice covering all 25 N10-009 objectives | Dion Training source | 78% pass threshold | Ordered by objective</p>
+
+  <h3 class="category-title live-label">📝 Dion Practice Exams <span class="live-dot"></span><span class="live-badge">LIVE</span></h3>
+  <div class="cards cards-compact dion-live">
+    <a class='card' href='/dion_netplus_1'>
+      <div class="card-icon">📋</div>
+      <h2>Practice Exam 1</h2>
+      <p>All 25 objectives | 141 questions | Ordered by objective | Dion Training</p>
+    </a>
+    <a class='card' href='/dion_netplus_2'>
+      <div class="card-icon">📋</div>
+      <h2>Practice Exam 2</h2>
+      <p>All 25 objectives | 134 questions | Ordered by objective | Dion Training</p>
+    </a>
+    <a class='card' href='/dion_netplus_3'>
+      <div class="card-icon">📋</div>
+      <h2>Practice Exam 3</h2>
+      <p>All 25 objectives | 132 questions | Ordered by objective | Dion Training</p>
+    </a>
+    <a class='card' href='/dion_netplus_4'>
+      <div class="card-icon">📋</div>
+      <h2>Practice Exam 4</h2>
+      <p>All 25 objectives | 123 questions | Ordered by objective | Dion Training</p>
+    </a>
+  </div>
+
+  <h3 class="category-title under-construction">⚠ Under Construction</h3>
+  <div class="cards cards-under-construction">
+    <div class="card">
+      <div class="card-icon">🚧</div>
+      <h2>PBQ Simulations</h2>
+      <p>Hands-on performance-based question labs for Network+ scenarios.</p>
+      <span class="not-available-tag">NOT YET AVAILABLE</span>
+    </div>
+    <div class="card">
+      <div class="card-icon">🚧</div>
+      <h2>Master Exam — All 5 Domains</h2>
+      <p>Full shuffled exam across all N10-009 domains and objectives.</p>
+      <span class="not-available-tag">NOT YET AVAILABLE</span>
+    </div>
+    <div class="card">
+      <div class="card-icon">🚧</div>
+      <h2>Acronym Mastery Quiz</h2>
+      <p>N10-009 acronym drills — Name→Definition and Definition→Name formats.</p>
+      <span class="not-available-tag">NOT YET AVAILABLE</span>
+    </div>
+  </div>
+</div>
+
+<!-- ── C# PANEL ── -->
+<div class="cert-panel" id="panel-csharp">
+  <h1>C# Study Hub</h1>
+  <p class="subtitle">Interactive coding labs and exam prep for the Foundational C# certification</p>
+
+  <h2 class="section-title">Foundational C# Certification Study</h2>
+  <p class="section-desc">Built around the real freeCodeCamp / Microsoft &ldquo;Foundational C#&rdquo; certification | 6 courses | Matching lesson order</p>
+
+  <div class="tab-container">
+    <button class="tab-btn active" onclick="switchTab('csharp', 'coding')" id="csharp-coding-tab">Coding Practice</button>
+    <button class="tab-btn" onclick="switchTab('csharp', 'questions')" id="csharp-questions-tab">Practice Questions</button>
+    <button class="tab-btn" onclick="switchTab('csharp', 'bonus')" id="csharp-bonus-tab">Bonus Topics</button>
+  </div>
+
+  <div class="tab-content active" id="csharp-coding">
+    <h3 class="category-title">💻 Coding Practice</h3>
+    <div class="cards">
+      <a class='card card-action' href='/csharp_coding_exercises'>
+        <div class="card-icon">💻</div>
+        <h2>C# Coding Exercises</h2>
+        <p>8 exercises | Real compiler | Write actual C# in a Visual-Studio-style editor with real compile errors, real output, and a debug hint when you get stuck</p>
+        <span class="card-cta">Start <span class="cta-arrow" aria-hidden="true">&rarr;</span></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="tab-content" id="csharp-questions">
+    <h3 class="category-title">📘 Practice Questions</h3>
+    <div class="cards">
+      <a class='card card-action' href='/csharp_practice_quiz'>
+        <div class="card-icon">📘</div>
+        <h2>Certification Practice Quiz</h2>
+        <p>175 questions | 6 courses | Matches the real certification exam structure exactly, with full explanations organized by course</p>
+        <span class="card-cta">Start <span class="cta-arrow" aria-hidden="true">&rarr;</span></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="tab-content" id="csharp-bonus">
+    <h3 class="category-title">🎯 Bonus Topics</h3>
+    <div class="cards">
+      <a class='card card-action' href='/csharp_bonus_topics_quiz'>
+        <div class="card-icon">🎯</div>
+        <h2>Bonus Topics Quiz</h2>
+        <p>60 questions | 6 topics | Tuples, pattern matching, OOP, inheritance, .NET overview, and VS Code debugging — not on the exam, useful beyond it</p>
+        <span class="card-cta">Start <span class="cta-arrow" aria-hidden="true">&rarr;</span></span>
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- ── UNDER CONSTRUCTION PANEL ── -->
+<div class="cert-panel" id="panel-coming-soon">
+  <div class="coming-soon-panel">
+    <div class="cs-badge">Under Construction</div>
+    <h2 id="cs-title">Network+</h2>
+    <p class="cs-desc" id="cs-desc"></p>
+    <div class="cs-features">
+      <span class="cs-feature-pill">📝 Practice Questions</span>
+      <span class="cs-feature-pill">🎯 Domain Quizzes</span>
+      <span class="cs-feature-pill">🔤 Acronym Drills</span>
+      <span class="cs-feature-pill">🧪 PBQ Simulations</span>
+    </div>
+  </div>
+</div>
+
+<script>
+function switchCert(cert) {
+  // Hide all panels
+  document.querySelectorAll('.cert-panel').forEach(p => p.classList.remove('active'));
+  // Deactivate all cert buttons
+  document.querySelectorAll('.cert-btn').forEach(b => b.classList.remove('active'));
+
+  var panel = document.getElementById('panel-' + cert);
+  var btn = document.getElementById('btn-' + cert);
+  if (!panel || !btn) { return; }
+  panel.classList.add('active');
+  btn.classList.add('active');
+  if (window.history && history.replaceState) {
+    history.replaceState(null, '', '#' + cert);
+  }
+}
+
+// Allow linking straight to a cert section, e.g. /#csharp
+function openCertFromHash() {
+  var cert = (location.hash || '').replace('#', '');
+  if (cert && document.getElementById('panel-' + cert)) { switchCert(cert); }
+}
+
+function showComingSoon(btn, certName, description) {
+  document.querySelectorAll('.cert-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.cert-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('cs-title').textContent = certName + ' Study Hub';
+  document.getElementById('cs-desc').textContent = description;
+  document.getElementById('panel-coming-soon').classList.add('active');
+}
+
+openCertFromHash();
+window.addEventListener('hashchange', openCertFromHash);
+
+function switchTab(section, tab) {
+  var tabs = document.querySelectorAll('[id^="' + section + '-"]');
+  for (var i = 0; i < tabs.length; i++) {
+    var el = tabs[i];
+    if (el.id === section + '-' + tab + '-tab') {
+      el.classList.add('active');
+    } else if (el.id === section + '-' + tab) {
+      el.classList.add('active');
+    } else if (el.classList.contains('tab-btn') || el.classList.contains('tab-content')) {
+      el.classList.remove('active');
+    }
+  }
+}
+</script>
+<script src="footer.js"></script>
+</body>
+</html>

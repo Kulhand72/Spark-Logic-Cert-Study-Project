@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CompTIA A+ Core 2 — Domain 3: Software Troubleshooting</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700&family=JetBrains+Mono:wght@400;700&family=Space+Grotesk:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:radial-gradient(ellipse at top left,#2d5a3d,#3a3f4a);min-height:100vh;font-family:'Syne',sans-serif;color:#f0f0f0;padding-bottom:80px}
+#scoreboard{position:sticky;top:0;z-index:1000;background:rgba(0,0,0,0.5);border-bottom:1px solid rgba(255,255,255,0.15);padding:16px 20px;display:flex;justify-content:space-between;align-items:center;max-width:100vw;backdrop-filter:blur(6px)}
+.score-item{font-family:'Syne',sans-serif;font-size:16px}
+.score-correct{color:#00e87a;font-weight:700}
+.score-wrong{color:#ff3b5c;font-weight:700}
+.score-remaining{color:#aaaaaa}
+.score-pct{color:#ffd166;font-weight:700}
+#progress-bar{position:sticky;top:57px;z-index:999;height:6px;background:rgba(255,255,255,0.1)}
+#progress-fill{height:100%;width:0%;background:linear-gradient(90deg,#00e87a,#00c2ff);transition:width 300ms ease-out}
+.quiz-header{max-width:760px;margin:32px auto 0;padding:0 20px}
+.quiz-title{font-family:'Syne',sans-serif;font-size:24px;font-weight:700;color:#ffffff;margin-bottom:4px}
+.quiz-sub{font-family:'JetBrains Mono',monospace;font-size:13px;color:#aaaaaa;margin-bottom:24px}
+#container{max-width:760px;margin:0 auto;padding:0 20px}
+.card{background:rgba(20,30,25,0.85);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:24px;margin-bottom:24px;box-shadow:0 4px 16px rgba(0,0,0,0.3)}
+.card-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px;gap:12px}
+.q-badge{background:#00e87a;color:#0a1a10;padding:4px 8px;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;white-space:nowrap}
+.meta{display:flex;flex-direction:column;gap:4px;align-items:flex-end}
+.badge-messer{background:#1a3a2a;color:#4ade80;padding:4px 8px;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:13px}
+.badge-dion{background:#1a2a4a;color:#60a5fa;padding:4px 8px;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:13px}
+.ref-code{font-family:'JetBrains Mono',monospace;font-size:13px;color:#888888}
+.obj-tag{font-family:'JetBrains Mono',monospace;font-size:13px;color:#888888}
+.question-text{font-family:'Syne',sans-serif;font-size:18px;color:#f0f0f0;margin-bottom:20px;line-height:1.6}
+.choices{display:flex;flex-direction:column;gap:12px;margin-bottom:20px}
+.choice-btn{background:#e0e0e0;color:#1a1a1a;padding:12px 16px;border:none;border-radius:6px;cursor:pointer;font-family:'Syne',sans-serif;font-size:16px;text-align:left;transition:all 200ms ease-out;line-height:1.4}
+.choice-btn:hover:not(.locked){background:#f0f0f0;transform:translateX(4px)}
+.choice-btn.correct{background:#00e87a!important;color:#0a1a10!important}
+.choice-btn.wrong-selected{background:#ff3b5c!important;color:#ffffff!important}
+.choice-btn.unchosen.locked{background:#e0e0e0;color:#1a1a1a;opacity:0.6;cursor:not-allowed}
+.choice-btn.correct.locked{opacity:1;cursor:not-allowed}
+.choice-btn.wrong-selected.locked{opacity:1;cursor:not-allowed}
+.multi-note{font-family:'JetBrains Mono',monospace;font-size:13px;color:#ffd166;margin-bottom:12px}
+.submit-btn{background:#00c2ff;color:#fff;font-family:'Syne',sans-serif;font-size:16px;font-weight:700;padding:12px 20px;border:none;border-radius:6px;cursor:pointer;margin-top:12px;display:none;transition:background 200ms}
+.submit-btn:hover{background:#00b3e6}
+.result-badge{background:rgba(0,0,0,0.4);border:1px solid rgba(255,255,255,0.2);border-radius:6px;padding:12px 16px;margin:16px 0;font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:700;display:none}
+.result-badge.show{display:block}
+.result-correct{color:#00e87a}
+.result-wrong{color:#ff3b5c}
+.explain-pane{background:rgba(0,0,0,0.5);border:1px solid #ffffff;border-radius:6px;padding:16px;margin-top:12px;font-family:'Space Grotesk',sans-serif;font-size:17px;line-height:1.6;color:#f0f0f0;display:none}
+.explain-pane.show{display:block}
+.explain-pane strong{color:#00e87a}
+#final-banner{display:none;max-width:760px;margin:32px auto;padding:0 20px}
+.final-inner{border-radius:8px;padding:32px;text-align:center}
+.final-inner h2{font-family:'Syne',sans-serif;font-size:24px;font-weight:700;color:#fff;margin-bottom:12px}
+.final-inner p{font-family:'Syne',sans-serif;font-size:18px;color:#fff;margin-bottom:20px}
+#retake-btn{background:#00e87a;color:#0a1a10;font-family:'Syne',sans-serif;font-size:16px;font-weight:700;padding:12px 24px;border:none;border-radius:6px;cursor:pointer}
+#retake-btn:hover{background:#00c86a}
+</style>
+</head>
+<body>
+<div id="scoreboard">
+  <div class="score-item">Correct: <span class="score-correct" id="sc">0</span></div>
+  <div class="score-item">Wrong: <span class="score-wrong" id="sw">0</span></div>
+  <div class="score-item">Remaining: <span class="score-remaining" id="sr">0</span></div>
+  <div class="score-item">Score: <span class="score-pct" id="sp">0%</span></div>
+</div>
+<div id="progress-bar"><div id="progress-fill"></div></div>
+<div class="quiz-header">
+  <div class="quiz-title">CompTIA A+ Core 2 (220-1202)</div>
+  <div class="quiz-sub">DOMAIN 3: SOFTWARE TROUBLESHOOTING — 23% of Exam | Pass ≥78% | Ordered by Objective</div>
+</div>
+<div id="container"></div>
+<div id="final-banner">
+  <div class="final-inner" id="final-inner">
+    <h2 id="final-title">Final Score</h2>
+    <p id="final-score"></p>
+    <button id="retake-btn" onclick="retake()">Retake Quiz</button>
+  </div>
+</div>
+<script>
+const questions=[
+// Obj 3.1 Windows OS Troubleshooting
+{num:1,source:"Messer",ref:"A28",obj:"Obj 3.1",q:"A user on the headquarters network has opened a help desk ticket about their Windows desktop. When starting their computer, the login process proceeds normally but the Windows desktop takes fifteen minutes to appear. Yesterday, the desktop appeared in just a few seconds. Which of the following would be the most likely reason for this issue?",choices:["Slow profile load","Incorrect boot device order","Faulty RAM","Incorrect username and password"],answer:0,explain:"When login succeeds but the desktop takes an unusually long time to appear, a <strong>corrupted or oversized user profile</strong> is the most likely cause. An incorrect boot device order would prevent booting entirely. Faulty RAM would cause crashes or BSODs. An incorrect password would prevent login from succeeding at all.",multi:false},
+{num:2,source:"Messer",ref:"A50",obj:"Obj 3.1",q:"A system administrator is starting a Windows computer, but during startup they receive the message, \"One or more services failed to start.\" Additional reboots result in the same error message. Which of the following would be the best next troubleshooting step?",choices:["Check for proper cooling","Run a hardware diagnostic","Modify the service permissions","Rebuild the BCD"],answer:2,explain:"A persistent service failure on every boot most commonly points to <strong>incorrect service account permissions</strong> preventing the service from starting. Cooling issues cause shutdowns, not service failures. Hardware diagnostics check physical components. Rebuilding the BCD fixes boot loader issues, not service permission problems.",multi:false},
+{num:3,source:"Messer",ref:"A52",obj:"Obj 3.1",q:"A workstation on a manufacturing floor is taking much longer to boot than normal. Which of the following would be the best way to troubleshoot this issue?",choices:["Replace the CPU","Disable the startup applications","Upgrade the RAM","Install the latest OS patches"],answer:1,explain:"<strong>Disabling unnecessary startup applications</strong> reduces boot time by preventing resource-heavy programs from loading at startup. Replacing the CPU and upgrading RAM are hardware changes that don't address startup application load. OS patches may help with bugs but startup apps are the most common cause of slow boot.",multi:false},
+{num:4,source:"Messer",ref:"B33",obj:"Obj 3.1",q:"A desktop administrator is troubleshooting an older computer which has been slowing down as more applications and files are stored on the hard drive. Which of the following commands would be the best choice for increasing the performance of this computer?",choices:["defrag","format","sfc","xcopy"],answer:0,explain:"The <strong>defrag</strong> command reorganizes fragmented files on an HDD, reducing seek times and improving read/write performance. format wipes the drive. sfc repairs system files but does not improve drive performance. xcopy copies files between locations.",multi:false},
+{num:5,source:"Messer",ref:"A61",obj:"Obj 3.1",q:"A user on the research and development team reports her computer displays the message \"Missing operating system\" during boot. A technician runs hardware diagnostics and finds the RAM, CPU, storage drive, and power supply all pass the tests. The technician then finds a connected USB flash drive was causing the issue. Which of the following would prevent this issue from occurring in the future?",choices:["Create a login script","Install the latest OS patches","Run SFC","Modify the BIOS boot order"],answer:3,explain:"<strong>Modifying the BIOS boot order</strong> to set the internal drive as the first boot device prevents the system from attempting to boot from a connected USB drive. Login scripts, OS patches, and SFC all run after the OS loads and cannot prevent boot device selection issues.",multi:false},
+{num:6,source:"Messer",ref:"B85",obj:"Obj 3.1",q:"An administrator is troubleshooting a desktop computer experiencing a reboot issue. Before the Windows login screen appears, the system reboots in a continuous loop. Which of the following would be the best way to address this issue?",choices:["Start Safe Mode and perform a defragmentation","Reinstall the operating system from the original media","Update the boot order from the system BIOS","Run Startup Repair from the Advanced Boot Options"],answer:3,explain:"<strong>Startup Repair</strong> from Advanced Boot Options can fix corrupted boot files causing a pre-login reboot loop without reinstalling the OS. Safe Mode with defrag won't fix boot corruption. Reinstalling the OS is a last resort. BIOS boot order changes affect which device boots, not boot file corruption.",multi:false},
+{num:7,source:"Messer",ref:"C16",obj:"Obj 3.1",q:"A user has just installed a driver update from a laptop manufacturer. After restarting, their system shows a Windows Stop Error before the login prompt is displayed. Each subsequent reboot causes the same error to be displayed. Which of the following should the system administrator follow to best resolve this issue?",choices:["Modify the BIOS boot order","Boot to Safe Mode and perform a Windows Reset","Perform a System Restore","Reinstall the patch files"],answer:2,explain:"<strong>System Restore</strong> rolls back system files and drivers to a previous working state, resolving Stop Errors caused by a bad driver update. BIOS boot order is unrelated. Windows Reset is too destructive for a driver issue. Reinstalling the same patch files would reproduce the problem.",multi:false},
+{num:8,source:"Messer",ref:"C58",obj:"Obj 3.1",q:"A client's desktop computer is randomly rebooting throughout the workday without any warnings or error messages. Which of the following would be the best next troubleshooting step?",choices:["Update the system BIOS","Reinstall the Windows operating system","Boot to Safe Mode and disable all startup applications","Perform a full system diagnostic"],answer:3,explain:"Random reboots without errors can indicate <strong>hardware failure</strong>; a full system diagnostic checks RAM, CPU, storage, and power supply. BIOS updates and OS reinstalls are premature without hardware verification. Safe Mode disables software but won't reveal hardware faults.",multi:false},
+{num:9,source:"Messer",ref:"A23",obj:"Obj 3.1",q:"When connecting a new USB webcam to Windows 11, a message appears stating \"The controller does not have enough resources for this device.\" Which of the following would be the best next troubleshooting step?",choices:["Close all large-memory processes","Modify the BCD","Move the webcam to a different USB interface","Use System Restore to rollback to a previous configuration"],answer:2,explain:"<strong>USB controllers have a limited number of endpoints</strong>; moving the device to a different USB port or controller resolves resource exhaustion errors. Memory processes don't affect USB endpoints. BCD manages boot configuration. System Restore is too drastic for a USB resource issue.",multi:false},
+{num:10,source:"Messer",ref:"C61",obj:"Obj 3.1",q:"A user has noticed his computer begins to slow down during daily use and eventually locks up completely. During the lock up, the keyboard and mouse do not respond and the screen does not show any error messages. Which of the following tasks should a technician follow to best troubleshoot this issue? (Choose TWO)",choices:["Start the computer in Safe Mode","Perform a hardware diagnostic","Connect the computer to a different VLAN","Update the OS to the latest patches","Roll back to a previous configuration","Scan for viruses and malware"],answer:[1,5],explain:"Complete system lockups with no error messages can be caused by <strong>failing hardware</strong> or <strong>malware</strong>; both a hardware diagnostic and malware scan should be investigated simultaneously. Safe Mode and OS patches are useful but secondary steps. VLAN changes affect networking, not system stability.",multi:true},
+{num:11,source:"Messer",ref:"C87",obj:"Obj 3.1",q:"A technician has just installed a new device driver and restarted a Windows laptop, but now the system shows a Windows Stop Error before the login screen is displayed. Which of the following would be the best way to resolve this issue?",choices:["Start in Safe Mode","Replace the system memory","Reinstall Windows from the original media","Perform a full backup"],answer:0,explain:"<strong>Safe Mode</strong> loads Windows with minimal drivers, allowing the technician to remove or roll back the problematic driver causing the Stop Error. Replacing memory is unrelated to a driver-caused Stop Error. Reinstalling Windows is excessive for a single driver issue. A backup should have been done before the driver install.",multi:false},
+{num:12,source:"Messer",ref:"B51",obj:"Obj 3.1",q:"An executive has a laptop which runs very slowly after login and continues running slowly throughout the day. The user has complained certain applications cannot be started and others will randomly crash. A check of the laptop shows the memory utilization is very close to 100%. Which of the following would provide a short-term fix for this issue?",choices:["Disable startup items","Update to the latest OS patches","Defragment the hard drive","Reboot the computer"],answer:0,explain:"<strong>Disabling startup items</strong> frees up RAM consumed at boot, providing a short-term fix for high memory utilization. OS patches address bugs but not RAM consumption. Defragmenting improves HDD speed, not RAM availability. Rebooting provides temporary relief but the problem returns as apps reload.",multi:false},
+{num:13,source:"Dion",ref:"Q35",obj:"Obj 3.1",q:"A user calls the service desk and states that their workstation has a virus. The user states that they were browsing the Internet and a pop-up appeared warning them their computer was infected. The user clicked on the pop-up and now the computer is acting strangely. Which of the following is the FIRST step a technician should take?",choices:["Run an antivirus scan","Quarantine the infected system","Educate the end user","Disable System Restore"],answer:1,explain:"The <strong>first step</strong> in the malware removal process is to quarantine the infected system by removing it from the network. This prevents the malware from spreading to other systems or communicating with command-and-control servers. Antivirus scans and disabling System Restore come after quarantine.",multi:false},
+{num:14,source:"Dion",ref:"Q52",obj:"Obj 3.1",q:"You receive a ticket where a user reports receiving frequent \"Low Memory\" warnings on their Windows 10 laptop while working with multiple applications open. Which of the following is the BEST solution?",choices:["Upgrade the hard drive to an SSD","Add more RAM to the laptop","Reinstall Windows 10","Increase the size of the paging file"],answer:1,explain:"<strong>Adding more physical RAM</strong> is the best solution for persistent Low Memory warnings. The paging file is a temporary workaround that uses slower disk space. An SSD improves general speed but does not resolve RAM shortage. Reinstalling Windows does not change the hardware memory capacity.",multi:false},
+{num:15,source:"Dion",ref:"Q66",obj:"Obj 3.1",q:"You are troubleshooting a user's workstation that is operating extremely slowly. You open the Task Manager and see that the CPU is at 100% utilization constantly, even when no applications are open. Which of the following is the MOST likely cause?",choices:["The hard drive is failing","The computer has a malware infection","The RAM is faulty","The operating system needs to be reinstalled"],answer:1,explain:"A <strong>malware infection</strong> is the most likely cause of constant 100% CPU utilization with no user applications open. Malware often runs hidden background processes that consume all available CPU resources. A failing drive causes read errors and slowness. Faulty RAM causes crashes. OS reinstall would be premature.",multi:false},
+{num:16,source:"Dion",ref:"Q69",obj:"Obj 3.1",q:"Which of the following types of installations would you use on a system with slow performance or one that you cannot isolate the cause of the issue on, and you want to preserve the user's files and settings?",choices:["Clean install","In-place upgrade","Repair installation","Image deployment"],answer:2,explain:"A <strong>repair installation</strong> reinstalls Windows system files while preserving user files, settings, and installed applications. A clean install wipes everything. An in-place upgrade upgrades the OS version. Image deployment replaces the entire drive contents with a preconfigured image.",multi:false},
+{num:17,source:"Dion",ref:"Q57",obj:"Obj 3.1",q:"Charlie has submitted a ticket reporting that their operating system has become corrupted, but their personal files and data are intact. Which of the following is the BEST solution to resolve this issue while preserving the user's data?",choices:["Perform a clean install","Perform a repair installation","Restore from a system image","Replace the hard drive"],answer:1,explain:"A <strong>repair installation</strong> reinstalls corrupted OS files while preserving the user's personal data and installed applications. A clean install would erase user data. Restoring from a system image would overwrite current data with older backup data. Replacing the hard drive is a hardware solution for a software problem.",multi:false},
+// Obj 3.2 Mobile OS Issues
+{num:18,source:"Messer",ref:"A7",obj:"Obj 3.2",q:"A user has opened a help desk ticket regarding the battery life on their mobile phone. The battery in the phone held a charge for most of the day prior to connecting to the corporate network. The battery now only lasts about half a day and the back of the phone is warmer than usual. The phone is configured as follows: Storage: 216.2 GB of 512 GB used / Display and Brightness: Automatic / Wi-Fi: Enabled / Auto-lock: Disabled / VPN: Not connected / Low Power Mode: Disabled / Battery Maximum Capacity: 100%. Which of the following changes would have the best impact on battery performance?",choices:["Enable auto-lock","Connect to the VPN","Increase available storage space","Disable Wi-Fi"],answer:0,explain:"<strong>Auto-lock disabled</strong> means the screen stays on indefinitely, which is the most significant battery drain identified in the configuration. All other settings appear normal. VPN would consume more battery. Storage usage does not directly affect battery life. Wi-Fi consumes less power than cellular data.",multi:false},
+{num:44,source:"Messer",ref:"Acronym",obj:"Obj 3.1",q:"What does SFC stand for in Windows troubleshooting?",choices:["System Firewall Checker","Secure File Configuration","System File Checker","Software Fault Corrector"],answer:2,explain:"<strong>SFC</strong> stands for System File Checker. It is a Windows command-line utility (sfc /scannow) that scans for and repairs corrupted or missing protected Windows system files. It is commonly used after malware removal or following a failed update to restore OS integrity.",multi:false},
+{num:47,source:"Messer",ref:"Acronym",obj:"Obj 3.1",q:"What does BCD stand for in Windows boot troubleshooting?",choices:["Boot Configuration Data","Basic Cache Directory","Binary Code Database","Boot Control Driver"],answer:0,explain:"<strong>BCD</strong> stands for Boot Configuration Data. It is the Windows boot loader data store that contains boot-time configuration parameters. The BCD replaces the old boot.ini file and can be modified using the bcdedit command. Corruption of the BCD causes Windows to fail to boot.",multi:false},
+{num:48,source:"Messer",ref:"Acronym",obj:"Obj 3.1",q:"What does POST stand for?",choices:["Pre-Operating System Test","Power-On Self-Test","Primary Output System Test","Processor Online Status Tool"],answer:1,explain:"<strong>POST</strong> stands for Power-On Self-Test. It is a diagnostic routine run by the BIOS/UEFI firmware every time the computer starts, checking that core hardware components such as RAM, CPU, and storage are functional before handing off to the boot loader.",multi:false},
+{num:50,source:"Messer",ref:"Acronym",obj:"Obj 3.1",q:"What does RAM stand for?",choices:["Read-Access Memory","Random-Access Memory","Rapid Application Module","Redundant Array Memory"],answer:1,explain:"<strong>RAM</strong> stands for Random-Access Memory. It is the volatile memory used by a computer to store data currently being processed by the CPU. Unlike storage drives, RAM loses its contents when power is removed. Insufficient RAM causes slow performance, application crashes, and Low Memory warnings.",multi:false},
+{num:51,source:"Messer",ref:"Acronym",obj:"Obj 3.1",q:"What does HDD stand for?",choices:["High-Definition Drive","Hard Disk Drive","Hybrid Data Device","Host Disk Directory"],answer:1,explain:"<strong>HDD</strong> stands for Hard Disk Drive. It is a traditional storage device that uses spinning magnetic platters to read and write data. HDDs are susceptible to fragmentation over time, which can be addressed with the defrag utility. They are slower than SSDs but offer higher capacity at lower cost.",multi:false},
+{num:52,source:"Messer",ref:"Acronym",obj:"Obj 3.1",q:"What does SSD stand for?",choices:["Static Storage Device","Solid-State Drive","Sequential Sector Disk","Secure System Drive"],answer:1,explain:"<strong>SSD</strong> stands for Solid-State Drive. It is a non-volatile storage device that uses flash memory with no moving parts. SSDs are significantly faster than HDDs, more resistant to physical shock, and do not require defragmentation. They are the standard storage device in modern laptops and desktops.",multi:false},
+{num:53,source:"Messer",ref:"Acronym",obj:"Obj 3.1",q:"What does VM stand for?",choices:["Virtual Memory","Virtual Machine","Variable Module","Verified Media"],answer:1,explain:"<strong>VM</strong> stands for Virtual Machine. It is a software emulation of a physical computer that runs an operating system and applications in an isolated environment. VMs share the hardware resources of a host system and are used for testing, development, and running multiple OS environments simultaneously.",multi:false},
+{num:19,source:"Messer",ref:"B57",obj:"Obj 3.2",q:"A user on the sales team has opened a help desk ticket because of short battery times on a new company-provided tablet. When using the tablet, the battery only lasts a few hours before shutting off. Which of the following would be the best choices for improving the battery life? (Select TWO)",choices:["Install the latest operating system patches","Increase the brightness levels","Connect to the corporate VPN","Disable Bluetooth and cellular connections","Close apps which work in the background","Perform a soft reset"],answer:[3,4],explain:"<strong>Disabling unused radios</strong> (Bluetooth and cellular) and <strong>closing background apps</strong> are the most direct ways to reduce battery consumption on a mobile device. Increasing brightness drains battery faster. VPN adds encryption overhead consuming more power. OS patches and soft resets do not directly extend battery life.",multi:true},
+{num:20,source:"Messer",ref:"A27",obj:"Obj 3.2",q:"A help desk technician has been called to a training room with Android tablets as presentation devices. An application used during the training program will not start on any of the tablets. When the application is selected, the splash screen appears for a moment and then completely disappears with no error message. Which of the following would be the best next troubleshooting step?",choices:["Install all operating system updates","Uninstall the application","Power cycle the tablets","Roll back to the previous application version"],answer:2,explain:"<strong>Power cycling</strong> clears temporary memory states and resolves many transient application launch failures across multiple devices simultaneously. Installing OS updates and rolling back the app are longer processes. Uninstalling the app removes the tool needed for the training.",multi:false},
+{num:21,source:"Messer",ref:"C9",obj:"Obj 3.2",q:"A user has recently been assigned a new tablet, but each time she tries to read her email the tablet reboots. The user has reinstalled the email client, but the problem continues to occur. Which of the following would be the best next troubleshooting step?",choices:["Replace the battery","Perform a factory reset","Run a hardware diagnostic","Disable Wi-Fi"],answer:2,explain:"When a <strong>reinstalled app still causes reboots</strong>, a hardware diagnostic determines if a hardware fault is triggering the crash rather than a software issue. Replacing the battery is premature without hardware testing. A factory reset is more drastic than necessary at this point. Disabling Wi-Fi would prevent email from loading entirely.",multi:false},
+{num:22,source:"Messer",ref:"C24",obj:"Obj 3.2",q:"An app on a user's corporate smartphone has stopped updating. Which of the following would be the best way to resolve this issue?",choices:["Connect the smartphone to a power source","Restart the smartphone","Disable rotation lock","Disable Bluetooth"],answer:1,explain:"<strong>Restarting the smartphone</strong> clears background processes that may be blocking app updates from completing. A power source is needed for large updates but is not the first troubleshooting step. Rotation lock and Bluetooth settings have no effect on app update processes.",multi:false},
+{num:23,source:"Messer",ref:"A44",obj:"Obj 3.2",q:"A user in the sales department is attempting to upgrade the operating system of their smartphone, but the smartphone will not start the installation when selected. Which of the following is the most likely reason for this issue?",choices:["Bluetooth is enabled","The smartphone storage is nearly full","Rotation lock is disabled","The phone is connected to a power source"],answer:1,explain:"<strong>OS updates require significant free storage space</strong> to download and install; insufficient storage prevents the update from starting. Bluetooth and rotation lock have no effect on OS update installation. Being connected to a power source is typically a requirement for updates, not a cause of failure.",multi:false},
+{num:24,source:"Messer",ref:"B47",obj:"Obj 3.2",q:"A technician is troubleshooting an issue with an iOS tablet randomly restarting during normal use. A check of the device shows no significant application updates and the operating system was upgraded to a new version three days ago. The user states the tablet was working normally last week. Which of the following would be the most likely reason for these random reboots?",choices:["Faulty OS upgrade","Invalid device certificate","Malware infection","Faulty battery","Incorrect network settings"],answer:0,explain:"<strong>Random reboots beginning immediately after an OS upgrade</strong> with no other changes strongly indicate the upgrade introduced a fault. Invalid certificates cause connection errors. Malware is unlikely on iOS without jailbreaking. Battery faults typically cause shutdowns, not reboots. Network settings don't cause random reboots.",multi:false},
+{num:25,source:"Messer",ref:"C70",obj:"Obj 3.2",q:"A user would like to use their smartphone for a payment during checkout at the grocery store, but the smartphone is not seen by the payment system. Which of the following would be the BEST next troubleshooting step?",choices:["Restart the smartphone","Replace the battery","Perform a factory reset","Enable Wi-Fi"],answer:0,explain:"<strong>NFC payment failures</strong> are often caused by a frozen NFC stack; restarting the smartphone resets the NFC subsystem and is the least disruptive first step. Replacing the battery is unrelated to NFC. A factory reset is too drastic as a first step. Wi-Fi is not required for NFC contactless payments.",multi:false},
+{num:26,source:"Messer",ref:"B14",obj:"Obj 3.2",q:"A user runs a corporate app on their smartphone which downloads a database each time the app is started. This download process normally takes a few seconds, but today the download is taking minutes to complete. Which of the following should a technician follow as the best next troubleshooting step?",choices:["Disable Bluetooth","Run a network speed check","Charge the smartphone battery","Check the cloud storage resource usage"],answer:1,explain:"When a normally fast download <strong>slows significantly</strong>, a <strong>network speed check</strong> determines if the issue is with the connection rather than the device or app. Disabling Bluetooth has minimal effect on download speed. Battery charge affects performance but not specifically download speed. Cloud storage usage is a server-side issue.",multi:false},
+{num:27,source:"Messer",ref:"B25",obj:"Obj 3.2",q:"A user in the accounting department is having an issue with his smartphone reaching websites and retrieving mail when working from home. Inside the office, the phone appears to work normally. Which of the following would be the best next step for troubleshooting this issue?",choices:["Verify the network configuration at home","Install the latest operating system updates","Connect the phone to power when working at home","Restart the smartphone after arriving at home"],answer:0,explain:"When a device <strong>works at one location but not another</strong>, the home network configuration (DNS, gateway, or ISP issue) is the most likely cause. OS updates are unrelated to location-specific connectivity. Power connection does not affect network settings. Restarting may help but does not address the underlying network configuration issue.",multi:false},
+{num:28,source:"Dion",ref:"Q32",obj:"Obj 3.2",q:"An employee at Dion Training complains that every time airplane mode is enabled on their laptop, their external mouse and keyboard stop working. Which of the following BEST explains this issue?",choices:["The laptop needs a driver update","The mouse and keyboard are connected via Bluetooth","The airplane mode setting is corrupted","The USB ports are being disabled"],answer:1,explain:"<strong>Airplane mode disables all wireless radios including Bluetooth</strong>. If the mouse and keyboard are Bluetooth devices, they will disconnect whenever airplane mode is enabled. Wired USB devices would not be affected by airplane mode. This is expected behavior, not a driver or settings issue.",multi:false},
+// Obj 3.3 Mobile Security Issues
+{num:29,source:"Messer",ref:"A60",obj:"Obj 3.3",q:"A user is using a smartphone at their desk, and they occasionally receive a security warning in the browser. After some additional troubleshooting, the technician determines the security warnings are fake. Which of the following should a technician follow to best resolve this issue?",choices:["Put the phone into airplane mode","Connect to the corporate network using a VPN connection","Run an anti-malware scan on the smartphone","Remove any paired Bluetooth devices"],answer:2,explain:"<strong>Fake security warnings</strong> in a mobile browser are a symptom of adware or malware; an anti-malware scan identifies and removes the cause. Airplane mode disconnects the network but does not remove malware. VPN encrypts traffic but does not remove adware. Removing Bluetooth devices is unrelated to browser alerts.",multi:false},
+{num:45,source:"Messer",ref:"Acronym",obj:"Obj 3.2",q:"What does NFC stand for?",choices:["Network File Connection","Near-field Communication","Non-Frequency Channel","Networked Firmware Controller"],answer:1,explain:"<strong>NFC</strong> stands for Near-field Communication. It is a short-range wireless technology that enables contactless data exchange between devices held a few centimeters apart. NFC is used for mobile payments (Apple Pay, Google Pay), transit cards, and pairing devices.",multi:false},
+{num:49,source:"Messer",ref:"Acronym",obj:"Obj 3.2",q:"What does MDM stand for in a mobile troubleshooting context?",choices:["Mobile Data Management","Multiple Device Monitor","Mobile Device Management","Managed Deployment Module"],answer:2,explain:"<strong>MDM</strong> stands for Mobile Device Management. In a troubleshooting context, MDM policies are often the cause of app installation failures, restricted features, or configuration issues on corporate mobile devices. MDM allows IT to enforce settings and restrictions remotely.",multi:false},
+{num:30,source:"Messer",ref:"B80",obj:"Obj 3.3",q:"An Android phone user is traveling internationally and would like to avoid overage charges for using too much cellular data while overseas. Which of the following would be the best way to control data access?",choices:["Install a VPN client","Remove all apps with high data requirements","Enable data usage notifications","Connect exclusively through a cellular hotspot"],answer:2,explain:"<strong>Data usage notifications</strong> alert the user when approaching data limits, allowing them to manually control consumption before incurring overage charges. A VPN encrypts data but does not reduce usage. Removing apps permanently is unnecessary. A cellular hotspot still uses cellular data incurring the same overage charges.",multi:false},
+{num:31,source:"Messer",ref:"C8",obj:"Obj 3.3",q:"A user has noticed a Bluetooth device currently connected to their tablet, but they don't recognize the make or model of the connected device. Which of the following would be the first step for troubleshooting this issue?",choices:["Perform an anti-malware scan","Research installed apps with an app scanner","Disable the Wi-Fi network","Remove the Bluetooth device"],answer:3,explain:"The immediate <strong>first step</strong> when an unrecognized Bluetooth device is connected is to <strong>remove it</strong>, stopping any potential unauthorized access immediately. An anti-malware scan and app scanner are useful follow-up steps. Disabling Wi-Fi is unrelated to a Bluetooth connection issue.",multi:false},
+// Obj 3.4 PC Security Issues
+{num:32,source:"Messer",ref:"A58",obj:"Obj 3.4",q:"A user has received a pop up message on their computer stating applications on their computer are infected with a virus. A technician has determined the pop up message is a hoax and it needs to be removed from the computer. The technician has disabled System Restore to remove all previous restore points. Which of the following tasks would be the best next step?",choices:["Update the anti-virus signatures","Educate the end-user","Schedule anti-virus scans for midnight each day","Boot the system with the original installation media"],answer:0,explain:"After <strong>disabling System Restore</strong>, <strong>updating antivirus signatures</strong> ensures the scanner has the latest definitions to identify and remove the fake alert malware. Educating the user and scheduling scans come after the malware is removed. Booting from installation media is a more drastic step not yet warranted.",multi:false},
+{num:33,source:"Messer",ref:"B24",obj:"Obj 3.4",q:"A user is performing a series of Google searches, but the results pages are displaying links and advertisements from a different website. This issue occurs each time a Google search is performed. The same Google search on a different computer results in a normal Google results page. Which of the following would resolve this issue?",choices:["Run the search from Safe Mode","Install the latest operating system patches","Run a malware removal utility","Login as a different user"],answer:2,explain:"<strong>Search result hijacking</strong> occurring only on one computer is a classic symptom of browser-redirecting malware requiring a malware removal scan. Safe Mode does not remove malware. OS patches address vulnerabilities but don't remove existing infections. Logging in as a different user may bypass it temporarily but doesn't remove the malware.",multi:false},
+{num:34,source:"Messer",ref:"B34",obj:"Obj 3.4",q:"A user is receiving alerts on their desktop computer stating, \"Access to this PC has been blocked for security reasons.\" A technician has determined this message was not created by the company's security software. Which of the following would be the best next step in this troubleshooting process?",choices:["Update the desktop computer operating system","Check the certificate of the corporate web server","Restart the desktop computer","Run an anti-malware utility"],answer:3,explain:"<strong>Fake security block messages</strong> are a common malware symptom; running an anti-malware utility identifies and removes the source. OS updates address vulnerabilities but don't remove existing malware. The corporate web server certificate is unrelated. Restarting provides temporary relief but the malware reloads on boot.",multi:false},
+{num:35,source:"Messer",ref:"B50",obj:"Obj 3.4",q:"A desktop administrator is troubleshooting poor performance on a user's laptop computer. The system takes an excessive amount of time during the boot process, and pop up messages appear while using the word processor and spreadsheet applications. Which of the following steps should the technician do next?",choices:["Educate the end-user","Schedule periodic anti-virus scans","Enable System Protection","Disconnect the laptop from the network"],answer:3,explain:"Slow boot with pop-up messages indicates <strong>malware</strong>; <strong>disconnecting from the network</strong> quarantines the system and prevents further spread or data exfiltration. Educating the user and scheduling scans are steps taken after removal. Enabling System Protection without first removing malware could create infected restore points.",multi:false},
+{num:36,source:"Messer",ref:"B54",obj:"Obj 3.4",q:"A user has noticed their mouse arrow has been moving around the screen when they are not touching the mouse. The user has watched the mouse opening applications and changing settings in the Control Panel. Which of the following would be the best way for an administrator to resolve this issue?",choices:["Turn the firewall off and back on again","Run an anti-virus scan","Remove all recently installed applications","Upgrade to the latest OS patches"],answer:1,explain:"A <strong>mouse moving autonomously</strong> and opening applications indicates remote access malware (RAT — Remote Access Trojan); an antivirus scan identifies and removes it. Toggling the firewall does not remove existing malware. Removing recent applications is a guess without evidence. OS patches address vulnerabilities but don't remove active malware.",multi:false},
+{num:37,source:"Messer",ref:"C82",obj:"Obj 3.4",q:"A user is browsing to their corporate home page, but a different website appears instead. The user tries to connect with other browsers on the same computer, but the result is identical. Which of the following would be the best next troubleshooting step?",choices:["Try connecting to the site in Safe Mode","Perform an anti-malware scan","View all browsing results in the Event Viewer","Roll back to a previous configuration"],answer:1,explain:"<strong>Browser redirection</strong> occurring across all browsers on one computer is a strong indicator of malware that modifies DNS or browser settings, requiring an anti-malware scan. Safe Mode may bypass it but doesn't remove it. Event Viewer does not track browser behavior. Rolling back to a previous configuration is premature before scanning.",multi:false},
+{num:38,source:"Messer",ref:"A48",obj:"Obj 3.4",q:"A computer on a manufacturing floor has been identified as a malware-infected system. Which of the following should be the best next step to resolve this issue?",choices:["Disconnect the network cable","Perform a malware scan","Disable System Restore","Download the latest anti-malware signatures"],answer:0,explain:"The <strong>first step</strong> when malware is identified is to <strong>quarantine the system</strong> by disconnecting it from the network to prevent spread to other systems. Malware scanning, disabling System Restore, and downloading signatures all come after quarantine in the malware removal process.",multi:false},
+{num:39,source:"Messer",ref:"C51",obj:"Obj 3.4",q:"A user's workstation has been identified as participating in a DDoS to a large Internet service provider. The computer has been powered down and stored in a locked area until investigators arrive. Which of these procedures would be the most important to follow in the meantime?",choices:["Create documentation of the storage area","Retrieve logs from the workstation Event Viewer","Obtain the purchase records of the workstation","Maintain integrity of the workstation data"],answer:3,explain:"<strong>Maintaining data integrity</strong> preserves the forensic evidence on the workstation, which is critical for any legal investigation. Chain of custody requires that evidence be untampered with. Retrieving logs or powering on the system could alter evidence. Purchase records are not relevant to the forensic investigation.",multi:false},
+{num:40,source:"Messer",ref:"A65",obj:"Obj 3.4",q:"A desktop administrator has determined an employee in the corporate office has been using their computer to share copyrighted materials to others on the Internet. Which of the following should be the best next step?",choices:["Create a firewall rule to block Internet access to this computer","Create a hash for each file which was shared","Compile a list of licenses for each set of copyrighted materials","Retrieve and securely store the computer"],answer:3,explain:"<strong>Securing the computer</strong> preserves physical evidence and prevents tampering, which is the proper first step in an incident response involving potential legal action. Creating firewall rules and file hashes are follow-up steps. Compiling license lists does not address the active security incident.",multi:false},
+{num:41,source:"Messer",ref:"A88",obj:"Obj 3.4",q:"A company maintains a Windows system in the conference room for use during meetings. However, the system has not received any recent updates and will no longer connect to the corporate network due to missing security patches. Which of the following would be the most likely reason for this issue?",choices:["BIOS administrator password is enabled","No users are actively logged in","Firewall is filtering traffic","Guest accounts are disabled"],answer:2,explain:"<strong>Network Access Control (NAC)</strong> enforced by a firewall commonly blocks non-compliant systems that are missing required security patches. A BIOS password affects local access, not network connectivity. Active user sessions do not affect network access. Guest account status does not block network-level access.",multi:false},
+{num:42,source:"Messer",ref:"B71",obj:"Obj 3.4",q:"A network administrator has a report showing a single user with numerous visits to a website. This website is known to violate the company's AUP. Which of the following should the administrator do next?",choices:["Create a firewall filter to block the website","Scan all computers with the latest anti-malware signatures","Contact the company's security officer","Change the user's password"],answer:2,explain:"<strong>AUP violations</strong> are a security and HR matter; the correct escalation path is to notify the <strong>company's security officer</strong> rather than taking unilateral action. Creating a firewall block is a reactive measure but not the correct next step. Scanning all computers is unnecessary for a policy violation. Changing the user's password is not appropriate for an AUP violation.",multi:false},
+// Acronym questions Domain 3
+{num:43,source:"Messer",ref:"Acronym",obj:"Obj 3.1",q:"What does BSOD stand for?",choices:["Boot Sector Operational Damage","Blue Screen of Death","Basic System Operating Diagnostic","Binary System Output Display"],answer:1,explain:"<strong>BSOD</strong> stands for Blue Screen of Death. It is the blue error screen displayed by Windows when the operating system encounters a critical error it cannot recover from. BSODs display a stop code that helps identify the cause, such as a driver failure, hardware fault, or memory corruption.",multi:false},
+{num:46,source:"Messer",ref:"Acronym",obj:"Obj 3.4",q:"What does AUP stand for?",choices:["Authorized User Protocol","Acceptable Use Policy","Account Update Procedure","Application Utility Package"],answer:1,explain:"<strong>AUP</strong> stands for Acceptable Use Policy. It is a document that defines the rules and constraints for using an organization's IT resources. Employees typically must acknowledge the AUP, which covers permitted and prohibited activities such as internet usage, software installation, and data handling.",multi:false}
+];
+
+function shuffle(arr){for(let i=arr.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]]}return arr;}
+
+function prepareQuestions(qs){
+  const shuffled=[...qs];
+  return shuffled.map(q=>{
+    if(q.multi){
+      const indices=[...Array(q.choices.length).keys()];
+      shuffle(indices);
+      const newChoices=indices.map(i=>q.choices[i]);
+      const newAnswer=q.answer.map(a=>indices.indexOf(a));
+      return {...q,choices:newChoices,answer:newAnswer};
+    } else {
+      const n=q.choices.length;
+      const indices=[...Array(n).keys()];
+      shuffle(indices);
+      const newChoices=indices.map(i=>q.choices[i]);
+      const newAnswer=indices.indexOf(q.answer);
+      return {...q,choices:newChoices,answer:newAnswer};
+    }
+  });
+}
+
+let prepared=prepareQuestions(questions);
+const total=prepared.length;
+let correct=0,wrong=0,answered=0;
+document.getElementById('sr').textContent=total;
+
+function updateScore(){
+  document.getElementById('sc').textContent=correct;
+  document.getElementById('sw').textContent=wrong;
+  document.getElementById('sr').textContent=total-answered;
+  const pct=answered>0?Math.round((correct/answered)*100):0;
+  document.getElementById('sp').textContent=pct+'%';
+  document.getElementById('progress-fill').style.width=(answered/total*100)+'%';
+  if(answered===total)showFinal();
+}
+
+function showFinal(){
+  const pct=Math.round((correct/total)*100);
+  const banner=document.getElementById('final-banner');
+  const inner=document.getElementById('final-inner');
+  banner.style.display='block';
+  inner.style.background=pct>=78?'#00e87a':'#ff3b5c';
+  inner.style.border='2px solid '+(pct>=78?'#00e87a':'#ff3b5c');
+  document.getElementById('final-title').textContent='Final Score: '+pct+'%';
+  document.getElementById('final-score').textContent=correct+' correct out of '+total+' — '+(pct>=78?'PASS ✓':'FAIL ✗');
+  banner.scrollIntoView({behavior:'smooth'});
+}
+
+function retake(){
+  correct=0;wrong=0;answered=0;
+  prepared=prepareQuestions(questions);
+  document.getElementById('final-banner').style.display='none';
+  document.getElementById('container').innerHTML='';
+  buildQuiz();
+  updateScore();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function buildQuiz(){
+  const container=document.getElementById('container');
+  prepared.forEach((q,idx)=>{
+    const card=document.createElement('div');
+    card.className='card';
+    const srcBadge=q.source==='Messer'?'<span class="badge-messer">Messer</span>':'<span class="badge-dion">Dion</span>';
+    const refLabel=q.ref==='Acronym'?'Acronym':q.ref;
+    const multiNote=q.multi?`<div class="multi-note">★ Select TWO answers, then click Submit</div>`:'';
+    const submitHtml=q.multi?`<button class="submit-btn" id="submit-${idx}" onclick="submitMulti(${idx})">Submit Answer</button>`:'';
+    const btnHtml=q.choices.map((c,ci)=>{
+      if(q.multi){
+        return `<button class="choice-btn" id="btn-${idx}-${ci}" onclick="toggleMulti(${idx},${ci})">${String.fromCharCode(65+ci)}. ${c}</button>`;
+      } else {
+        return `<button class="choice-btn" onclick="selectSingle(${idx},${ci})">${String.fromCharCode(65+ci)}. ${c}</button>`;
+      }
+    }).join('');
+    card.innerHTML=`
+      <div class="card-header">
+        <span class="q-badge">Q${idx+1}</span>
+        <div class="meta">${srcBadge}<span class="ref-code">${refLabel}</span><span class="obj-tag">${q.obj}</span></div>
+      </div>
+      <div class="question-text">${q.q}</div>
+      ${multiNote}
+      <div class="choices" id="choices-${idx}">${btnHtml}</div>
+      ${submitHtml}
+      <div class="result-badge" id="result-${idx}"></div>
+      <div class="explain-pane" id="explain-${idx}">${q.explain}</div>
+    `;
+    container.appendChild(card);
+  });
+}
+
+const multiSelected={};
+function toggleMulti(idx,ci){
+  if(!multiSelected[idx])multiSelected[idx]=new Set();
+  const sel=multiSelected[idx];
+  const btn=document.getElementById(`btn-${idx}-${ci}`);
+  if(sel.has(ci)){sel.delete(ci);btn.style.background='#e0e0e0';btn.style.color='#1a1a1a';}
+  else{sel.add(ci);btn.style.background='#00c2ff';btn.style.color='#ffffff';}
+  const submitBtn=document.getElementById(`submit-${idx}`);
+  if(submitBtn)submitBtn.style.display=sel.size>=1?'block':'none';
+}
+
+function submitMulti(idx){
+  const q=prepared[idx];
+  const sel=multiSelected[idx]?Array.from(multiSelected[idx]):[];
+  const correctSet=new Set(q.answer);
+  const selSet=new Set(sel);
+  const btns=document.getElementById('choices-'+idx).querySelectorAll('.choice-btn');
+  btns.forEach((btn,bi)=>{
+    btn.style.background='';btn.style.color='';
+    btn.classList.add('locked');
+    if(correctSet.has(bi)){btn.classList.add('correct');}
+    else if(selSet.has(bi)&&!correctSet.has(bi)){btn.classList.add('wrong-selected');}
+    else{btn.classList.add('unchosen');}
+  });
+  const submitBtn=document.getElementById(`submit-${idx}`);
+  if(submitBtn)submitBtn.style.display='none';
+  const isCorrect=q.answer.every(a=>selSet.has(a))&&sel.length===q.answer.length;
+  const resultEl=document.getElementById('result-'+idx);
+  resultEl.className='result-badge show';
+  if(isCorrect){
+    resultEl.innerHTML='<span class="result-correct">✓ Correct!</span>';correct++;
+  } else {
+    const correctLetters=q.answer.map(a=>String.fromCharCode(65+a)).join(', ');
+    const selLetters=sel.map(a=>String.fromCharCode(65+a)).join(', ');
+    resultEl.innerHTML=`<span class="result-wrong">✗ Wrong — Correct answers: ${correctLetters}. You selected: ${selLetters||'none'}.</span>`;wrong++;
+  }
+  document.getElementById('explain-'+idx).classList.add('show');
+  answered++;updateScore();
+}
+
+function selectSingle(idx,chosen){
+  const q=prepared[idx];
+  const btns=document.getElementById('choices-'+idx).querySelectorAll('.choice-btn');
+  btns.forEach((btn,bi)=>{
+    btn.classList.add('locked');
+    if(bi===q.answer){btn.classList.add('correct');}
+    else if(bi===chosen&&chosen!==q.answer){btn.classList.add('wrong-selected');}
+    else{btn.classList.add('unchosen');}
+  });
+  const isCorrect=chosen===q.answer;
+  const resultEl=document.getElementById('result-'+idx);
+  resultEl.className='result-badge show';
+  resultEl.innerHTML=isCorrect?'<span class="result-correct">✓ Correct!</span>':`<span class="result-wrong">✗ Wrong — Answer: ${String.fromCharCode(65+q.answer)}. ${q.choices[q.answer]}</span>`;
+  document.getElementById('explain-'+idx).classList.add('show');
+  isCorrect?correct++:wrong++;
+  answered++;updateScore();
+}
+
+buildQuiz();
+updateScore();
+</script>
+<script src="footer.js"></script>
+</body>
+</html>

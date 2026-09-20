@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>CompTIA Core 2 — Email Security Simulation</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: Arial, sans-serif; background: #1a1a2e; color: #000; font-size: 13px; }
+
+/* TOP BAR */
+.topbar {
+  background: #003580;
+  color: white;
+  padding: 8px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.topbar h1 { font-size: 14px; font-weight: bold; }
+.topbar .score { font-size: 12px; display: flex; gap: 20px; align-items: center; }
+.score-correct { color: #4ade80; font-weight: bold; }
+.score-wrong   { color: #f87171; font-weight: bold; }
+.btn-reset {
+  background: #e0e0e0; border: none; padding: 4px 12px;
+  border-radius: 3px; cursor: pointer; font-size: 12px; font-weight: bold;
+}
+.btn-reset:hover { background: #ccc; }
+
+/* SCENARIO BOX */
+.scenario {
+  background: #f0f4ff;
+  border-bottom: 2px solid #003580;
+  padding: 10px 16px;
+  font-size: 12px;
+  color: #222;
+  line-height: 1.5;
+}
+.scenario strong { display: block; margin-bottom: 4px; color: #003580; }
+
+/* MAIN LAYOUT */
+.main { display: flex; height: calc(100vh - 110px); }
+
+/* INBOX SIDEBAR */
+.inbox-sidebar {
+  width: 190px;
+  background: #e8edf5;
+  border-right: 2px solid #b0b8cc;
+  overflow-y: auto;
+  flex-shrink: 0;
+}
+.inbox-sidebar h3 {
+  background: #003580;
+  color: white;
+  padding: 6px 10px;
+  font-size: 12px;
+  font-weight: bold;
+}
+.inbox-item {
+  padding: 8px 10px;
+  border-bottom: 1px solid #c8d0e0;
+  cursor: pointer;
+  background: white;
+  position: relative;
+}
+.inbox-item:hover { background: #dde5f5; }
+.inbox-item.active { background: #c0d0f0; border-left: 3px solid #003580; }
+.inbox-item .inbox-num { font-size: 10px; color: #003580; font-weight: bold; margin-bottom: 2px; }
+.inbox-item .inbox-subj { font-size: 11px; font-weight: bold; color: #111; line-height: 1.3; }
+.inbox-item .inbox-prev { font-size: 10px; color: #555; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.status-indicator {
+  position: absolute; right: 8px; top: 8px;
+  width: 8px; height: 8px; border-radius: 50%; background: #aaa;
+}
+.status-indicator.correct { background: #16a34a; }
+.status-indicator.wrong   { background: #dc2626; }
+.status-indicator.partial { background: #d97706; }
+
+/* EMAIL VIEWER */
+.email-viewer {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: white;
+  overflow: hidden;
+}
+.email-header {
+  background: #003580;
+  color: white;
+  padding: 8px 14px;
+  flex-shrink: 0;
+}
+.email-header .email-subject { font-size: 13px; font-weight: bold; margin-bottom: 6px; }
+.email-header .email-meta { font-size: 11px; color: #c8d8ff; line-height: 1.6; }
+.email-header .email-meta span.suspicious { color: #ffd700; }
+.email-body-scroll { flex: 1; overflow-y: auto; padding: 14px 16px; background: white; }
+.email-body-scroll p { margin-bottom: 10px; line-height: 1.6; color: #222; }
+.email-body-scroll .warn-link { color: #b45309; font-weight: bold; text-decoration: underline; }
+.email-body-scroll .attachment-badge {
+  display: inline-block;
+  background: #fef3c7; border: 1px solid #d97706;
+  border-radius: 4px; padding: 3px 10px;
+  font-size: 11px; color: #92400e; margin-top: 4px;
+}
+.email-body-scroll .attachment-badge.safe {
+  background: #f0fdf4; border-color: #16a34a; color: #166534;
+}
+.email-body-scroll .sig { color: #555; font-size: 12px; margin-top: 12px; }
+
+/* CLASSIFICATION PANEL */
+.class-panel {
+  width: 270px;
+  background: #f0f4ff;
+  border-left: 2px solid #b0b8cc;
+  overflow-y: auto;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+}
+.class-panel h3 {
+  background: #003580;
+  color: white;
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: bold;
+}
+.class-section { padding: 12px; border-bottom: 1px solid #c8d0e0; }
+.class-section label { display: block; font-size: 11px; font-weight: bold; color: #003580; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.04em; }
+
+/* RADIO OPTIONS */
+.radio-group { display: flex; flex-direction: column; gap: 5px; }
+.radio-option {
+  display: flex; align-items: center; gap: 8px;
+  padding: 6px 10px;
+  border: 2px solid #c8d0e0;
+  border-radius: 4px;
+  cursor: pointer;
+  background: white;
+  transition: all 0.15s;
+  font-size: 12px;
+}
+.radio-option:hover { background: #e0eaff; border-color: #003580; }
+.radio-option input[type=radio] { accent-color: #003580; }
+.radio-option.selected-correct {
+  background: #dcfce7; border-color: #16a34a; color: #166534; font-weight: bold;
+}
+.radio-option.selected-wrong {
+  background: #fee2e2; border-color: #dc2626; color: #991b1b; font-weight: bold;
+}
+.radio-option.correct-answer {
+  background: #dcfce7; border-color: #16a34a; color: #166534;
+}
+
+/* SUBMIT BUTTON */
+.btn-submit {
+  margin: 12px;
+  background: #003580;
+  color: white;
+  border: none;
+  padding: 8px;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: bold;
+  cursor: pointer;
+  width: calc(100% - 24px);
+  transition: background 0.15s;
+}
+.btn-submit:hover { background: #0050cc; }
+.btn-submit:disabled { background: #888; cursor: default; }
+
+/* FEEDBACK BOX */
+.feedback-box {
+  margin: 0 12px 12px;
+  padding: 8px 10px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: bold;
+  display: none;
+  line-height: 1.5;
+}
+.feedback-box.correct { background: #dcfce7; border: 1px solid #16a34a; color: #166534; display: block; }
+.feedback-box.wrong   { background: #fee2e2; border: 1px solid #dc2626; color: #991b1b; display: block; }
+
+/* SECTION DIVIDER */
+.section-divider {
+  background: #003580; color: white;
+  padding: 4px 12px; font-size: 11px; font-weight: bold;
+}
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <div>
+    <h1>CompTIA A+ Core 2 — Email Security Classification</h1>
+    <div style="font-size:11px;color:#c8d8ff;margin-top:2px;">IT Troubleshooting: Identify and respond to suspicious emails</div>
+  </div>
+  <div class="score">
+    <span>Correct: <span class="score-correct" id="scoreCorrect">0</span></span>
+    <span>Wrong: <span class="score-wrong" id="scoreWrong">0</span></span>
+    <span>of <span id="scoreTotal">0</span> graded</span>
+    <button class="btn-reset" onclick="resetAll()">Reset All</button>
+  </div>
+</div>
+
+<!-- SCENARIO -->
+<div class="scenario">
+  <strong>SCENARIO: Corporate Email Security Review</strong>
+  As a corporate technician, review each email in the inbox. Classify each email and select the correct resolution.
+  All phishing attempts must be reported. Future spam emails to users must be prevented.
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- INBOX SIDEBAR -->
+  <div class="inbox-sidebar">
+    <h3>📥 Inbox</h3>
+    <div id="inboxList"></div>
+  </div>
+
+  <!-- EMAIL VIEWER -->
+  <div class="email-viewer">
+    <div class="email-header" id="emailHeader">
+      <div class="email-subject" id="emailSubject">Select an email from the inbox</div>
+      <div class="email-meta" id="emailMeta"></div>
+    </div>
+    <div class="email-body-scroll" id="emailBody">
+      <p style="color:#999;margin-top:40px;text-align:center;">← Click an email in the inbox to begin</p>
+    </div>
+  </div>
+
+  <!-- CLASSIFICATION PANEL -->
+  <div class="class-panel">
+    <h3>📋 Email Classification Menu</h3>
+
+    <div class="class-section">
+      <label>Classification</label>
+      <div class="radio-group" id="classGroup">
+        <label class="radio-option"><input type="radio" name="classification" value="Phishing"> Phishing</label>
+        <label class="radio-option"><input type="radio" name="classification" value="Spam"> Spam</label>
+        <label class="radio-option"><input type="radio" name="classification" value="Legitimate"> Legitimate</label>
+      </div>
+    </div>
+
+    <div class="section-divider">Resolution</div>
+    <div class="class-section">
+      <div class="radio-group" id="resGroup">
+        <label class="radio-option"><input type="radio" name="resolution" value="Report email to Information Security"> Report email to Information Security</label>
+        <label class="radio-option"><input type="radio" name="resolution" value="Perform no additional actions"> Perform no additional actions</label>
+        <label class="radio-option"><input type="radio" name="resolution" value="Unsubscribe"> Unsubscribe</label>
+        <label class="radio-option"><input type="radio" name="resolution" value="Open attachment"> Open attachment</label>
+      </div>
+    </div>
+
+    <button class="btn-submit" id="btnSubmit" onclick="submitAnswer()" disabled>Submit Answer</button>
+    <div class="feedback-box" id="feedbackBox"></div>
+  </div>
+</div>
+
+<script>
+const emails = [
+  {
+    id: 1,
+    subject: "Account Locked",
+    from: "helpdesk@comptia.co",
+    to: "joe@comptia.org",
+    preview: "Dear User, We have detected unusual activity...",
+    body: `<p><strong>Dear User,</strong></p>
+           <p>We have detected unusual activity coming from your corporate account joe@comptia.org. To protect your account, please click <span class="warn-link">HERE</span> to change your password.</p>
+           <p class="sig">Regards,<br>CompTIA IT Help Desk</p>`,
+    suspiciousFrom: true,
+    classification: "Phishing",
+    resolution: "Report email to Information Security",
+    explanation: "The sender domain (.co instead of .org) is spoofed. This is a phishing attempt designed to steal credentials. Report to Information Security immediately."
+  },
+  {
+    id: 2,
+    subject: "Share Your Feedback",
+    from: "survey@researchco.net",
+    to: "joe@comptia.org",
+    signedBy: "survey@researchco.net",
+    preview: "It only takes 4 minutes of your time! In partnership...",
+    body: `<p style="background:#fff3cd;padding:8px;border-left:3px solid #d97706;color:#92400e;font-weight:bold;">EXTERNAL EMAIL</p>
+           <p>It only takes 4 minutes of your time!</p>
+           <p>In partnership with Research & Co, we are conducting a survey regarding your cellular service. As an expert in your field, we'd love to get your feedback!</p>
+           <p>This quick survey will only take a few minutes of your time, and as a token of our appreciation for sharing your insight, you will receive a pair of wireless headphones.</p>
+           <p><span class="warn-link">Take the Survey here!</span></p>
+           <p><span class="warn-link">Manage Email Preferences</span></p>`,
+    suspiciousFrom: false,
+    classification: "Spam",
+    resolution: "Unsubscribe",
+    explanation: "This is unsolicited marketing email (spam). It is not phishing but is unwanted. The correct action is to Unsubscribe to prevent future emails."
+  },
+  {
+    id: 3,
+    subject: "Employee Orientation",
+    from: "hr@comptia.org",
+    to: "joe@comptia.org",
+    attachment: "Employee_Reference_Guide.PDF",
+    attachmentSafe: true,
+    preview: "Dear Joe, Welcome to CompTIA! We are excited...",
+    body: `<p><strong>Dear Joe,</strong></p>
+           <p>Welcome to CompTIA!</p>
+           <p>We are excited that you are here, and we know you will be a valuable asset to the company.</p>
+           <p>Please review the attached orientation material to get started with the onboarding experience.</p>
+           <p class="sig">Regards,<br>CompTIA Human Resources</p>
+           <p><span class="attachment-badge safe">📎 Employee_Reference_Guide.PDF</span></p>`,
+    suspiciousFrom: false,
+    classification: "Legitimate",
+    resolution: "Open attachment",
+    explanation: "This email is from the legitimate internal HR department (hr@comptia.org) welcoming a new employee. It is safe to open the attachment."
+  },
+  {
+    id: 4,
+    subject: "Security Update",
+    from: "infosec@comptia.org",
+    to: "joe@comptia.org",
+    attachment: "patch1.exe",
+    attachmentSafe: false,
+    preview: "We need to install an urgent patch to your Windows OS...",
+    body: `<p>We need to install an urgent patch to your Windows Operating System. Please download and run the included attachment to install the security patch as soon as possible!</p>
+           <p class="sig">Regards,<br>infosec@comptia.org</p>
+           <p><span class="attachment-badge">⚠️ patch1.exe</span></p>`,
+    suspiciousFrom: false,
+    classification: "Phishing",
+    resolution: "Report email to Information Security",
+    explanation: "Despite appearing to come from an internal address, sending an executable (.exe) via email asking users to run it is a major red flag for phishing. Report to Information Security."
+  },
+  {
+    id: 5,
+    subject: "Interview",
+    from: "alex@gmail.com",
+    to: "joe@comptia.org",
+    preview: "Good afternoon Joe, I just wanted to thank you...",
+    body: `<p><strong>Good afternoon Joe,</strong></p>
+           <p>I just wanted to thank you for your time during my interview last week. It was exciting to hear about the position and possible opportunity at CompTIA. Please don't hesitate to reach out to me with any questions or concerns you may have about me or my qualifications. Regardless of the outcome, it was a pleasure speaking with you, and I hope to have the opportunity to work with you in the future.</p>
+           <p class="sig">Regards,<br>Alex</p>`,
+    suspiciousFrom: false,
+    classification: "Legitimate",
+    resolution: "Perform no additional actions",
+    explanation: "This is a legitimate follow-up email from a job interview candidate. No action required beyond reading."
+  }
+];
+
+let currentEmail = null;
+let results = {};
+
+function buildInbox() {
+  const list = document.getElementById('inboxList');
+  list.innerHTML = '';
+  emails.forEach(e => {
+    const div = document.createElement('div');
+    div.className = 'inbox-item' + (currentEmail && currentEmail.id === e.id ? ' active' : '');
+    div.id = `inbox-${e.id}`;
+
+    let statusClass = '';
+    if (results[e.id]) {
+      const r = results[e.id];
+      if (r.classOk && r.resOk) statusClass = 'correct';
+      else if (!r.classOk && !r.resOk) statusClass = 'wrong';
+      else statusClass = 'partial';
+    }
+
+    div.innerHTML = `
+      <div class="inbox-num">Inbox ${e.id}</div>
+      <div class="inbox-subj">${e.subject}</div>
+      <div class="inbox-prev">${e.preview}</div>
+      <div class="status-indicator ${statusClass}"></div>
+    `;
+    div.onclick = () => selectEmail(e);
+    list.appendChild(div);
+  });
+}
+
+function selectEmail(e) {
+  currentEmail = e;
+
+  // Update inbox highlight
+  document.querySelectorAll('.inbox-item').forEach(el => el.classList.remove('active'));
+  document.getElementById(`inbox-${e.id}`).classList.add('active');
+
+  // Email header
+  document.getElementById('emailSubject').textContent = `Subject: ${e.subject}`;
+  let meta = `From: <span class="${e.suspiciousFrom ? 'suspicious' : ''}">${e.from}</span><br>To: ${e.to}`;
+  if (e.signedBy) meta += `<br>Signed By: ${e.signedBy}`;
+  document.getElementById('emailMeta').innerHTML = meta;
+
+  // Email body
+  document.getElementById('emailBody').innerHTML = e.body;
+
+  // Reset classification panel
+  document.querySelectorAll('input[name=classification]').forEach(r => r.checked = false);
+  document.querySelectorAll('input[name=resolution]').forEach(r => r.checked = false);
+  document.querySelectorAll('.radio-option').forEach(el => {
+    el.classList.remove('selected-correct','selected-wrong','correct-answer');
+  });
+
+  document.getElementById('feedbackBox').className = 'feedback-box';
+  document.getElementById('feedbackBox').textContent = '';
+  document.getElementById('btnSubmit').disabled = false;
+
+  // If already graded, show results
+  if (results[e.id]) {
+    showGradedState(e);
+  }
+
+  updateInputListeners();
+}
+
+function updateInputListeners() {
+  document.querySelectorAll('input[name=classification], input[name=resolution]').forEach(input => {
+    input.onchange = () => {
+      const c = document.querySelector('input[name=classification]:checked');
+      const r = document.querySelector('input[name=resolution]:checked');
+      document.getElementById('btnSubmit').disabled = !(c && r);
+    };
+  });
+}
+
+function submitAnswer() {
+  if (!currentEmail) return;
+  const c = document.querySelector('input[name=classification]:checked');
+  const r = document.querySelector('input[name=resolution]:checked');
+  if (!c || !r) return;
+
+  const classOk = c.value === currentEmail.classification;
+  const resOk   = r.value === currentEmail.resolution;
+
+  results[currentEmail.id] = { classOk, resOk, chosenClass: c.value, chosenRes: r.value };
+
+  showGradedState(currentEmail);
+  updateScores();
+  buildInbox();
+
+  document.getElementById('btnSubmit').disabled = true;
+}
+
+function showGradedState(e) {
+  const res = results[e.id];
+  if (!res) return;
+
+  // Color classification options
+  document.querySelectorAll('#classGroup .radio-option').forEach(opt => {
+    const val = opt.querySelector('input').value;
+    opt.classList.remove('selected-correct','selected-wrong','correct-answer');
+    if (val === res.chosenClass) {
+      opt.classList.add(res.classOk ? 'selected-correct' : 'selected-wrong');
+      opt.querySelector('input').checked = true;
+    }
+    if (!res.classOk && val === e.classification) {
+      opt.classList.add('correct-answer');
+    }
+  });
+
+  // Color resolution options
+  document.querySelectorAll('#resGroup .radio-option').forEach(opt => {
+    const val = opt.querySelector('input').value;
+    opt.classList.remove('selected-correct','selected-wrong','correct-answer');
+    if (val === res.chosenRes) {
+      opt.classList.add(res.resOk ? 'selected-correct' : 'selected-wrong');
+      opt.querySelector('input').checked = true;
+    }
+    if (!res.resOk && val === e.resolution) {
+      opt.classList.add('correct-answer');
+    }
+  });
+
+  // Feedback
+  const fb = document.getElementById('feedbackBox');
+  const allOk = res.classOk && res.resOk;
+  fb.className = 'feedback-box ' + (allOk ? 'correct' : 'wrong');
+  fb.innerHTML = (allOk
+    ? '✅ Correct! '
+    : `❌ ${!res.classOk ? `Classification should be <strong>${e.classification}</strong>. ` : ''}${!res.resOk ? `Resolution should be <strong>${e.resolution}</strong>.` : ''}`)
+    + `<br><em>${e.explanation}</em>`;
+}
+
+function updateScores() {
+  let correct = 0, wrong = 0;
+  Object.values(results).forEach(r => {
+    if (r.classOk && r.resOk) correct++;
+    else wrong++;
+  });
+  document.getElementById('scoreCorrect').textContent = correct;
+  document.getElementById('scoreWrong').textContent = wrong;
+  document.getElementById('scoreTotal').textContent = Object.keys(results).length;
+}
+
+function resetAll() {
+  results = {};
+  currentEmail = null;
+  document.getElementById('emailSubject').textContent = 'Select an email from the inbox';
+  document.getElementById('emailMeta').innerHTML = '';
+  document.getElementById('emailBody').innerHTML = '<p style="color:#999;margin-top:40px;text-align:center;">← Click an email in the inbox to begin</p>';
+  document.querySelectorAll('input[type=radio]').forEach(r => r.checked = false);
+  document.querySelectorAll('.radio-option').forEach(el => el.classList.remove('selected-correct','selected-wrong','correct-answer'));
+  document.getElementById('feedbackBox').className = 'feedback-box';
+  document.getElementById('btnSubmit').disabled = true;
+  updateScores();
+  buildInbox();
+}
+
+// Init
+buildInbox();
+updateInputListeners();
+</script>
+<script src="footer.js"></script>
+</body>
+</html>
