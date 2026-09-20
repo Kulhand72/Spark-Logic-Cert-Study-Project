@@ -20,15 +20,37 @@ body {
 /* ── CERT NAV BAR ── */
 #cert-nav {
   width: 100%;
-  background: #07111e;
-  border-bottom: 1px solid #1a3a5c;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   padding: 0;
   margin-bottom: 40px;
   position: sticky;
   top: 0;
   z-index: 500;
+}
+/* Each nav row spans full width and centers its own content */
+.cert-nav-row {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+/* Both rows use the same navy + blue border treatment as the site's
+   cards, and are divided by a bright yellow line */
+.cert-nav-row.cert-nav-comptia,
+.cert-nav-row.cert-nav-coding {
+  background: #1a2a4a;
+  border: 1px solid #2255aa;
+}
+/* Row 1 — IT certifications */
+.cert-nav-row.cert-nav-comptia {
+  border-bottom: none;
+  border-radius: 10px 10px 0 0;
+}
+/* Row 2 — Coding certifications: set apart from row 1 by the bright
+   yellow divider line along its top edge */
+.cert-nav-row.cert-nav-coding {
+  border-top: 2px solid #ffd700;
+  border-radius: 0 0 10px 10px;
 }
 .cert-nav-inner {
   display: flex;
@@ -42,13 +64,13 @@ body {
 }
 .cert-nav-label {
   font-size: 13px;
-  color: #ffffff;
+  color: #ffd700;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 1.5px;
   white-space: nowrap;
   padding: 0 10px 0 4px;
-  border-right: 1px solid #1a3a5c;
+  border-right: 1px solid #2255aa;
   margin-right: 4px;
 }
 
@@ -70,33 +92,37 @@ body {
 
 /* A+ — Red */
 .cert-btn.cert-red {
-  border-color: rgba(255, 60, 60, 0.3);
-  background: rgba(255, 60, 60, 0.08);
+  border-color: rgba(255, 92, 92, 0.65);
+  background: rgba(255, 92, 92, 0.2);
+  color: #ffd4d4;
 }
 .cert-btn.cert-red:hover {
-  border-color: rgba(255, 60, 60, 0.6);
-  background: rgba(255, 60, 60, 0.15);
+  border-color: #ff6b6b;
+  background: rgba(255, 92, 92, 0.32);
+  color: #ffffff;
 }
 .cert-btn.cert-red.active {
-  border-color: #ff3c3c;
-  background: rgba(255, 60, 60, 0.2);
-  box-shadow: 0 0 12px rgba(255, 60, 60, 0.6), 0 0 4px rgba(255, 60, 60, 0.3);
+  border-color: #ff6b6b;
+  background: rgba(255, 92, 92, 0.38);
+  box-shadow: 0 0 12px rgba(255, 92, 92, 0.7), 0 0 4px rgba(255, 92, 92, 0.4);
   color: #ffffff;
 }
 
 /* Network+ — Green */
 .cert-btn.cert-green {
-  border-color: rgba(0, 220, 100, 0.3);
-  background: rgba(0, 220, 100, 0.08);
+  border-color: rgba(45, 250, 140, 0.65);
+  background: rgba(45, 250, 140, 0.2);
+  color: #c9ffe2;
 }
 .cert-btn.cert-green:hover {
-  border-color: rgba(0, 220, 100, 0.6);
-  background: rgba(0, 220, 100, 0.15);
+  border-color: #2dfa8c;
+  background: rgba(45, 250, 140, 0.32);
+  color: #ffffff;
 }
 .cert-btn.cert-green.active {
-  border-color: #00dc64;
-  background: rgba(0, 220, 100, 0.2);
-  box-shadow: 0 0 12px rgba(0, 220, 100, 0.6), 0 0 4px rgba(0, 220, 100, 0.3);
+  border-color: #2dfa8c;
+  background: rgba(45, 250, 140, 0.38);
+  box-shadow: 0 0 12px rgba(45, 250, 140, 0.7), 0 0 4px rgba(45, 250, 140, 0.4);
   color: #ffffff;
 }
 
@@ -150,25 +176,36 @@ body {
 
 /* C# — Purple */
 .cert-btn.cert-purple {
-  border-color: rgba(168, 85, 247, 0.3);
-  background: rgba(168, 85, 247, 0.08);
+  border-color: rgba(202, 141, 255, 0.7);
+  background: rgba(192, 132, 252, 0.26);
+  color: #eddcff;
 }
 .cert-btn.cert-purple:hover {
-  border-color: rgba(168, 85, 247, 0.6);
-  background: rgba(168, 85, 247, 0.15);
+  border-color: #d3a4ff;
+  background: rgba(192, 132, 252, 0.38);
+  color: #ffffff;
 }
 .cert-btn.cert-purple.active {
-  border-color: #a855f7;
-  background: rgba(168, 85, 247, 0.2);
-  box-shadow: 0 0 12px rgba(168, 85, 247, 0.6), 0 0 4px rgba(168, 85, 247, 0.3);
+  border-color: #d3a4ff;
+  background: rgba(192, 132, 252, 0.44);
+  box-shadow: 0 0 12px rgba(202, 141, 255, 0.7), 0 0 4px rgba(202, 141, 255, 0.4);
   color: #ffffff;
 }
 
-/* Future-build tabs — greyed out and unclickable */
+/* ── Future-build tabs (Security+, CySA+, Linux+, Python, C++, SQL,
+   Sherlock) — a shade darker than the gray row so they read as present
+   but muted next to the vibrant built tabs. Declared after the color
+   schemes above so it overrides their vibrant fills. ── */
+.cert-btn.cert-future,
+.cert-btn.coming-soon,
+.cert-btn.coming-soon:hover,
+.cert-btn.coming-soon.active {
+  background: #132038;
+  border-color: #27406b;
+  color: #8fa6c6;
+  box-shadow: none;
+}
 .cert-btn.cert-future {
-  border-color: #16304c;
-  background: rgba(142, 170, 207, 0.04);
-  color: #55698a;
   text-transform: none;
   letter-spacing: 0.3px;
   cursor: default;
@@ -177,24 +214,23 @@ body {
 .cert-btn.cert-future .future-tag {
   font-size: 9px;
   font-weight: 600;
-  color: #44567a;
+  color: #6d86a8;
   margin-left: 3px;
 }
 
-/* Divider grouping CompTIA tabs apart from the coding tabs */
-.cert-nav-divider {
-  width: 1px;
-  align-self: stretch;
-  min-height: 22px;
-  background: #1a3a5c;
-  margin: 0 8px;
-  flex-shrink: 0;
-}
-
-/* SOON badge for coming-soon tabs */
+/* Coming-soon tabs stay clickable, so give them a restrained
+   hover/selected state rather than the vibrant glow */
 .cert-btn.coming-soon {
   cursor: pointer;
   position: relative;
+}
+.cert-btn.coming-soon:hover {
+  border-color: #3a5a92;
+  color: #b6c8e0;
+}
+.cert-btn.coming-soon.active {
+  border-color: #5b7cb5;
+  color: #e2eaf4;
 }
 .cert-btn.coming-soon::after {
   content: 'SOON';
@@ -208,6 +244,14 @@ body {
   padding: 1px 3px;
   margin-left: 4px;
   vertical-align: middle;
+}
+
+/* ── Selected tab — bright yellow border, matching the Core 1/Core 2
+   selector. The #cert-nav prefix outranks the per-cert .active rules
+   above, so the yellow wins whichever tab is selected in either row. ── */
+#cert-nav .cert-btn.active {
+  border-color: #ffd700;
+  box-shadow: 0 0 12px rgba(255, 215, 0, 0.55), 0 0 4px rgba(255, 215, 0, 0.35);
 }
 
 /* ── CERT PANELS ── */
@@ -512,19 +556,25 @@ h1 {
 
 <!-- ── CERT NAV ── -->
 <nav id="cert-nav">
-  <div class="cert-nav-inner">
-    <span class="cert-nav-label">Certifications Tabs:</span>
-    <button class="cert-btn cert-red active" onclick="switchCert('aplus')" id="btn-aplus">A+</button>
-    <button class="cert-btn cert-green" onclick="switchCert('netplus')" id="btn-netplus">Network+</button>
-    <button class="cert-btn cert-blue coming-soon" onclick="showComingSoon(this, 'Security+', 'CompTIA Security+ is the most trusted entry into cybersecurity, proving you have real-world, hands-on skills to protect networks, apps, and data. It\'s vendor-neutral, globally recognized, and built to help you launch and grow a lasting security career.')">Security+</button>
-    <button class="cert-btn cert-orange coming-soon" onclick="showComingSoon(this, 'CySA+', 'CompTIA CySA+ proves you can detect, analyze, and stop threats in real time. From vulnerability management to incident response, it builds the skills SOCs rely on daily.')">CySA+</button>
-    <button class="cert-btn cert-yellow coming-soon" onclick="showComingSoon(this, 'Linux+', 'CompTIA Linux+ proves you can manage, secure, and troubleshoot Linux systems across cloud and hybrid environments. With skills in automation, containers, and orchestration.')">Linux+</button>
-    <span class="cert-nav-divider"></span>
-    <button class="cert-btn cert-purple" onclick="switchCert('csharp')" id="btn-csharp">C#</button>
-    <button class="cert-btn cert-future" disabled aria-disabled="true">Python <span class="future-tag">(future build)</span></button>
-    <button class="cert-btn cert-future" disabled aria-disabled="true">C++ <span class="future-tag">(future build)</span></button>
-    <button class="cert-btn cert-future" disabled aria-disabled="true">SQL <span class="future-tag">(future build)</span></button>
-    <button class="cert-btn cert-future" disabled aria-disabled="true">Sherlock <span class="future-tag">(future build)</span></button>
+  <div class="cert-nav-row cert-nav-comptia">
+    <div class="cert-nav-inner">
+      <span class="cert-nav-label">IT Certification Tabs:</span>
+      <button class="cert-btn cert-red active" onclick="switchCert('aplus')" id="btn-aplus">A+</button>
+      <button class="cert-btn cert-green" onclick="switchCert('netplus')" id="btn-netplus">Network+</button>
+      <button class="cert-btn cert-blue coming-soon" onclick="showComingSoon(this, 'Security+', 'CompTIA Security+ is the most trusted entry into cybersecurity, proving you have real-world, hands-on skills to protect networks, apps, and data. It\'s vendor-neutral, globally recognized, and built to help you launch and grow a lasting security career.')">Security+</button>
+      <button class="cert-btn cert-orange coming-soon" onclick="showComingSoon(this, 'CySA+', 'CompTIA CySA+ proves you can detect, analyze, and stop threats in real time. From vulnerability management to incident response, it builds the skills SOCs rely on daily.')">CySA+</button>
+    </div>
+  </div>
+  <div class="cert-nav-row cert-nav-coding">
+    <div class="cert-nav-inner">
+      <span class="cert-nav-label">Coding Certifications Tabs:</span>
+      <button class="cert-btn cert-purple" onclick="switchCert('csharp')" id="btn-csharp">C#</button>
+      <button class="cert-btn cert-yellow coming-soon" onclick="showComingSoon(this, 'Linux+', 'CompTIA Linux+ proves you can manage, secure, and troubleshoot Linux systems across cloud and hybrid environments. With skills in automation, containers, and orchestration.')">Linux+</button>
+      <button class="cert-btn cert-future" disabled aria-disabled="true">Python <span class="future-tag">(future build)</span></button>
+      <button class="cert-btn cert-future" disabled aria-disabled="true">C++ <span class="future-tag">(future build)</span></button>
+      <button class="cert-btn cert-future" disabled aria-disabled="true">SQL <span class="future-tag">(future build)</span></button>
+      <button class="cert-btn cert-future" disabled aria-disabled="true">Sherlock <span class="future-tag">(future build)</span></button>
+    </div>
   </div>
 </nav>
 
